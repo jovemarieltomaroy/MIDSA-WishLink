@@ -15,44 +15,40 @@ import {
 const app = express();
 
 /*
- * Normalize URLs before comparing them.
- *
- * This prevents harmless differences such as:
- *
- * https://example.com
- * https://example.com/
- * https://example.com   [with accidental spaces]
+ * Normalize origins so harmless differences like
+ * trailing slashes or spaces do not break CORS.
  */
 function normalizeOrigin(value) {
-  if (!value) {
-    return '';
-  }
+  if (!value) return '';
 
   return value
     .trim()
-    .replace(/,+$/, '')
     .replace(/\/+$/, '');
 }
 
+/*
+ * Explicitly allow the deployed MIDSA WishLink frontend,
+ * plus local development URLs.
+ *
+ * Environment variables are still included, but the deployed
+ * frontend is hardcoded here so Render cannot fail because of
+ * a small environment-variable mismatch.
+ */
 const allowedOrigins = [
+  'https://midsa-wishlink-rnvh.onrender.com',
+
   process.env.CLIENT_URL,
   process.env.PUBLIC_APP_URL,
 
-  /*
-   * Local development addresses.
-   */
   'http://localhost:5173',
   'http://localhost:5174',
+
   'http://127.0.0.1:5173',
   'http://127.0.0.1:5174'
 ]
   .map(normalizeOrigin)
   .filter(Boolean);
 
-/*
- * This is safe to log because these are public frontend URLs,
- * not passwords or secrets.
- */
 console.log(
   'Allowed CORS origins:',
   allowedOrigins
@@ -61,19 +57,19 @@ console.log(
 const corsOptions = {
   origin(origin, callback) {
     /*
-     * Requests without an Origin header are allowed.
-     * This includes tools such as server-to-server requests.
+     * Allow requests without an Origin header,
+     * such as Render health checks and direct server requests.
      */
     if (!origin) {
       return callback(null, true);
     }
 
-    const normalizedRequestOrigin =
+    const normalizedOrigin =
       normalizeOrigin(origin);
 
     if (
       allowedOrigins.includes(
-        normalizedRequestOrigin
+        normalizedOrigin
       )
     ) {
       return callback(null, true);
@@ -81,12 +77,12 @@ const corsOptions = {
 
     console.warn(
       'Blocked CORS origin:',
-      normalizedRequestOrigin
+      normalizedOrigin
     );
 
     return callback(
       new Error(
-        `Origin ${normalizedRequestOrigin} is not allowed by CORS.`
+        `Origin ${normalizedOrigin} is not allowed by CORS.`
       )
     );
   },
@@ -105,11 +101,12 @@ const corsOptions = {
   allowedHeaders: [
     'Content-Type',
     'Authorization'
-  ],
-
-  optionsSuccessStatus: 204
+  ]
 };
 
+/*
+ * Security headers
+ */
 app.use(
   helmet({
     crossOriginResourcePolicy: {
@@ -119,12 +116,16 @@ app.use(
 );
 
 /*
- * CORS must come before all API routes.
+ * IMPORTANT:
+ * CORS must be registered before routes.
  */
 app.use(
   cors(corsOptions)
 );
 
+/*
+ * Request parsing
+ */
 app.use(
   express.json({
     limit: '1mb'
@@ -135,17 +136,22 @@ app.use(
   cookieParser()
 );
 
+/*
+ * Health check
+ */
 app.get(
   '/api/health',
   (req, res) => {
     res.json({
       ok: true,
-      service:
-        'MIDSA WishLink API'
+      service: 'MIDSA WishLink API'
     });
   }
 );
 
+/*
+ * API routes
+ */
 app.use(
   '/api/auth',
   authRoutes
@@ -161,6 +167,9 @@ app.use(
   officerRoutes
 );
 
+/*
+ * Error handling
+ */
 app.use(notFound);
 app.use(errorHandler);
 
