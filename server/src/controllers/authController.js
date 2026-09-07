@@ -6,7 +6,7 @@ function signToken(id) {
     { id },
     process.env.JWT_SECRET,
     {
-      expiresIn: '12h',
+      expiresIn: '12h'
     }
   );
 }
@@ -18,21 +18,14 @@ function cookieOptions() {
   return {
     httpOnly: true,
 
-    /*
-     * Render frontend and backend use different
-     * subdomains, so production needs SameSite=None.
-     */
     sameSite: isProduction
       ? 'none'
       : 'lax',
 
-    /*
-     * SameSite=None requires Secure=true.
-     */
     secure: isProduction,
 
     maxAge:
-      12 * 60 * 60 * 1000,
+      12 * 60 * 60 * 1000
   };
 }
 
@@ -47,7 +40,7 @@ function clearCookieOptions() {
       ? 'none'
       : 'lax',
 
-    secure: isProduction,
+    secure: isProduction
   };
 }
 
@@ -57,19 +50,17 @@ export async function login(
 ) {
   const {
     email,
-    password,
+    password
   } = req.body;
 
   const normalizedEmail =
-    String(
-      email || ''
-    )
+    String(email || '')
       .trim()
       .toLowerCase();
 
   const user =
     await User.findOne({
-      email: normalizedEmail,
+      email: normalizedEmail
     }).select('+password');
 
   if (
@@ -83,28 +74,38 @@ export async function login(
       .status(401)
       .json({
         message:
-          'Invalid email or password.',
+          'Invalid email or password.'
       });
   }
 
   const token =
-    signToken(
-      user._id
-    );
+    signToken(user._id);
 
+  /*
+   * Keep the HTTP-only cookie.
+   * This continues to work locally and may work
+   * in browsers that allow the production cookie.
+   */
   res.cookie(
     'wishlink_token',
     token,
     cookieOptions()
   );
 
+  /*
+   * Also return the JWT so the frontend can use
+   * the Bearer-token fallback already supported
+   * by protect().
+   */
   res.json({
+    token,
+
     user: {
       id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role,
-    },
+      role: user.role
+    }
   });
 }
 
@@ -118,8 +119,7 @@ export function logout(
   );
 
   res.json({
-    message:
-      'Logged out.',
+    message: 'Logged out.'
   });
 }
 
@@ -132,7 +132,7 @@ export async function me(
       id: req.user._id,
       name: req.user.name,
       email: req.user.email,
-      role: req.user.role,
-    },
+      role: req.user.role
+    }
   });
 }
