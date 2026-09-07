@@ -184,11 +184,10 @@ export default function NewCampaignPage() {
             </strong>
 
             <span>
-              You can encode wishes
+              Encode wishes
               and prepare ornaments
               first. Activate the
-              campaign when you are
-              ready for students to
+              campaign to
               reserve wishes.
             </span>
           </div>

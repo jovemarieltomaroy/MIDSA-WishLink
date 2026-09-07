@@ -474,7 +474,7 @@ export default function CampaignDetailPage() {
           </strong>
 
           <span>
-            You can continue adding
+            Continue adding
             and checking wishes, but
             students cannot reserve
             them until an admin
@@ -653,9 +653,6 @@ export default function CampaignDetailPage() {
                 <p>
                   Edit the campaign
                   details here.
-                  Lifecycle changes
-                  use the action
-                  buttons at the top.
                 </p>
               </div>
             </div>
