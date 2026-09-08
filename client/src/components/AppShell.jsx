@@ -55,7 +55,7 @@ export default function AppShell() {
             </strong>
 
             <span>
-              Giving program tracker
+              MIDSAkatuparan Tracker
             </span>
           </div>
         </div>
