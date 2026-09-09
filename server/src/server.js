@@ -7,4 +7,10 @@ if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET is required.');
 const port = Number(process.env.PORT || 5000);
 await connectDB();
 startExpiryJob();
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+  });
+});
 app.listen(port, () => console.log(`MIDSA WishLink API running on http://localhost:${port}`));
