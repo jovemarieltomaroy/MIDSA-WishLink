@@ -31,17 +31,15 @@ export default function WishesPage() {
   ] = useSearchParams();
 
   const campaignIdFromUrl =
-    searchParams.get('campaignId') || '';
+    searchParams.get(
+      'campaignId'
+    ) || '';
 
   /*
    * Priority:
-   *
-   * 1. Campaign explicitly selected in the URL
-   * 2. Current active campaign
-   * 3. First campaign in the list
-   *
-   * This means historical campaigns are still viewable,
-   * while the active campaign remains the default.
+   * 1. Campaign selected from URL
+   * 2. Active campaign
+   * 3. First available campaign
    */
   const effectiveCampaignId =
     campaignIdFromUrl ||
@@ -89,7 +87,9 @@ export default function WishesPage() {
   ] = useState([]);
 
   async function load() {
-    if (!effectiveCampaignId) {
+    if (
+      !effectiveCampaignId
+    ) {
       setWishes([]);
       return;
     }
@@ -101,6 +101,7 @@ export default function WishesPage() {
           params: {
             campaignId:
               effectiveCampaignId,
+
             status,
             foundation,
             q
@@ -109,7 +110,8 @@ export default function WishesPage() {
       );
 
     setWishes(
-      response.data.wishes || []
+      response.data.wishes ||
+      []
     );
   }
 
@@ -121,7 +123,9 @@ export default function WishesPage() {
       );
 
     return () =>
-      clearTimeout(timer);
+      clearTimeout(
+        timer
+      );
   }, [
     status,
     foundation,
@@ -130,45 +134,70 @@ export default function WishesPage() {
   ]);
 
   /*
-   * Build the foundation filter from
-   * all wishes in the selected campaign.
+   * Build foundation filter
+   * from all wishes in the
+   * currently selected campaign.
    */
   useEffect(() => {
-    setFoundation('all');
+    setFoundation(
+      'all'
+    );
 
-    if (!effectiveCampaignId) {
-      setFoundationOptions([]);
+    if (
+      !effectiveCampaignId
+    ) {
+      setFoundationOptions(
+        []
+      );
+
       return;
     }
 
     api
-      .get('/officer/wishes', {
-        params: {
-          campaignId:
-            effectiveCampaignId,
-          status: 'all'
+      .get(
+        '/officer/wishes',
+        {
+          params: {
+            campaignId:
+              effectiveCampaignId,
+
+            status:
+              'all'
+          }
         }
-      })
-      .then((response) => {
-        const values =
-          response.data.wishes
-            .map(
-              (wish) =>
-                wish.partnerFoundation
-            )
-            .filter(Boolean);
+      )
+      .then(
+        (response) => {
+          const values =
+            response.data.wishes
+              .map(
+                (wish) =>
+                  wish.partnerFoundation
+              )
+              .filter(
+                Boolean
+              );
 
-        const unique =
-          [...new Set(values)].sort(
-            (a, b) =>
-              a.localeCompare(b)
+          const unique =
+            [
+              ...new Set(
+                values
+              )
+            ].sort(
+              (a, b) =>
+                a.localeCompare(
+                  b
+                )
+            );
+
+          setFoundationOptions(
+            unique
           );
-
-        setFoundationOptions(
-          unique
-        );
-      });
-  }, [effectiveCampaignId]);
+        }
+      );
+  }, [
+    effectiveCampaignId
+  ]);
 
   function changeCampaign(
     nextId
@@ -178,7 +207,9 @@ export default function WishesPage() {
         searchParams
       );
 
-    if (nextId) {
+    if (
+      nextId
+    ) {
       next.set(
         'campaignId',
         nextId
@@ -189,20 +220,29 @@ export default function WishesPage() {
       );
     }
 
-    setSearchParams(next);
+    setSearchParams(
+      next
+    );
   }
 
   const canAddWish =
     selectedCampaign &&
-    ['draft', 'active'].includes(
+    [
+      'draft',
+      'active'
+    ].includes(
       selectedCampaign.status
     );
 
   return (
     <div className="page">
+
       <div className="page-head">
+
         <div>
-          <h1>Wish log</h1>
+          <h1>
+            Wish log
+          </h1>
 
           <p>
             {selectedCampaign
@@ -216,37 +256,51 @@ export default function WishesPage() {
             className="primary-button"
             to={`/officer/new?campaignId=${selectedCampaign._id}`}
           >
-            <Plus size={18} />
+            <Plus
+              size={18}
+            />
+
             Add wish
           </Link>
         )}
+
       </div>
 
       <div className="toolbar wish-toolbar">
+
         <div className="searchbox">
-          <Search size={17} />
+
+          <Search
+            size={17}
+          />
 
           <input
             placeholder="Search nickname, foundation, code, donor…"
             value={q}
-            onChange={(event) =>
+            onChange={(
+              event
+            ) =>
               setQ(
                 event.target.value
               )
             }
           />
+
         </div>
 
         <select
           value={
             effectiveCampaignId
           }
-          onChange={(event) =>
+          onChange={(
+            event
+          ) =>
             changeCampaign(
               event.target.value
             )
           }
         >
+
           {!campaigns.length && (
             <option value="">
               No campaigns
@@ -271,16 +325,22 @@ export default function WishesPage() {
               </option>
             )
           )}
+
         </select>
 
         <select
-          value={foundation}
-          onChange={(event) =>
+          value={
+            foundation
+          }
+          onChange={(
+            event
+          ) =>
             setFoundation(
               event.target.value
             )
           }
         >
+
           <option value="all">
             All foundations
           </option>
@@ -288,23 +348,33 @@ export default function WishesPage() {
           {foundationOptions.map(
             (name) => (
               <option
-                value={name}
-                key={name}
+                value={
+                  name
+                }
+                key={
+                  name
+                }
               >
                 {name}
               </option>
             )
           )}
+
         </select>
 
         <select
-          value={status}
-          onChange={(event) =>
+          value={
+            status
+          }
+          onChange={(
+            event
+          ) =>
             setStatus(
               event.target.value
             )
           }
         >
+
           <option value="all">
             All statuses
           </option>
@@ -324,47 +394,115 @@ export default function WishesPage() {
           <option value="paused">
             Temporarily Hidden
           </option>
+
         </select>
+
       </div>
 
       {selectedCampaign && (
-        <div className="campaign-view-label">
-          <span>
-            Viewing{' '}
+        <div
+          className="campaign-view-label"
+          style={{
+            display:
+              'flex',
+
+            alignItems:
+              'center',
+
+            justifyContent:
+              'space-between',
+
+            gap:
+              '16px',
+
+            flexWrap:
+              'wrap'
+          }}
+        >
+
+          <div
+            style={{
+              display:
+                'flex',
+
+              alignItems:
+                'center',
+
+              gap:
+                '6px',
+
+              minWidth:
+                0
+            }}
+          >
+            <span>
+              Viewing
+            </span>
+
             <strong>
               {selectedCampaign.name}
             </strong>
-          </span>
+          </div>
 
           <span
             className={`campaign-status campaign-${selectedCampaign.status}`}
+            style={{
+              flexShrink:
+                0
+            }}
           >
-            {selectedCampaign.status}
+            {prettyStatus(
+              selectedCampaign.status
+            )}
           </span>
+
         </div>
       )}
 
       <div className="panel">
+
         <div className="table-wrap">
+
           <table>
+
             <thead>
               <tr>
-                <th>Nickname</th>
-                <th>Wish</th>
-                <th>Foundation</th>
-                <th>Status</th>
+                <th>
+                  Nickname
+                </th>
+
+                <th>
+                  Wish
+                </th>
+
+                <th>
+                  Foundation
+                </th>
+
+                <th>
+                  Status
+                </th>
+
                 <th>
                   Donor / Deadline
                 </th>
+
                 <th></th>
               </tr>
             </thead>
 
             <tbody>
+
               {wishes.map(
                 (wish) => (
-                  <tr key={wish._id}>
+                  <tr
+                    key={
+                      wish._id
+                    }
+                  >
+
                     <td>
+
                       <Link
                         to={`/officer/wishes/${wish._id}`}
                       >
@@ -376,6 +514,7 @@ export default function WishesPage() {
                       <small>
                         #{wish.ornamentCode}
                       </small>
+
                     </td>
 
                     <td>
@@ -397,6 +536,7 @@ export default function WishesPage() {
                     </td>
 
                     <td>
+
                       {wish.donor ? (
                         <>
                           <span>
@@ -411,7 +551,9 @@ export default function WishesPage() {
                             {wish.reservationExpiresAt
                               ? new Date(
                                   wish.reservationExpiresAt
-                                ).toLocaleString()
+                                ).toLocaleString(
+                                  'en-PH'
+                                )
                               : 'No deadline'}
                           </small>
                         </>
@@ -420,6 +562,7 @@ export default function WishesPage() {
                           —
                         </span>
                       )}
+
                     </td>
 
                     <td>
@@ -433,10 +576,13 @@ export default function WishesPage() {
                         />
                       </Link>
                     </td>
+
                   </tr>
                 )
               )}
+
             </tbody>
+
           </table>
 
           {!wishes.length && (
@@ -445,8 +591,11 @@ export default function WishesPage() {
               campaign view.
             </div>
           )}
+
         </div>
+
       </div>
+
     </div>
   );
 }
@@ -459,7 +608,9 @@ function prettyStatus(
   }
 
   return (
-    status.charAt(0).toUpperCase() +
+    status
+      .charAt(0)
+      .toUpperCase() +
     status.slice(1)
   );
 }

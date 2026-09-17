@@ -45,9 +45,6 @@ export default function CampaignsPage() {
 
       {activeCampaign ? (
         <div className="active-campaign-banner">
-          <CheckCircle2
-            size={19}
-          />
 
           <div>
             <strong>

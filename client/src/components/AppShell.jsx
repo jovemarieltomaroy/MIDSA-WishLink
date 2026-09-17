@@ -9,6 +9,7 @@ import {
   Gift,
   LayoutDashboard,
   LogOut,
+  Settings,
   TreePine
 } from 'lucide-react';
 
@@ -132,6 +133,13 @@ export default function AppShell() {
           >
             <Gift size={18} />
             Add wish
+          </NavLink>
+
+          <NavLink
+            to="/officer/settings"
+          >
+            <Settings size={18} />
+            Account Settings
           </NavLink>
         </nav>
 

@@ -69,11 +69,35 @@ export default function GrantWishPage() {
     }));
   };
 
+  const updatePhoneNumber = (e) => {
+    const digitsOnly = e.target.value
+      .replace(/\D/g, '')
+      .slice(0, 12);
+
+    setForm((current) => ({
+      ...current,
+      phoneNumber: digitsOnly,
+    }));
+  };
+
+  function isValidPhoneNumber(phoneNumber) {
+    return /^(09\d{9}|639\d{9})$/.test(phoneNumber);
+  }
+
   async function requestVerification(e) {
     e.preventDefault();
 
     setSaving(true);
     setError('');
+
+    if (!isValidPhoneNumber(form.phoneNumber)) {
+      setError(
+        'Please enter a valid Philippine mobile number using 09XXXXXXXXX or 639XXXXXXXXX.'
+      );
+
+      setSaving(false);
+      return;
+    }
 
     try {
       const response = await api.post(
@@ -81,13 +105,9 @@ export default function GrantWishPage() {
         form
       );
 
-      setVerificationId(
-        response.data.verificationId
-      );
+      setVerificationId(response.data.verificationId);
 
-      setVerificationEmail(
-        response.data.email
-      );
+      setVerificationEmail(response.data.email);
 
       setVerificationCode('');
 
@@ -161,10 +181,9 @@ export default function GrantWishPage() {
             </h1>
 
             <p>
-              Your email has been verified and your
-              reservation is confirmed. We also sent the
-              reservation details to the email address you
-              provided.
+              Your email has been verified and your reservation is
+              confirmed. We also sent the reservation details to the
+              email address you provided.
             </p>
 
             <div className="summary-box">
@@ -244,18 +263,17 @@ export default function GrantWishPage() {
               </h1>
 
               <p className="muted">
-                We use these details only to coordinate the
-                donation and follow up if needed.
+                We use these details only to coordinate the donation
+                and follow up if needed.
               </p>
 
               <div className="privacy-note">
                 <ShieldCheck size={18} />
 
                 <p>
-                  Any valid email address is accepted. We’ll
-                  send a 6-digit verification code to make
-                  sure you can access the email before the
-                  wish is reserved.
+                  Any valid email address is accepted. We’ll send a
+                  6-digit verification code to make sure you can access
+                  the email before the wish is reserved.
                 </p>
               </div>
 
@@ -299,9 +317,12 @@ export default function GrantWishPage() {
                   <input
                     name="phoneNumber"
                     value={form.phoneNumber}
-                    onChange={update}
+                    onChange={updatePhoneNumber}
                     required
-                    placeholder="+63 900 000 0000"
+                    inputMode="numeric"
+                    maxLength={12}
+                    pattern="^(09\d{9}|639\d{9})$"
+                    placeholder="09XXXXXXXXX or 639XXXXXXXXX"
                   />
                 </label>
 
@@ -400,10 +421,10 @@ export default function GrantWishPage() {
                   <Info size={18} />
 
                   <p>
-                    Your wish is not reserved yet. We’ll first
-                    send a verification code to your email.
-                    The reservation becomes final only after
-                    the code is successfully verified.
+                    Your wish is not reserved yet. We’ll first send a
+                    verification code to your email. The reservation
+                    becomes final only after the code is successfully
+                    verified.
                   </p>
                 </div>
 
@@ -449,9 +470,8 @@ export default function GrantWishPage() {
                 <ShieldCheck size={18} />
 
                 <p>
-                  Enter the code below to confirm that this
-                  email belongs to you. The code expires in
-                  10 minutes.
+                  Enter the code below to confirm that this email
+                  belongs to you. The code expires in 10 minutes.
                 </p>
               </div>
 
@@ -583,8 +603,7 @@ function CalendarDeadline({ date }) {
         </strong>
 
         <span>
-          If you later need an extension, contact MIDSA
-          before this date.
+          If you later need an extension, contact MIDSA before this date.
         </span>
       </div>
     </div>

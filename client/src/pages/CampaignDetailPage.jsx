@@ -14,7 +14,9 @@ import {
   Gift,
   PlayCircle,
   Save,
-  StopCircle
+  Settings,
+  StopCircle,
+  X
 } from 'lucide-react';
 
 import {
@@ -22,9 +24,13 @@ import {
   getErrorMessage
 } from '../utils/api';
 
-import { useAuth } from '../context/AuthContext';
+import {
+  useAuth
+} from '../context/AuthContext';
 
-import { useCampaign } from '../context/CampaignContext';
+import {
+  useCampaign
+} from '../context/CampaignContext';
 
 import ConfirmModal from '../components/ConfirmModal';
 
@@ -55,9 +61,22 @@ export default function CampaignDetailPage() {
     setError
   ] = useState('');
 
+  /*
+   * General messages for campaign actions
+   * such as activate, complete, or archive.
+   */
   const [
     success,
     setSuccess
+  ] = useState('');
+
+  /*
+   * Messages specifically for the
+   * Campaign Settings panel.
+   */
+  const [
+    settingsMessage,
+    setSettingsMessage
   ] = useState('');
 
   const [
@@ -75,6 +94,38 @@ export default function CampaignDetailPage() {
     setConfirmAction
   ] = useState(null);
 
+  const [
+    showSettings,
+    setShowSettings
+  ] = useState(false);
+
+  function makeForm(
+    campaign
+  ) {
+    return {
+      name:
+        campaign.name,
+
+      academicPeriod:
+        campaign.academicPeriod ||
+        '',
+
+      description:
+        campaign.description ||
+        '',
+
+      startDate:
+        toLocalInput(
+          campaign.startDate
+        ),
+
+      deadline:
+        toLocalInput(
+          campaign.deadline
+        )
+    };
+  }
+
   async function load() {
     try {
       setError('');
@@ -88,33 +139,16 @@ export default function CampaignDetailPage() {
         response.data
       );
 
-      setForm({
-        name:
-          response.data.campaign.name,
-
-        academicPeriod:
+      setForm(
+        makeForm(
           response.data.campaign
-            .academicPeriod || '',
-
-        description:
-          response.data.campaign
-            .description || '',
-
-        startDate:
-          toLocalInput(
-            response.data.campaign
-              .startDate
-          ),
-
-        deadline:
-          toLocalInput(
-            response.data.campaign
-              .deadline
-          )
-      });
+        )
+      );
     } catch (err) {
       setError(
-        getErrorMessage(err)
+        getErrorMessage(
+          err
+        )
       );
     }
   }
@@ -123,22 +157,170 @@ export default function CampaignDetailPage() {
     load();
   }, [id]);
 
-  function update(event) {
+  /*
+   * General action success messages
+   * disappear automatically.
+   */
+  useEffect(() => {
+    if (!success) {
+      return;
+    }
+
+    const timeout =
+      window.setTimeout(
+        () => {
+          setSuccess('');
+        },
+        4500
+      );
+
+    return () => {
+      window.clearTimeout(
+        timeout
+      );
+    };
+  }, [success]);
+
+  /*
+   * Settings messages also disappear
+   * automatically after a few seconds.
+   */
+  useEffect(() => {
+    if (!settingsMessage) {
+      return;
+    }
+
+    const timeout =
+      window.setTimeout(
+        () => {
+          setSettingsMessage('');
+        },
+        4500
+      );
+
+    return () => {
+      window.clearTimeout(
+        timeout
+      );
+    };
+  }, [settingsMessage]);
+
+  function update(
+    event
+  ) {
     setForm(
       (current) => ({
         ...current,
+
         [event.target.name]:
           event.target.value
       })
     );
+
+    /*
+     * Remove the previous message when
+     * the user starts editing again.
+     */
+    if (settingsMessage) {
+      setSettingsMessage('');
+    }
   }
 
-  async function save(event) {
-    event.preventDefault();
+  function hasCampaignChanges() {
+    if (
+      !data?.campaign ||
+      !form
+    ) {
+      return false;
+    }
 
-    setSaving(true);
+    const original =
+      makeForm(
+        data.campaign
+      );
+
+    return (
+      form.name !==
+        original.name ||
+      form.academicPeriod !==
+        original.academicPeriod ||
+      form.description !==
+        original.description ||
+      form.startDate !==
+        original.startDate ||
+      form.deadline !==
+        original.deadline
+    );
+  }
+
+  function openSettings() {
+    if (
+      data?.campaign
+    ) {
+      setForm(
+        makeForm(
+          data.campaign
+        )
+      );
+    }
+
     setError('');
     setSuccess('');
+    setSettingsMessage('');
+
+    setShowSettings(
+      true
+    );
+  }
+
+  function cancelSettings() {
+    if (saving) {
+      return;
+    }
+
+    if (
+      data?.campaign
+    ) {
+      setForm(
+        makeForm(
+          data.campaign
+        )
+      );
+    }
+
+    setError('');
+    setSettingsMessage('');
+
+    setShowSettings(
+      false
+    );
+  }
+
+  async function save(
+    event
+  ) {
+    event.preventDefault();
+
+    setError('');
+    setSettingsMessage('');
+
+    /*
+     * Do not send an unnecessary request
+     * if nothing was changed.
+     */
+    if (
+      !hasCampaignChanges()
+    ) {
+      setSettingsMessage(
+        'No changes were made.'
+      );
+
+      return;
+    }
+
+    setSaving(
+      true
+    );
 
     try {
       await api.patch(
@@ -163,15 +345,23 @@ export default function CampaignDetailPage() {
         refreshCampaigns()
       ]);
 
-      setSuccess(
-        'Campaign details saved successfully.'
+      /*
+       * Keep settings open so the user
+       * sees the confirmation here.
+       */
+      setSettingsMessage(
+        'Campaign settings updated successfully.'
       );
     } catch (err) {
       setError(
-        getErrorMessage(err)
+        getErrorMessage(
+          err
+        )
       );
     } finally {
-      setSaving(false);
+      setSaving(
+        false
+      );
     }
   }
 
@@ -179,7 +369,9 @@ export default function CampaignDetailPage() {
     const campaign =
       data?.campaign;
 
-    if (!campaign) return;
+    if (!campaign) {
+      return;
+    }
 
     const start =
       new Date(
@@ -193,7 +385,8 @@ export default function CampaignDetailPage() {
       start > now;
 
     setConfirmAction({
-      type: 'activate',
+      type:
+        'activate',
 
       title:
         `Activate “${campaign.name}”?`,
@@ -203,12 +396,13 @@ export default function CampaignDetailPage() {
           ? `This will make this the only active MIDSA WishLink campaign. QR reservations will still wait until ${formatDateTime(
               campaign.startDate
             )}, the campaign start date.`
-          : 'This will make this the only active MIDSA WishLink campaign and allow students to reserve available wishes through their QR pages.',
+          : 'This will make this the only active MIDSA WishLink campaign and allow donors to reserve available wishes through their QR pages.',
 
       confirmLabel:
         'Activate campaign',
 
-      tone: 'success'
+      tone:
+        'success'
     });
   }
 
@@ -216,21 +410,25 @@ export default function CampaignDetailPage() {
     const campaign =
       data?.campaign;
 
-    if (!campaign) return;
+    if (!campaign) {
+      return;
+    }
 
     setConfirmAction({
-      type: 'complete',
+      type:
+        'complete',
 
       title:
         `Complete “${campaign.name}”?`,
 
       message:
-        'Students will no longer be able to make new reservations under this campaign. Existing records and campaign history will remain available to officers.',
+        'Donors will no longer be able to make new reservations under this campaign. Existing records and campaign history will remain available.',
 
       confirmLabel:
         'Complete campaign',
 
-      tone: 'danger'
+      tone:
+        'danger'
     });
   }
 
@@ -238,10 +436,13 @@ export default function CampaignDetailPage() {
     const campaign =
       data?.campaign;
 
-    if (!campaign) return;
+    if (!campaign) {
+      return;
+    }
 
     setConfirmAction({
-      type: 'archive',
+      type:
+        'archive',
 
       title:
         `Archive “${campaign.name}”?`,
@@ -252,32 +453,48 @@ export default function CampaignDetailPage() {
       confirmLabel:
         'Archive campaign',
 
-      tone: 'primary'
+      tone:
+        'primary'
     });
   }
 
   async function runConfirmedAction() {
-    if (!confirmAction) {
+    if (
+      !confirmAction
+    ) {
       return;
     }
 
-    setActionBusy(true);
+    setActionBusy(
+      true
+    );
+
     setError('');
     setSuccess('');
+    setSettingsMessage('');
 
     try {
       const endpoint = {
-        activate: 'activate',
-        complete: 'complete',
-        archive: 'archive'
-      }[confirmAction.type];
+        activate:
+          'activate',
+
+        complete:
+          'complete',
+
+        archive:
+          'archive'
+      }[
+        confirmAction.type
+      ];
 
       const response =
         await api.patch(
           `/officer/campaigns/${id}/${endpoint}`
         );
 
-      setConfirmAction(null);
+      setConfirmAction(
+        null
+      );
 
       await Promise.all([
         load(),
@@ -286,16 +503,22 @@ export default function CampaignDetailPage() {
 
       setSuccess(
         response.data.message ||
-          'Campaign updated successfully.'
+        'Campaign updated successfully.'
       );
     } catch (err) {
-      setConfirmAction(null);
+      setConfirmAction(
+        null
+      );
 
       setError(
-        getErrorMessage(err)
+        getErrorMessage(
+          err
+        )
       );
     } finally {
-      setActionBusy(false);
+      setActionBusy(
+        false
+      );
     }
   }
 
@@ -315,15 +538,24 @@ export default function CampaignDetailPage() {
     campaign,
     stats,
     foundations
-  } = data;
+  } =
+    data;
 
   const isCurrentActive =
     activeCampaign?._id ===
     campaign._id;
 
+  const canEditSettings =
+    user?.role ===
+      'admin' &&
+    campaign.status !==
+      'archived';
+
   return (
     <div className="page">
+
       <div className="page-head">
+
         <div>
           <div
             className={`campaign-status campaign-${campaign.status}`}
@@ -342,6 +574,7 @@ export default function CampaignDetailPage() {
         </div>
 
         <div className="inline campaign-primary-actions">
+
           {user?.role ===
             'admin' &&
             campaign.status ===
@@ -399,6 +632,23 @@ export default function CampaignDetailPage() {
               </button>
             )}
 
+          {canEditSettings &&
+            !showSettings && (
+              <button
+                className="secondary-button"
+                type="button"
+                onClick={
+                  openSettings
+                }
+              >
+                <Settings
+                  size={17}
+                />
+
+                Edit settings
+              </button>
+            )}
+
           {![
             'completed',
             'archived'
@@ -423,6 +673,7 @@ export default function CampaignDetailPage() {
           >
             View wishes
           </Link>
+
         </div>
       </div>
 
@@ -433,10 +684,10 @@ export default function CampaignDetailPage() {
       )}
 
       {success && (
-        <div className="success-notice">
-          <CheckCircle2
-            size={18}
-          />
+        <div
+          className="success-notice"
+          role="status"
+        >
 
           <span>
             {success}
@@ -446,20 +697,16 @@ export default function CampaignDetailPage() {
 
       {isCurrentActive && (
         <div className="active-campaign-notice">
-          <CheckCircle2
-            size={18}
-          />
+
 
           <div>
             <strong>
-              This is the active
-              campaign.
+              This is the active campaign.
             </strong>
 
             <span>
-              Public QR reservations
-              are tied to this campaign
-              and its start/deadline
+              Public QR reservations are tied to
+              this campaign and its start/deadline
               schedule.
             </span>
           </div>
@@ -474,38 +721,47 @@ export default function CampaignDetailPage() {
           </strong>
 
           <span>
-            Continue adding
-            and checking wishes, but
-            students cannot reserve
-            them until an admin
-            activates this campaign.
+            Continue adding and checking wishes,
+            but donors cannot reserve them until
+            an admin activates this campaign.
           </span>
         </div>
       )}
 
       <div className="stats-grid">
+
         <Stat
           label="All wishes"
-          value={stats.total}
+          value={
+            stats.total
+          }
         />
 
         <Stat
           label="Waiting"
-          value={stats.available}
+          value={
+            stats.available
+          }
         />
 
         <Stat
           label="Santa on the Way"
-          value={stats.reserved}
+          value={
+            stats.reserved
+          }
         />
 
         <Stat
           label="Granted"
-          value={stats.granted}
+          value={
+            stats.granted
+          }
         />
+
       </div>
 
       <div className="panel campaign-summary-panel">
+
         <div className="panel-head">
           <div>
             <h2>
@@ -521,6 +777,7 @@ export default function CampaignDetailPage() {
         </div>
 
         <div className="summary-strip">
+
           <div>
             <small>
               Start
@@ -564,10 +821,12 @@ export default function CampaignDetailPage() {
               {stats.completionRate}%
             </strong>
           </div>
+
         </div>
       </div>
 
       <div className="panel">
+
         <div className="panel-head">
           <div>
             <h2>
@@ -577,6 +836,7 @@ export default function CampaignDetailPage() {
         </div>
 
         <div className="table-wrap">
+
           <table>
             <thead>
               <tr>
@@ -584,11 +844,25 @@ export default function CampaignDetailPage() {
                   Partner foundation
                 </th>
 
-                <th>Total</th>
-                <th>Waiting</th>
-                <th>Reserved</th>
-                <th>Granted</th>
-                <th>Hidden</th>
+                <th>
+                  Total
+                </th>
+
+                <th>
+                  Waiting
+                </th>
+
+                <th>
+                  Reserved
+                </th>
+
+                <th>
+                  Granted
+                </th>
+
+                <th>
+                  Hidden
+                </th>
               </tr>
             </thead>
 
@@ -596,7 +870,9 @@ export default function CampaignDetailPage() {
               {foundations.map(
                 (row) => (
                   <tr
-                    key={row.name}
+                    key={
+                      row.name
+                    }
                   >
                     <td>
                       <strong>
@@ -631,43 +907,91 @@ export default function CampaignDetailPage() {
 
           {!foundations.length && (
             <div className="empty">
-              No wishes have been
-              added to this campaign
-              yet.
+              No wishes have been added
+              to this campaign yet.
             </div>
           )}
+
         </div>
       </div>
 
-      {user?.role ===
-        'admin' &&
-        campaign.status !==
-          'archived' && (
+      {canEditSettings &&
+        showSettings && (
           <div className="panel form-panel">
+
             <div className="panel-head">
+
               <div>
                 <h2>
                   Campaign settings
                 </h2>
 
                 <p>
-                  Edit the campaign
-                  details here.
+                  Update the campaign information
+                  below.
                 </p>
               </div>
+
+              <button
+                type="button"
+                className="ghost-button"
+                onClick={
+                  cancelSettings
+                }
+                disabled={
+                  saving
+                }
+              >
+                <X
+                  size={17}
+                />
+
+                Close
+              </button>
+
             </div>
+
+           {settingsMessage && (
+          <div
+            className={
+              settingsMessage ===
+              'No changes were made.'
+                ? 'alert'
+                : 'success-notice'
+            }
+            role="status"
+            style={{
+              marginBottom:
+                '18px'
+            }}
+          >
+            {settingsMessage !==
+              'No changes were made.'}
+
+            <span>
+              {settingsMessage}
+            </span>
+          </div>
+        )}
 
             <form
               className="form-grid"
-              onSubmit={save}
+              onSubmit={
+                save
+              }
             >
+
               <label className="span-2">
                 Campaign name
 
                 <input
                   name="name"
-                  value={form.name}
-                  onChange={update}
+                  value={
+                    form.name
+                  }
+                  onChange={
+                    update
+                  }
                   required
                 />
               </label>
@@ -680,7 +1004,9 @@ export default function CampaignDetailPage() {
                   value={
                     form.academicPeriod
                   }
-                  onChange={update}
+                  onChange={
+                    update
+                  }
                 />
               </label>
 
@@ -693,14 +1019,15 @@ export default function CampaignDetailPage() {
                   value={
                     form.startDate
                   }
-                  onChange={update}
+                  onChange={
+                    update
+                  }
                   required
                 />
               </label>
 
               <label>
-                Final drop-off
-                deadline
+                Final drop-off deadline
 
                 <input
                   type="datetime-local"
@@ -708,7 +1035,9 @@ export default function CampaignDetailPage() {
                   value={
                     form.deadline
                   }
-                  onChange={update}
+                  onChange={
+                    update
+                  }
                   required
                 />
               </label>
@@ -722,14 +1051,33 @@ export default function CampaignDetailPage() {
                   value={
                     form.description
                   }
-                  onChange={update}
+                  onChange={
+                    update
+                  }
                 />
               </label>
 
               <div className="span-2 actions">
+
                 <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={
+                    cancelSettings
+                  }
+                  disabled={
+                    saving
+                  }
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
                   className="primary-button"
-                  disabled={saving}
+                  disabled={
+                    saving
+                  }
                 >
                   <Save
                     size={17}
@@ -737,38 +1085,55 @@ export default function CampaignDetailPage() {
 
                   {saving
                     ? 'Saving…'
-                    : 'Save campaign details'}
+                    : 'Save changes'}
                 </button>
+
               </div>
+
             </form>
+
           </div>
         )}
 
       <ConfirmModal
-        open={Boolean(
-          confirmAction
-        )}
+        open={
+          Boolean(
+            confirmAction
+          )
+        }
+
         title={
           confirmAction?.title
         }
+
         message={
           confirmAction?.message
         }
+
         confirmLabel={
           confirmAction?.confirmLabel
         }
+
         tone={
           confirmAction?.tone
         }
-        busy={actionBusy}
+
+        busy={
+          actionBusy
+        }
+
         onCancel={() =>
           !actionBusy &&
-          setConfirmAction(null)
+          setConfirmAction(
+            null
+          )
         }
+
         onConfirm={
           runConfirmedAction
         }
       />
+
     </div>
   );
 }
@@ -792,12 +1157,20 @@ function Stat({
   );
 }
 
-function toLocalInput(value) {
+function toLocalInput(
+  value
+) {
   const date =
-    new Date(value);
+    new Date(
+      value
+    );
 
-  const pad = (number) =>
-    String(number).padStart(
+  const pad = (
+    number
+  ) =>
+    String(
+      number
+    ).padStart(
       2,
       '0'
     );
@@ -813,14 +1186,19 @@ function toLocalInput(value) {
   )}`;
 }
 
-function formatDateTime(value) {
+function formatDateTime(
+  value
+) {
   return new Date(
     value
   ).toLocaleString(
     'en-PH',
     {
-      dateStyle: 'medium',
-      timeStyle: 'short'
+      dateStyle:
+        'medium',
+
+      timeStyle:
+        'short'
     }
   );
 }
