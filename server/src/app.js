@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/authRoutes.js';
 import publicRoutes from './routes/publicRoutes.js';
 import officerRoutes from './routes/officerRoutes.js';
+import accountRoutes from './routes/accountRoutes.js';
 
 import {
   errorHandler,
@@ -166,7 +167,10 @@ app.use(
   '/api/officer',
   officerRoutes
 );
-
+app.use(
+  '/api/account',
+  accountRoutes
+);
 /*
  * Error handling
  */

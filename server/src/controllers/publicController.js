@@ -208,13 +208,29 @@ function isValidEmail(
   email
 ) {
   /*
-   * Intentionally accepts any reasonable
-   * email domain.
-   *
-   * We verify actual inbox access using OTP.
+   * Accept any reasonable email domain.
+   * Inbox ownership is confirmed using OTP.
    */
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
     email
+  );
+}
+
+function isValidPhoneNumber(
+  phoneNumber
+) {
+  /*
+   * Accepts:
+   *
+   * 09XXXXXXXXX
+   * 639XXXXXXXXX
+   *
+   * Example:
+   * 09171234567
+   * 639171234567
+   */
+  return /^(09\d{9}|639\d{9})$/.test(
+    phoneNumber
   );
 }
 
@@ -262,10 +278,16 @@ function cleanDonorData(
         body.email
       ),
 
+    /*
+     * Strip spaces, + signs, dashes,
+     * parentheses, letters, etc.
+     */
     phoneNumber:
       String(
         body.phoneNumber || ''
-      ).trim(),
+      )
+        .replace(/\D/g, '')
+        .slice(0, 12),
 
     program:
       String(
@@ -307,6 +329,16 @@ function validateDonorData(
   ) {
     return (
       'Please enter a valid email address.'
+    );
+  }
+
+  if (
+    !isValidPhoneNumber(
+      donor.phoneNumber
+    )
+  ) {
+    return (
+      'Please enter a valid Philippine mobile number using 09XXXXXXXXX or 639XXXXXXXXX.'
     );
   }
 
@@ -355,8 +387,8 @@ export async function getPublicWish(
 /*
  * STEP 1:
  *
- * Validate the donor information and send
- * the 6-digit verification code.
+ * Validate donor details
+ * and send a 6-digit verification code.
  */
 export async function requestEmailVerification(
   req,
@@ -437,7 +469,7 @@ export async function requestEmailVerification(
 
   /*
    * Remove an older verification request
-   * for this same wish/email combination.
+   * for this same wish and email.
    */
   await EmailVerification.deleteMany({
     ornamentCode:
@@ -514,7 +546,7 @@ export async function requestEmailVerification(
 /*
  * STEP 2:
  *
- * Verify OTP and atomically reserve the wish.
+ * Verify OTP and reserve the wish.
  */
 export async function verifyReservation(
   req,
@@ -604,10 +636,6 @@ export async function verifyReservation(
       String(code).trim()
     );
 
-  /*
-   * timingSafeEqual avoids leaking useful
-   * information through timing differences.
-   */
   const storedBuffer =
     Buffer.from(
       verification.codeHash,
@@ -683,7 +711,7 @@ export async function verifyReservation(
     verification.donorData;
 
   /*
-   * Atomic status condition prevents two people
+   * Atomic status check prevents two donors
    * from reserving the same wish.
    */
   const wish =

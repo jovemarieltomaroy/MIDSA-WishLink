@@ -2,7 +2,7 @@ import express from 'express';
 
 import {
   protect,
-  adminOnly,
+  adminOnly
 } from '../middleware/auth.js';
 
 import {
@@ -13,7 +13,7 @@ import {
   activateCampaign,
   completeCampaign,
   archiveCampaign,
-  getActiveCampaign,
+  getActiveCampaign
 } from '../controllers/campaignController.js';
 
 import {
@@ -25,20 +25,18 @@ import {
   changeStatus,
   extendDeadline,
   qrPng,
-  deleteWish,
-  listOfficers,
-  createOfficer,
+  deleteWish
 } from '../controllers/officerController.js';
 
-const router = express.Router();
+const router =
+  express.Router();
+
+router.use(
+  protect
+);
 
 /*
- * All officer routes require authentication.
- */
-router.use(protect);
-
-/*
- * DASHBOARD
+ * Dashboard
  */
 router.get(
   '/dashboard',
@@ -46,7 +44,7 @@ router.get(
 );
 
 /*
- * CAMPAIGNS
+ * Campaigns
  */
 router.get(
   '/campaigns',
@@ -94,7 +92,7 @@ router.patch(
 );
 
 /*
- * WISHES
+ * Wishes
  */
 router.get(
   '/wishes',
@@ -134,21 +132,6 @@ router.get(
 router.delete(
   '/wishes/:id',
   deleteWish
-);
-
-/*
- * OFFICER MANAGEMENT
- */
-router.get(
-  '/officers',
-  adminOnly,
-  listOfficers
-);
-
-router.post(
-  '/officers',
-  adminOnly,
-  createOfficer
 );
 
 export default router;

@@ -43,27 +43,39 @@ function calculateStats(wishes = []) {
   return stats;
 }
 
-function buildFoundationBreakdown(wishes = []) {
-  const foundations = new Map();
+function buildFoundationBreakdown(
+  wishes = []
+) {
+  const foundations =
+    new Map();
 
   for (const wish of wishes) {
     const name =
       wish.partnerFoundation?.trim() ||
       'Unspecified Foundation';
 
-    if (!foundations.has(name)) {
-      foundations.set(name, {
+    if (
+      !foundations.has(
+        name
+      )
+    ) {
+      foundations.set(
         name,
-        total: 0,
-        available: 0,
-        reserved: 0,
-        granted: 0,
-        paused: 0,
-      });
+        {
+          name,
+          total: 0,
+          available: 0,
+          reserved: 0,
+          granted: 0,
+          paused: 0,
+        }
+      );
     }
 
     const entry =
-      foundations.get(name);
+      foundations.get(
+        name
+      );
 
     entry.total += 1;
 
@@ -79,8 +91,11 @@ function buildFoundationBreakdown(wishes = []) {
 
   return Array.from(
     foundations.values()
-  ).sort((a, b) =>
-    a.name.localeCompare(b.name)
+  ).sort(
+    (a, b) =>
+      a.name.localeCompare(
+        b.name
+      )
   );
 }
 
@@ -108,7 +123,8 @@ export async function listCampaigns(
       campaignIds.length > 0
         ? await Wish.find({
             campaign: {
-              $in: campaignIds,
+              $in:
+                campaignIds,
             },
           })
             .select(
@@ -120,7 +136,9 @@ export async function listCampaigns(
     const wishesByCampaign =
       new Map();
 
-    for (const wish of wishes) {
+    for (
+      const wish of wishes
+    ) {
       const key =
         wish.campaign.toString();
 
@@ -155,13 +173,32 @@ export async function listCampaigns(
 
           return {
             ...campaign,
+
+            /*
+             * Keep the full stats object
+             * for pages that may need it.
+             */
             stats,
+
+            /*
+             * These fields are used by
+             * CampaignsPage.jsx.
+             */
+            wishCount:
+              stats.total,
+
+            grantedCount:
+              stats.granted,
+
+            completionRate:
+              stats.completionRate,
           };
         }
       );
 
     res.json({
-      campaigns: result,
+      campaigns:
+        result,
     });
   } catch (error) {
     next(error);
@@ -180,10 +217,12 @@ export async function getCampaign(
       ).lean();
 
     if (!campaign) {
-      return res.status(404).json({
-        message:
-          'Campaign not found.',
-      });
+      return res
+        .status(404)
+        .json({
+          message:
+            'Campaign not found.',
+        });
     }
 
     const wishes =
@@ -198,8 +237,12 @@ export async function getCampaign(
 
     res.json({
       campaign,
+
       stats:
-        calculateStats(wishes),
+        calculateStats(
+          wishes
+        ),
+
       foundations:
         buildFoundationBreakdown(
           wishes
@@ -222,7 +265,8 @@ export async function createCampaign(
       description = '',
       startDate,
       deadline,
-    } = req.body;
+    } =
+      req.body;
 
     if (
       !name?.trim() ||
@@ -238,10 +282,14 @@ export async function createCampaign(
     }
 
     const start =
-      new Date(startDate);
+      new Date(
+        startDate
+      );
 
     const end =
-      new Date(deadline);
+      new Date(
+        deadline
+      );
 
     if (
       Number.isNaN(
@@ -259,7 +307,9 @@ export async function createCampaign(
         });
     }
 
-    if (end <= start) {
+    if (
+      end <= start
+    ) {
       return res
         .status(400)
         .json({
@@ -269,24 +319,34 @@ export async function createCampaign(
     }
 
     /*
-     * New campaigns always begin as Draft.
-     * They must be explicitly activated later.
+     * New campaigns always
+     * begin as Draft.
      */
     const campaign =
       await Campaign.create({
-        name: name.trim(),
+        name:
+          name.trim(),
+
         academicPeriod:
           academicPeriod.trim(),
+
         description:
           description.trim(),
-        startDate: start,
-        deadline: end,
-        status: 'draft',
+
+        startDate:
+          start,
+
+        deadline:
+          end,
+
+        status:
+          'draft',
       });
 
     res.status(201).json({
       message:
         'Campaign created successfully.',
+
       campaign,
     });
   } catch (error) {
@@ -306,21 +366,18 @@ export async function updateCampaign(
       );
 
     if (!campaign) {
-      return res.status(404).json({
-        message:
-          'Campaign not found.',
-      });
+      return res
+        .status(404)
+        .json({
+          message:
+            'Campaign not found.',
+        });
     }
 
     /*
-     * Lifecycle changes are deliberately not handled
-     * through the normal edit endpoint.
-     *
-     * Draft → Active
-     * Active → Completed
-     * Completed → Archived
-     *
-     * must use the dedicated endpoints below.
+     * Campaign lifecycle status
+     * is handled through the
+     * dedicated endpoints below.
      */
     const {
       name,
@@ -328,12 +385,15 @@ export async function updateCampaign(
       description,
       startDate,
       deadline,
-    } = req.body;
+    } =
+      req.body;
 
     if (
       name !== undefined
     ) {
-      if (!name.trim()) {
+      if (
+        !name.trim()
+      ) {
         return res
           .status(400)
           .json({
@@ -363,7 +423,8 @@ export async function updateCampaign(
     }
 
     if (
-      startDate !== undefined
+      startDate !==
+      undefined
     ) {
       const parsedStart =
         new Date(
@@ -388,7 +449,8 @@ export async function updateCampaign(
     }
 
     if (
-      deadline !== undefined
+      deadline !==
+      undefined
     ) {
       const parsedDeadline =
         new Date(
@@ -429,6 +491,7 @@ export async function updateCampaign(
     res.json({
       message:
         'Campaign details updated successfully.',
+
       campaign,
     });
   } catch (error) {
@@ -448,10 +511,12 @@ export async function activateCampaign(
       );
 
     if (!campaign) {
-      return res.status(404).json({
-        message:
-          'Campaign not found.',
-      });
+      return res
+        .status(404)
+        .json({
+          message:
+            'Campaign not found.',
+        });
     }
 
     if (
@@ -461,6 +526,7 @@ export async function activateCampaign(
       return res.json({
         message:
           'Campaign is already active.',
+
         campaign,
       });
     }
@@ -479,17 +545,24 @@ export async function activateCampaign(
 
     const existingActive =
       await Campaign.findOne({
-        status: 'active',
+        status:
+          'active',
+
         _id: {
-          $ne: campaign._id,
+          $ne:
+            campaign._id,
         },
       });
 
-    if (existingActive) {
+    if (
+      existingActive
+    ) {
       return res
         .status(409)
         .json({
-          message: `"${existingActive.name}" is currently active. Complete that campaign before activating another one.`,
+          message:
+            `"${existingActive.name}" is currently active. Complete that campaign before activating another one.`,
+
           activeCampaign:
             existingActive,
         });
@@ -503,15 +576,17 @@ export async function activateCampaign(
     res.json({
       message:
         'Campaign activated successfully.',
+
       campaign,
     });
   } catch (error) {
     /*
-     * Handles the partial unique index race condition
-     * if two officers attempt activation simultaneously.
+     * Handle the partial unique
+     * index race condition.
      */
     if (
-      error?.code === 11000
+      error?.code ===
+      11000
     ) {
       return res
         .status(409)
@@ -537,10 +612,12 @@ export async function completeCampaign(
       );
 
     if (!campaign) {
-      return res.status(404).json({
-        message:
-          'Campaign not found.',
-      });
+      return res
+        .status(404)
+        .json({
+          message:
+            'Campaign not found.',
+        });
     }
 
     if (
@@ -563,6 +640,7 @@ export async function completeCampaign(
     res.json({
       message:
         'Campaign completed successfully.',
+
       campaign,
     });
   } catch (error) {
@@ -582,10 +660,12 @@ export async function archiveCampaign(
       );
 
     if (!campaign) {
-      return res.status(404).json({
-        message:
-          'Campaign not found.',
-      });
+      return res
+        .status(404)
+        .json({
+          message:
+            'Campaign not found.',
+        });
     }
 
     if (
@@ -608,6 +688,7 @@ export async function archiveCampaign(
     res.json({
       message:
         'Campaign archived successfully.',
+
       campaign,
     });
   } catch (error) {
@@ -623,16 +704,19 @@ export async function getActiveCampaign(
   try {
     const campaign =
       await Campaign.findOne({
-        status: 'active',
+        status:
+          'active',
       })
         .sort({
-          createdAt: -1,
+          createdAt:
+            -1,
         })
         .lean();
 
     res.json({
       campaign:
-        campaign || null,
+        campaign ||
+        null,
     });
   } catch (error) {
     next(error);
