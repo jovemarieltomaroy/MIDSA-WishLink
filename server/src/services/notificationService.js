@@ -1,4 +1,3 @@
-import nodemailer from 'nodemailer';
 import twilio from 'twilio';
 import { formatPHDate } from '../utils/dates.js';
 
@@ -24,9 +23,8 @@ function contactBlock() {
 
 function emailConfigured() {
   return Boolean(
-    process.env.SMTP_HOST &&
-    process.env.SMTP_USER &&
-    process.env.SMTP_PASS
+    process.env.RESEND_API_KEY &&
+    process.env.RESEND_FROM
   );
 }
 
@@ -36,29 +34,6 @@ function smsConfigured() {
     process.env.TWILIO_AUTH_TOKEN &&
     process.env.TWILIO_PHONE_NUMBER
   );
-}
-
-function createTransporter() {
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-
-    port: Number(
-      process.env.SMTP_PORT || 587
-    ),
-
-    secure:
-      String(
-        process.env.SMTP_SECURE
-      ).toLowerCase() === 'true',
-
-    auth: {
-      user:
-        process.env.SMTP_USER,
-
-      pass:
-        process.env.SMTP_PASS
-    }
-  });
 }
 
 async function sendEmail({
@@ -76,56 +51,57 @@ async function sendEmail({
     };
   }
 
-  try {
-    const transporter =
-      createTransporter();
+  console.log(
+    `[EMAIL] Sending through Resend HTTP API to ${to}`
+  );
 
-    console.log(
-      `[EMAIL] Attempting to send to ${to}`
+  const response =
+    await fetch(
+      'https://api.resend.com/emails',
+      {
+        method: 'POST',
+
+        headers: {
+          Authorization:
+            `Bearer ${process.env.RESEND_API_KEY}`,
+
+          'Content-Type':
+            'application/json'
+        },
+
+        body: JSON.stringify({
+          from:
+            process.env.RESEND_FROM,
+
+          to: [to],
+
+          subject,
+
+          html
+        })
+      }
     );
 
-    const info =
-      await transporter.sendMail({
-        from:
-          process.env.EMAIL_FROM ||
-          `"MIDSA WishLink" <${process.env.SMTP_USER}>`,
+  const data =
+    await response.json();
 
-        to,
-        subject,
-        html
-      });
-
-    console.log(
-      `[EMAIL SENT] To: ${to} | Message ID: ${info.messageId}`
-    );
-
-    return info;
-  } catch (error) {
+  if (!response.ok) {
     console.error(
-      `[EMAIL ERROR] To: ${to}`
+      '[EMAIL ERROR]',
+      data
     );
 
-    console.error(
-      'Message:',
-      error.message
+    throw new Error(
+      data?.message ||
+      'Unable to send email.'
     );
-
-    if (error.code) {
-      console.error(
-        'Code:',
-        error.code
-      );
-    }
-
-    if (error.response) {
-      console.error(
-        'SMTP Response:',
-        error.response
-      );
-    }
-
-    throw error;
   }
+
+  console.log(
+    `[EMAIL SENT] To: ${to} | ID: ${data.id}`
+  );
+
+  return data;
 }
 
 async function sendSms({
@@ -142,69 +118,95 @@ async function sendSms({
     };
   }
 
-  try {
-    const client =
-      twilio(
-        process.env.TWILIO_ACCOUNT_SID,
-        process.env.TWILIO_AUTH_TOKEN
-      );
-
-    const result =
-      await client.messages.create({
-        from:
-          process.env.TWILIO_PHONE_NUMBER,
-
-        to,
-        body
-      });
-
-    console.log(
-      `[SMS SENT] To: ${to} | SID: ${result.sid}`
+  const client =
+    twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
     );
 
-    return result;
-  } catch (error) {
-    console.error(
-      `[SMS ERROR] To: ${to}`
-    );
+  return client.messages.create({
+    from:
+      process.env.TWILIO_PHONE_NUMBER,
 
-    console.error(
-      error.message
-    );
+    to,
 
-    throw error;
-  }
+    body
+  });
 }
 
-function logNotificationResults(
-  results
-) {
-  const [
-    emailResult,
-    smsResult
-  ] = results;
+export async function sendEmailVerificationCode({
+  email,
+  code,
+  nickname
+}) {
+  const html = `
+    <div
+      style="
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+        color: #23332b;
+      "
+    >
+      <h2 style="color:#7c2639;">
+        Verify your email
+      </h2>
 
-  if (
-    emailResult.status ===
-    'rejected'
-  ) {
-    console.error(
-      '[NOTIFICATION] Email failed:',
-      emailResult.reason?.message ||
-        emailResult.reason
-    );
-  }
+      <p>
+        You are one step away from reserving
+        <strong>${nickname}'s</strong> Christmas wish.
+      </p>
 
-  if (
-    smsResult.status ===
-    'rejected'
-  ) {
-    console.error(
-      '[NOTIFICATION] SMS failed:',
-      smsResult.reason?.message ||
-        smsResult.reason
-    );
-  }
+      <p>
+        Enter this verification code in MIDSA WishLink:
+      </p>
+
+      <div
+        style="
+          font-size: 32px;
+          font-weight: 700;
+          letter-spacing: 8px;
+          background: #f5f2ed;
+          border-radius: 10px;
+          padding: 18px;
+          text-align: center;
+          margin: 24px 0;
+        "
+      >
+        ${code}
+      </div>
+
+      <p>
+        This code expires in
+        <strong>10 minutes</strong>.
+      </p>
+
+      <p>
+        If you did not request this verification,
+        you may ignore this email.
+      </p>
+
+      <p
+        style="
+          color: #68766f;
+          font-size: 13px;
+        "
+      >
+        For your security, do not share this code
+        with anyone.
+      </p>
+    </div>
+  `;
+
+  return sendEmail({
+    to: email,
+
+    subject:
+      'MIDSA WishLink: Verify your email',
+
+    html
+  });
 }
 
 export async function sendReservationConfirmation(
@@ -267,18 +269,8 @@ export async function sendReservationConfirmation(
       <p>
         If plans change or you need an extension,
         please contact ${c.name}
-
-        ${
-          c.email
-            ? ` at ${c.email}`
-            : ''
-        }
-
-        ${
-          c.phone
-            ? ` / ${c.phone}`
-            : ''
-        }.
+        ${c.email ? ` at ${c.email}` : ''}
+        ${c.phone ? ` / ${c.phone}` : ''}.
       </p>
 
       <p>
@@ -307,31 +299,24 @@ export async function sendReservationConfirmation(
     `${c.dropOff}. Contact: ` +
     `${c.phone || c.email}. Thank you!`;
 
-  const results =
-    await Promise.allSettled([
-      sendEmail({
-        to:
-          wish.donor.universityEmail,
+  return Promise.allSettled([
+    sendEmail({
+      to:
+        wish.donor.email,
 
-        subject:
-          `MIDSA WishLink: ${wish.nickname}'s wish is reserved for you`,
+      subject:
+        `MIDSA WishLink: ${wish.nickname}'s wish is reserved for you`,
 
-        html
-      }),
+      html
+    }),
 
-      sendSms({
-        to:
-          wish.donor.phoneNumber,
+    sendSms({
+      to:
+        wish.donor.phoneNumber,
 
-        body: sms
-      })
-    ]);
-
-  logNotificationResults(
-    results
-  );
-
-  return results;
+      body: sms
+    })
+  ]);
 }
 
 export async function sendDeadlineUpdate(
@@ -349,6 +334,8 @@ export async function sendDeadlineUpdate(
     <div
       style="
         font-family: Arial, sans-serif;
+        max-width: 620px;
+        margin: auto;
         line-height: 1.55;
       "
     >
@@ -375,33 +362,26 @@ export async function sendDeadlineUpdate(
     </div>
   `;
 
-  const results =
-    await Promise.allSettled([
-      sendEmail({
-        to:
-          wish.donor.universityEmail,
+  return Promise.allSettled([
+    sendEmail({
+      to:
+        wish.donor.email,
 
-        subject:
-          'MIDSA WishLink: updated drop-off date',
+      subject:
+        'MIDSA WishLink: updated drop-off date',
 
-        html
-      }),
+      html
+    }),
 
-      sendSms({
-        to:
-          wish.donor.phoneNumber,
+    sendSms({
+      to:
+        wish.donor.phoneNumber,
 
-        body:
-          `MIDSA WishLink update: ` +
-          `${wish.nickname}'s gift drop-off deadline ` +
-          `is now ${deadline}. Contact ` +
-          `${c.phone || c.email} if needed.`
-      })
-    ]);
-
-  logNotificationResults(
-    results
-  );
-
-  return results;
+      body:
+        `MIDSA WishLink update: ` +
+        `${wish.nickname}'s gift drop-off deadline ` +
+        `is now ${deadline}. Contact ` +
+        `${c.phone || c.email} if needed.`
+    })
+  ]);
 }
