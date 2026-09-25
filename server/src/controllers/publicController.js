@@ -16,9 +16,19 @@ import {
   sendReservationConfirmation
 } from '../services/notificationService.js';
 
+import {
+  getPublicOrganizationSettings
+} from '../services/organizationSettingsService.js';
+
+
 const OTP_EXPIRY_MINUTES = 10;
 const MAX_VERIFICATION_ATTEMPTS = 5;
 
+
+/*
+ * Check whether the campaign is
+ * currently accepting reservations.
+ */
 function reservationsAllowed(
   campaign
 ) {
@@ -44,6 +54,11 @@ function reservationsAllowed(
   );
 }
 
+
+/*
+ * Determine what state the campaign
+ * should appear as on public pages.
+ */
 function campaignPublicState(
   campaign
 ) {
@@ -81,8 +96,17 @@ function campaignPublicState(
   return 'active';
 }
 
+
+/*
+ * Prepare a safe public version of
+ * the wish.
+ *
+ * Donor-sensitive information is not
+ * exposed here.
+ */
 function publicWish(
-  wish
+  wish,
+  organization = {}
 ) {
   const campaign =
     wish.campaign || null;
@@ -172,20 +196,24 @@ function publicWish(
 
     organization: {
       contactName:
-        process.env
-          .ORG_CONTACT_NAME,
+        organization.contactName ||
+        process.env.ORG_CONTACT_NAME ||
+        'MIDSA Christmas Program Team',
 
       contactEmail:
-        process.env
-          .ORG_CONTACT_EMAIL,
+        organization.contactEmail ||
+        process.env.ORG_CONTACT_EMAIL ||
+        '',
 
       contactPhone:
-        process.env
-          .ORG_CONTACT_PHONE,
+        organization.contactPhone ||
+        process.env.ORG_CONTACT_PHONE ||
+        '',
 
       dropOffLocation:
-        process.env
-          .DROP_OFF_LOCATION,
+        organization.dropOffLocation ||
+        process.env.DROP_OFF_LOCATION ||
+        'MIDSA designated drop-off point',
 
       campaignDeadline:
         campaign?.deadline ||
@@ -194,6 +222,11 @@ function publicWish(
   };
 }
 
+
+/*
+ * Normalize email addresses before
+ * validating or storing them.
+ */
 function normalizeEmail(
   value
 ) {
@@ -204,36 +237,43 @@ function normalizeEmail(
     .toLowerCase();
 }
 
+
+/*
+ * Accept a reasonably formatted
+ * email address.
+ *
+ * Actual ownership is confirmed
+ * through the verification code.
+ */
 function isValidEmail(
   email
 ) {
-  /*
-   * Accept any reasonable email domain.
-   * Inbox ownership is confirmed using OTP.
-   */
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
     email
   );
 }
 
+
+/*
+ * Donor mobile-number validation.
+ *
+ * Accepted:
+ *
+ * 09XXXXXXXXX
+ * 639XXXXXXXXX
+ */
 function isValidPhoneNumber(
   phoneNumber
 ) {
-  /*
-   * Accepts:
-   *
-   * 09XXXXXXXXX
-   * 639XXXXXXXXX
-   *
-   * Example:
-   * 09171234567
-   * 639171234567
-   */
   return /^(09\d{9}|639\d{9})$/.test(
     phoneNumber
   );
 }
 
+
+/*
+ * Generate a six-digit OTP.
+ */
 function generateOtp() {
   return crypto
     .randomInt(
@@ -243,6 +283,10 @@ function generateOtp() {
     .toString();
 }
 
+
+/*
+ * Hash OTP before storing it.
+ */
 function hashOtp(
   code
 ) {
@@ -260,10 +304,19 @@ function hashOtp(
       'sha256',
       secret
     )
-    .update(code)
-    .digest('hex');
+    .update(
+      code
+    )
+    .digest(
+      'hex'
+    );
 }
 
+
+/*
+ * Prepare donor input before it is
+ * validated or saved.
+ */
 function cleanDonorData(
   body
 ) {
@@ -286,8 +339,14 @@ function cleanDonorData(
       String(
         body.phoneNumber || ''
       )
-        .replace(/\D/g, '')
-        .slice(0, 12),
+        .replace(
+          /\D/g,
+          ''
+        )
+        .slice(
+          0,
+          12
+        ),
 
     program:
       String(
@@ -307,6 +366,10 @@ function cleanDonorData(
   };
 }
 
+
+/*
+ * Validate donor information.
+ */
 function validateDonorData(
   donor
 ) {
@@ -345,17 +408,34 @@ function validateDonorData(
   return null;
 }
 
+
+/*
+ * Find a published wish using the QR /
+ * ornament code and populate its campaign.
+ *
+ * IMPORTANT:
+ * This helper was missing previously,
+ * causing "findPublicWish is not defined".
+ */
 async function findPublicWish(
   code
 ) {
   return Wish.findOne({
-    ornamentCode: code,
-    isPublished: true
+    ornamentCode:
+      code,
+
+    isPublished:
+      true
   }).populate(
     'campaign'
   );
 }
 
+
+/*
+ * PUBLIC:
+ * Return one wish for the QR/public page.
+ */
 export async function getPublicWish(
   req,
   res
@@ -376,19 +456,24 @@ export async function getPublicWish(
       });
   }
 
-  res.json({
+  const organization =
+    await getPublicOrganizationSettings();
+
+  return res.json({
     wish:
       publicWish(
-        wish
+        wish,
+        organization
       )
   });
 }
 
+
 /*
- * STEP 1:
+ * STEP 1
  *
- * Validate donor details
- * and send a 6-digit verification code.
+ * Validate donor information and send
+ * a six-digit email verification code.
  */
 export async function requestEmailVerification(
   req,
@@ -469,7 +554,7 @@ export async function requestEmailVerification(
 
   /*
    * Remove an older verification request
-   * for this same wish and email.
+   * for the same wish/email combination.
    */
   await EmailVerification.deleteMany({
     ornamentCode:
@@ -488,13 +573,17 @@ export async function requestEmailVerification(
         donor.email,
 
       codeHash:
-        hashOtp(code),
+        hashOtp(
+          code
+        ),
 
       expiresAt,
 
-      attempts: 0,
+      attempts:
+        0,
 
-      verified: false,
+      verified:
+        false,
 
       donorData:
         donor
@@ -543,10 +632,12 @@ export async function requestEmailVerification(
   });
 }
 
+
 /*
- * STEP 2:
+ * STEP 2
  *
- * Verify OTP and reserve the wish.
+ * Verify the OTP and atomically reserve
+ * the wish for the donor.
  */
 export async function verifyReservation(
   req,
@@ -557,7 +648,8 @@ export async function verifyReservation(
   const {
     verificationId,
     code
-  } = req.body;
+  } =
+    req.body;
 
   if (
     !verificationId ||
@@ -599,6 +691,9 @@ export async function verifyReservation(
       });
   }
 
+  /*
+   * Expired OTP.
+   */
   if (
     new Date() >
     verification.expiresAt
@@ -615,6 +710,9 @@ export async function verifyReservation(
       });
   }
 
+  /*
+   * Too many incorrect attempts.
+   */
   if (
     verification.attempts >=
     MAX_VERIFICATION_ATTEMPTS
@@ -633,7 +731,9 @@ export async function verifyReservation(
 
   const suppliedHash =
     hashOtp(
-      String(code).trim()
+      String(
+        code
+      ).trim()
     );
 
   const storedBuffer =
@@ -656,8 +756,12 @@ export async function verifyReservation(
       suppliedBuffer
     );
 
+  /*
+   * Incorrect OTP.
+   */
   if (!correct) {
-    verification.attempts += 1;
+    verification.attempts +=
+      1;
 
     await verification.save();
 
@@ -675,6 +779,11 @@ export async function verifyReservation(
       });
   }
 
+  /*
+   * Re-read the wish immediately before
+   * reservation so its availability and
+   * campaign state are current.
+   */
   const current =
     await findPublicWish(
       req.params.code
@@ -711,8 +820,8 @@ export async function verifyReservation(
     verification.donorData;
 
   /*
-   * Atomic status check prevents two donors
-   * from reserving the same wish.
+   * Atomic status check prevents two
+   * donors from reserving the same wish.
    */
   const wish =
     await Wish.findOneAndUpdate(
@@ -802,6 +911,10 @@ export async function verifyReservation(
       'campaign'
     );
 
+  /*
+   * If atomic reservation failed,
+   * someone else changed the wish first.
+   */
   if (!wish) {
     await EmailVerification.findByIdAndDelete(
       verification._id
@@ -824,10 +937,18 @@ export async function verifyReservation(
       });
   }
 
+  /*
+   * OTP is no longer needed after a
+   * successful reservation.
+   */
   await EmailVerification.findByIdAndDelete(
     verification._id
   );
 
+  /*
+   * Do not delay the reservation response
+   * while waiting for notification delivery.
+   */
   sendReservationConfirmation(
     wish
   ).catch(
@@ -838,6 +959,9 @@ export async function verifyReservation(
       )
   );
 
+  const organization =
+    await getPublicOrganizationSettings();
+
   return res
     .status(201)
     .json({
@@ -846,7 +970,8 @@ export async function verifyReservation(
 
       wish:
         publicWish(
-          wish
+          wish,
+          organization
         )
     });
 }

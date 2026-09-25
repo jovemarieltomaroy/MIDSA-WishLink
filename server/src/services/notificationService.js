@@ -1,24 +1,15 @@
 import twilio from 'twilio';
-import { formatPHDate } from '../utils/dates.js';
 
-function contactBlock() {
-  return {
-    name:
-      process.env.ORG_CONTACT_NAME ||
-      'MIDSA Christmas Program Team',
+import {
+  formatPHDate
+} from '../utils/dates.js';
 
-    email:
-      process.env.ORG_CONTACT_EMAIL ||
-      '',
+import {
+  getPublicOrganizationSettings
+} from './organizationSettingsService.js';
 
-    phone:
-      process.env.ORG_CONTACT_PHONE ||
-      '',
-
-    dropOff:
-      process.env.DROP_OFF_LOCATION ||
-      'MIDSA designated drop-off point'
-  };
+async function contactBlock() {
+  return getPublicOrganizationSettings();
 }
 
 function emailConfigured() {
@@ -41,7 +32,9 @@ async function sendEmail({
   subject,
   html
 }) {
-  if (!emailConfigured()) {
+  if (
+    !emailConfigured()
+  ) {
     console.log(
       `[EMAIL MOCK] To: ${to} | ${subject}`
     );
@@ -59,7 +52,8 @@ async function sendEmail({
     await fetch(
       'https://api.resend.com/emails',
       {
-        method: 'POST',
+        method:
+          'POST',
 
         headers: {
           Authorization:
@@ -69,23 +63,28 @@ async function sendEmail({
             'application/json'
         },
 
-        body: JSON.stringify({
-          from:
-            process.env.RESEND_FROM,
+        body:
+          JSON.stringify({
+            from:
+              process.env.RESEND_FROM,
 
-          to: [to],
+            to: [
+              to
+            ],
 
-          subject,
+            subject,
 
-          html
-        })
+            html
+          })
       }
     );
 
   const data =
     await response.json();
 
-  if (!response.ok) {
+  if (
+    !response.ok
+  ) {
     console.error(
       '[EMAIL ERROR]',
       data
@@ -108,7 +107,9 @@ async function sendSms({
   to,
   body
 }) {
-  if (!smsConfigured()) {
+  if (
+    !smsConfigured()
+  ) {
     console.log(
       `[SMS MOCK] To: ${to} | ${body}`
     );
@@ -155,11 +156,13 @@ export async function sendEmailVerificationCode({
 
       <p>
         You are one step away from reserving
-        <strong>${nickname}'s</strong> Christmas wish.
+        <strong>${nickname}'s</strong>
+        Christmas wish.
       </p>
 
       <p>
-        Enter this verification code in MIDSA WishLink:
+        Enter this verification code in
+        MIDSA WishLink:
       </p>
 
       <div
@@ -200,7 +203,8 @@ export async function sendEmailVerificationCode({
   `;
 
   return sendEmail({
-    to: email,
+    to:
+      email,
 
     subject:
       'MIDSA WishLink: Verify your email',
@@ -213,10 +217,12 @@ export async function sendReservationConfirmation(
   wish
 ) {
   const c =
-    contactBlock();
+    await contactBlock();
 
   const items =
-    wish.wishItems.join(', ');
+    wish.wishItems.join(
+      ', '
+    );
 
   const campaignName =
     wish.campaign?.name ||
@@ -263,14 +269,19 @@ export async function sendReservationConfirmation(
         <br />
 
         <strong>Drop-off location:</strong>
-        ${c.dropOff}
+        ${c.dropOffLocation}
       </p>
 
       <p>
         If plans change or you need an extension,
-        please contact ${c.name}
-        ${c.email ? ` at ${c.email}` : ''}
-        ${c.phone ? ` / ${c.phone}` : ''}.
+        please contact
+        ${c.contactName}
+        ${c.contactEmail
+          ? ` at ${c.contactEmail}`
+          : ''}
+        ${c.contactPhone
+          ? ` / ${c.contactPhone}`
+          : ''}.
       </p>
 
       <p>
@@ -296,8 +307,11 @@ export async function sendReservationConfirmation(
     `MIDSA WishLink: You reserved ` +
     `${wish.nickname}'s wish (${items}). ` +
     `Please drop off by ${deadline} at ` +
-    `${c.dropOff}. Contact: ` +
-    `${c.phone || c.email}. Thank you!`;
+    `${c.dropOffLocation}. Contact: ` +
+    `${
+      c.contactPhone ||
+      c.contactEmail
+    }. Thank you!`;
 
   return Promise.allSettled([
     sendEmail({
@@ -314,7 +328,8 @@ export async function sendReservationConfirmation(
       to:
         wish.donor.phoneNumber,
 
-      body: sms
+      body:
+        sms
     })
   ]);
 }
@@ -323,7 +338,7 @@ export async function sendDeadlineUpdate(
   wish
 ) {
   const c =
-    contactBlock();
+    await contactBlock();
 
   const deadline =
     formatPHDate(
@@ -337,6 +352,7 @@ export async function sendDeadlineUpdate(
         max-width: 620px;
         margin: auto;
         line-height: 1.55;
+        color: #23332b;
       "
     >
       <h2>
@@ -351,13 +367,20 @@ export async function sendDeadlineUpdate(
       </p>
 
       <p>
-        Drop-off:
-        ${c.dropOff}
+        <strong>Drop-off:</strong>
+        ${c.dropOffLocation}
         <br />
 
-        Contact:
-        ${c.email}
-        ${c.phone}
+        <strong>Contact:</strong>
+        ${c.contactName}
+        <br />
+
+        ${c.contactEmail}
+        ${
+          c.contactPhone
+            ? `<br />${c.contactPhone}`
+            : ''
+        }
       </p>
     </div>
   `;
@@ -381,7 +404,10 @@ export async function sendDeadlineUpdate(
         `MIDSA WishLink update: ` +
         `${wish.nickname}'s gift drop-off deadline ` +
         `is now ${deadline}. Contact ` +
-        `${c.phone || c.email} if needed.`
+        `${
+          c.contactPhone ||
+          c.contactEmail
+        } if needed.`
     })
   ]);
 }

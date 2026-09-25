@@ -12,7 +12,6 @@ import {
 import {
   ArrowLeft,
   CalendarClock,
-  CheckCircle2,
   Gift,
   Info,
   Mail,
@@ -391,9 +390,6 @@ export default function GrantWishPage() {
                   '#0f6a4c'
               }}
             >
-              <CheckCircle2
-                size={32}
-              />
             </div>
 
             <div
@@ -1100,9 +1096,6 @@ export default function GrantWishPage() {
                         '13px'
                     }}
                   >
-                    <CheckCircle2
-                      size={18}
-                    />
 
                     {saving
                       ? 'Verifying…'

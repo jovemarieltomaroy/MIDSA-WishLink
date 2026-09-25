@@ -13,8 +13,13 @@ import {
   TreePine
 } from 'lucide-react';
 
-import { useAuth } from '../context/AuthContext';
-import { useCampaign } from '../context/CampaignContext';
+import {
+  useAuth
+} from '../context/AuthContext';
+
+import {
+  useCampaign
+} from '../context/CampaignContext';
 
 import logo from '../assets/logo.png';
 
@@ -22,7 +27,8 @@ export default function AppShell() {
   const {
     user,
     logout
-  } = useAuth();
+  } =
+    useAuth();
 
   const navigate =
     useNavigate();
@@ -30,7 +36,8 @@ export default function AppShell() {
   const {
     activeCampaign,
     loadingCampaigns
-  } = useCampaign();
+  } =
+    useCampaign();
 
   async function signOut() {
     await logout();
@@ -107,6 +114,7 @@ export default function AppShell() {
             <LayoutDashboard
               size={18}
             />
+
             Dashboard
           </NavLink>
 
@@ -116,6 +124,7 @@ export default function AppShell() {
             <CalendarDays
               size={18}
             />
+
             Campaigns
           </NavLink>
 
@@ -125,21 +134,28 @@ export default function AppShell() {
             <TreePine
               size={18}
             />
+
             Wishes
           </NavLink>
 
           <NavLink
             to="/officer/new"
           >
-            <Gift size={18} />
+            <Gift
+              size={18}
+            />
+
             Add wish
           </NavLink>
 
           <NavLink
             to="/officer/settings"
           >
-            <Settings size={18} />
-            Account Settings
+            <Settings
+              size={18}
+            />
+
+            Settings
           </NavLink>
         </nav>
 
@@ -156,11 +172,14 @@ export default function AppShell() {
 
           <button
             className="ghost-button full"
-            onClick={signOut}
+            onClick={
+              signOut
+            }
           >
             <LogOut
               size={17}
             />
+
             Sign out
           </button>
         </div>

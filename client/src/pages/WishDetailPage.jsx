@@ -593,9 +593,6 @@ function downloadQrPng() {
                   extendDeadline
                 }
               >
-                <CalendarClock
-                  size={17}
-                />
 
                 Save extension
               </button>
@@ -608,9 +605,6 @@ function downloadQrPng() {
                   )
                 }
               >
-                <CheckCircle2
-                  size={17}
-                />
 
                 Gift dropped off
               </button>
@@ -623,9 +617,6 @@ function downloadQrPng() {
                   )
                 }
               >
-                <RefreshCcw
-                  size={17}
-                />
 
                 Release reservation
               </button>

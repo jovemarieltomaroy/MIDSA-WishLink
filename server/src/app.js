@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import publicRoutes from './routes/publicRoutes.js';
 import officerRoutes from './routes/officerRoutes.js';
 import accountRoutes from './routes/accountRoutes.js';
+import settingsRoutes from './routes/settingsRoutes.js';
 
 import {
   errorHandler,
@@ -15,26 +16,19 @@ import {
 
 const app = express();
 
-/*
- * Normalize origins so harmless differences like
- * trailing slashes or spaces do not break CORS.
- */
 function normalizeOrigin(value) {
-  if (!value) return '';
+  if (!value) {
+    return '';
+  }
 
   return value
     .trim()
-    .replace(/\/+$/, '');
+    .replace(
+      /\/+$/,
+      ''
+    );
 }
 
-/*
- * Explicitly allow the deployed MIDSA WishLink frontend,
- * plus local development URLs.
- *
- * Environment variables are still included, but the deployed
- * frontend is hardcoded here so Render cannot fail because of
- * a small environment-variable mismatch.
- */
 const allowedOrigins = [
   'https://midsa-wishlink-rnvh.onrender.com',
 
@@ -47,8 +41,12 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
   'http://127.0.0.1:5174'
 ]
-  .map(normalizeOrigin)
-  .filter(Boolean);
+  .map(
+    normalizeOrigin
+  )
+  .filter(
+    Boolean
+  );
 
 console.log(
   'Allowed CORS origins:',
@@ -56,24 +54,31 @@ console.log(
 );
 
 const corsOptions = {
-  origin(origin, callback) {
-    /*
-     * Allow requests without an Origin header,
-     * such as Render health checks and direct server requests.
-     */
+  origin(
+    origin,
+    callback
+  ) {
     if (!origin) {
-      return callback(null, true);
+      return callback(
+        null,
+        true
+      );
     }
 
     const normalizedOrigin =
-      normalizeOrigin(origin);
+      normalizeOrigin(
+        origin
+      );
 
     if (
       allowedOrigins.includes(
         normalizedOrigin
       )
     ) {
-      return callback(null, true);
+      return callback(
+        null,
+        true
+      );
     }
 
     console.warn(
@@ -88,7 +93,8 @@ const corsOptions = {
     );
   },
 
-  credentials: true,
+  credentials:
+    true,
 
   methods: [
     'GET',
@@ -105,31 +111,25 @@ const corsOptions = {
   ]
 };
 
-/*
- * Security headers
- */
 app.use(
   helmet({
     crossOriginResourcePolicy: {
-      policy: 'cross-origin'
+      policy:
+        'cross-origin'
     }
   })
 );
 
-/*
- * IMPORTANT:
- * CORS must be registered before routes.
- */
 app.use(
-  cors(corsOptions)
+  cors(
+    corsOptions
+  )
 );
 
-/*
- * Request parsing
- */
 app.use(
   express.json({
-    limit: '1mb'
+    limit:
+      '1mb'
   })
 );
 
@@ -137,22 +137,20 @@ app.use(
   cookieParser()
 );
 
-/*
- * Health check
- */
 app.get(
   '/api/health',
-  (req, res) => {
+  (
+    req,
+    res
+  ) => {
     res.json({
       ok: true,
-      service: 'MIDSA WishLink API'
+      service:
+        'MIDSA WishLink API'
     });
   }
 );
 
-/*
- * API routes
- */
 app.use(
   '/api/auth',
   authRoutes
@@ -167,14 +165,23 @@ app.use(
   '/api/officer',
   officerRoutes
 );
+
 app.use(
   '/api/account',
   accountRoutes
 );
-/*
- * Error handling
- */
-app.use(notFound);
-app.use(errorHandler);
+
+app.use(
+  '/api/settings',
+  settingsRoutes
+);
+
+app.use(
+  notFound
+);
+
+app.use(
+  errorHandler
+);
 
 export default app;

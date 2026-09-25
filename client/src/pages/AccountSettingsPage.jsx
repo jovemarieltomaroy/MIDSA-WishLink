@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useState
 } from 'react';
 
@@ -6,11 +7,7 @@ import {
   Check,
   CheckCircle2,
   Eye,
-  EyeOff,
-  KeyRound,
-  LockKeyhole,
-  ShieldCheck,
-  UserRound
+  EyeOff
 } from 'lucide-react';
 
 import {
@@ -22,14 +19,55 @@ import {
   useAuth
 } from '../context/AuthContext';
 
+const emptyOrganization = {
+  contactName: '',
+  contactEmail: '',
+  contactPhone: '',
+  dropOffLocation: ''
+};
+
 export default function AccountSettingsPage() {
   const {
     user
   } = useAuth();
 
   const [
-    form,
-    setForm
+    organization,
+    setOrganization
+  ] = useState(
+    emptyOrganization
+  );
+
+  const [
+    savedOrganization,
+    setSavedOrganization
+  ] = useState(
+    emptyOrganization
+  );
+
+  const [
+    organizationLoading,
+    setOrganizationLoading
+  ] = useState(true);
+
+  const [
+    organizationSaving,
+    setOrganizationSaving
+  ] = useState(false);
+
+  const [
+    organizationError,
+    setOrganizationError
+  ] = useState('');
+
+  const [
+    organizationMessage,
+    setOrganizationMessage
+  ] = useState('');
+
+  const [
+    passwordForm,
+    setPasswordForm
   ] = useState({
     currentPassword: '',
     newPassword: '',
@@ -52,53 +90,389 @@ export default function AccountSettingsPage() {
   ] = useState(false);
 
   const [
-    saving,
-    setSaving
+    passwordSaving,
+    setPasswordSaving
   ] = useState(false);
 
   const [
-    error,
-    setError
+    passwordError,
+    setPasswordError
   ] = useState('');
 
   const [
-    success,
-    setSuccess
+    passwordSuccess,
+    setPasswordSuccess
   ] = useState('');
 
-  function update(event) {
-    const {
-      name,
-      value
-    } = event.target;
+  /*
+   * Load organization settings when
+   * the Settings page first opens.
+   */
+  useEffect(() => {
+    loadOrganization();
+  }, []);
 
-    setForm(
-      (current) => ({
-        ...current,
-        [name]: value
-      })
-    );
-
-    if (error) {
-      setError('');
+  /*
+   * Automatically remove organization
+   * success/information messages after
+   * four seconds.
+   */
+  useEffect(() => {
+    if (!organizationMessage) {
+      return;
     }
 
-    if (success) {
-      setSuccess('');
+    const timer =
+      setTimeout(() => {
+        setOrganizationMessage('');
+      }, 4000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [
+    organizationMessage
+  ]);
+
+  /*
+   * Also remove password success
+   * messages after four seconds.
+   */
+  useEffect(() => {
+    if (!passwordSuccess) {
+      return;
+    }
+
+    const timer =
+      setTimeout(() => {
+        setPasswordSuccess('');
+      }, 4000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [
+    passwordSuccess
+  ]);
+
+  async function loadOrganization() {
+    try {
+      setOrganizationLoading(
+        true
+      );
+
+      setOrganizationError('');
+
+      const response =
+        await api.get(
+          '/settings'
+        );
+
+      const next =
+        response.data.settings;
+
+      setOrganization(
+        next
+      );
+
+      setSavedOrganization(
+        next
+      );
+    } catch (error) {
+      setOrganizationError(
+        getErrorMessage(
+          error
+        )
+      );
+    } finally {
+      setOrganizationLoading(
+        false
+      );
     }
   }
 
-  async function submit(event) {
+  function updateOrganization(
+    event
+  ) {
+    const {
+      name,
+      value
+    } =
+      event.target;
+
+    setOrganization(
+      (current) => ({
+        ...current,
+
+        [name]:
+          value
+      })
+    );
+
+    setOrganizationError('');
+    setOrganizationMessage('');
+  }
+
+  /*
+   * Contact number:
+   *
+   * Allowed examples:
+   * 09171234567
+   * 639171234567
+   * +639171234567
+   *
+   * Letters, spaces, dashes,
+   * parentheses and other characters
+   * are automatically removed.
+   */
+  function updateContactNumber(
+    event
+  ) {
+    let value =
+      event.target.value;
+
+    /*
+     * Remove everything except
+     * numbers and plus signs.
+     */
+    value =
+      value.replace(
+        /[^\d+]/g,
+        ''
+      );
+
+    /*
+     * If a plus sign exists,
+     * force it to be the first
+     * and only plus sign.
+     */
+    if (
+      value.includes('+')
+    ) {
+      const numbersOnly =
+        value
+          .replace(
+            /\+/g,
+            ''
+          )
+          .slice(
+            0,
+            12
+          );
+
+      value =
+        `+${numbersOnly}`;
+    } else {
+      value =
+        value.slice(
+          0,
+          12
+        );
+    }
+
+    setOrganization(
+      (current) => ({
+        ...current,
+
+        contactPhone:
+          value
+      })
+    );
+
+    setOrganizationError('');
+    setOrganizationMessage('');
+  }
+
+  function organizationChanged() {
+    return (
+      organization.contactName !==
+        savedOrganization.contactName ||
+      organization.contactEmail !==
+        savedOrganization.contactEmail ||
+      organization.contactPhone !==
+        savedOrganization.contactPhone ||
+      organization.dropOffLocation !==
+        savedOrganization.dropOffLocation
+    );
+  }
+
+  function isValidEmail(
+    email
+  ) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+      String(
+        email || ''
+      ).trim()
+    );
+  }
+
+  function isValidPhoneNumber(
+    phoneNumber
+  ) {
+    return /^(09\d{9}|639\d{9}|\+639\d{9})$/.test(
+      String(
+        phoneNumber || ''
+      ).trim()
+    );
+  }
+
+  async function saveOrganization(
+    event
+  ) {
     event.preventDefault();
 
-    setError('');
-    setSuccess('');
+    setOrganizationError('');
+    setOrganizationMessage('');
+
+    /*
+     * Required fields
+     */
+    if (
+      !organization.contactName.trim() ||
+      !organization.contactEmail.trim() ||
+      !organization.contactPhone.trim() ||
+      !organization.dropOffLocation.trim()
+    ) {
+      setOrganizationError(
+        'Please complete all organization and donation details.'
+      );
+
+      return;
+    }
+
+    /*
+     * Email validation
+     */
+    if (
+      !isValidEmail(
+        organization.contactEmail
+      )
+    ) {
+      setOrganizationError(
+        'Please enter a valid contact email address.'
+      );
+
+      return;
+    }
+
+    /*
+     * Philippine contact-number
+     * validation.
+     */
+    if (
+      !isValidPhoneNumber(
+        organization.contactPhone
+      )
+    ) {
+      setOrganizationError(
+        'Please enter a valid Philippine contact number using 09XXXXXXXXX, 639XXXXXXXXX, or +639XXXXXXXXX.'
+      );
+
+      return;
+    }
+
+    /*
+     * Do not call the API when
+     * nothing actually changed.
+     */
+    if (
+      !organizationChanged()
+    ) {
+      setOrganizationMessage(
+        'No changes were made.'
+      );
+
+      return;
+    }
+
+    setOrganizationSaving(
+      true
+    );
+
+    try {
+      const response =
+        await api.patch(
+          '/settings',
+          {
+            contactName:
+              organization.contactName.trim(),
+
+            contactEmail:
+              organization.contactEmail
+                .trim()
+                .toLowerCase(),
+
+            contactPhone:
+              organization.contactPhone.trim(),
+
+            dropOffLocation:
+              organization.dropOffLocation.trim()
+          }
+        );
+
+      const next =
+        response.data.settings;
+
+      setOrganization(
+        next
+      );
+
+      setSavedOrganization(
+        next
+      );
+
+      setOrganizationMessage(
+        response.data.message ||
+        'Organization details updated successfully.'
+      );
+    } catch (error) {
+      setOrganizationError(
+        getErrorMessage(
+          error
+        )
+      );
+    } finally {
+      setOrganizationSaving(
+        false
+      );
+    }
+  }
+
+  function updatePassword(
+    event
+  ) {
+    const {
+      name,
+      value
+    } =
+      event.target;
+
+    setPasswordForm(
+      (current) => ({
+        ...current,
+
+        [name]:
+          value
+      })
+    );
+
+    setPasswordError('');
+    setPasswordSuccess('');
+  }
+
+  async function submitPassword(
+    event
+  ) {
+    event.preventDefault();
+
+    setPasswordError('');
+    setPasswordSuccess('');
 
     if (
-      form.newPassword.length <
+      passwordForm.newPassword.length <
       8
     ) {
-      setError(
+      setPasswordError(
         'Your new password must be at least 8 characters long.'
       );
 
@@ -106,10 +480,10 @@ export default function AccountSettingsPage() {
     }
 
     if (
-      form.newPassword !==
-      form.confirmPassword
+      passwordForm.newPassword !==
+      passwordForm.confirmPassword
     ) {
-      setError(
+      setPasswordError(
         'The new passwords do not match.'
       );
 
@@ -117,17 +491,19 @@ export default function AccountSettingsPage() {
     }
 
     if (
-      form.currentPassword ===
-      form.newPassword
+      passwordForm.currentPassword ===
+      passwordForm.newPassword
     ) {
-      setError(
+      setPasswordError(
         'Your new password must be different from your current password.'
       );
 
       return;
     }
 
-    setSaving(true);
+    setPasswordSaving(
+      true
+    );
 
     try {
       const response =
@@ -135,206 +511,398 @@ export default function AccountSettingsPage() {
           '/account/password',
           {
             currentPassword:
-              form.currentPassword,
+              passwordForm.currentPassword,
 
             newPassword:
-              form.newPassword
+              passwordForm.newPassword
           }
         );
 
-      setSuccess(
+      setPasswordSuccess(
         response.data.message ||
         'Password changed successfully.'
       );
 
-      setForm({
+      setPasswordForm({
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       });
 
-      setShowCurrent(false);
-      setShowNew(false);
-      setShowConfirm(false);
-    } catch (err) {
-      setError(
+      setShowCurrent(
+        false
+      );
+
+      setShowNew(
+        false
+      );
+
+      setShowConfirm(
+        false
+      );
+    } catch (error) {
+      setPasswordError(
         getErrorMessage(
-          err
+          error
         )
       );
     } finally {
-      setSaving(false);
+      setPasswordSaving(
+        false
+      );
     }
   }
 
   return (
     <div className="page">
-
       <div
         style={{
-          maxWidth: '980px',
-          margin: '0 auto',
-          width: '100%'
+          maxWidth:
+            '980px',
+          margin:
+            '0 auto',
+          width:
+            '100%'
         }}
       >
-
         <div
           style={{
-            marginBottom: '28px'
+            marginBottom:
+              '28px'
           }}
         >
-          <h1
-            style={{
-              marginBottom: '8px'
-            }}
-          >
-            Account Settings
+          <h1>
+            Settings
           </h1>
-
         </div>
 
         <section
           className="panel"
           style={{
-            marginBottom: '22px',
-            padding: '22px 24px'
+            marginBottom:
+              '22px',
+            padding:
+              '22px 24px'
           }}
         >
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '20px',
-              flexWrap: 'wrap'
+              display:
+                'flex',
+              alignItems:
+                'center',
+              justifyContent:
+                'space-between',
+              gap:
+                '20px',
+              flexWrap:
+                'wrap'
             }}
           >
+            <div>
+              <small
+                className="muted"
+              >
+                Signed in as
+              </small>
 
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '16px'
-              }}
-            >
+              <strong
+                style={{
+                  display:
+                    'block',
+                  fontSize:
+                    '17px',
+                  marginTop:
+                    '3px'
+                }}
+              >
+                {user?.name ||
+                  'WishLink Administrator'}
+              </strong>
 
-              <div>
-                <small
-                  className="muted"
-                  style={{
-                    display: 'block',
-                    marginBottom: '3px'
-                  }}
-                >
-                  Signed in as
-                </small>
-
-                <strong
-                  style={{
-                    display: 'block',
-                    fontSize: '17px',
-                    marginBottom: '3px'
-                  }}
-                >
-                  {user?.name ||
-                    'WishLink Administrator'}
-                </strong>
-
-                <span
-                  className="muted"
-                  style={{
-                    fontSize: '14px'
-                  }}
-                >
-                  {user?.email}
-                </span>
-              </div>
+              <span
+                className="muted"
+                style={{
+                  fontSize:
+                    '14px'
+                }}
+              >
+                {user?.email}
+              </span>
             </div>
 
             <div
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '7px',
-                padding: '7px 11px',
-                borderRadius: '999px',
-                background: '#edf8f0',
-                color: '#2f6b3d',
-                fontSize: '12px',
-                fontWeight: 700
+                display:
+                  'inline-flex',
+                alignItems:
+                  'center',
+                gap:
+                  '7px',
+                padding:
+                  '7px 11px',
+                borderRadius:
+                  '999px',
+                background:
+                  '#edf8f0',
+                color:
+                  '#2f6b3d',
+                fontSize:
+                  '12px',
+                fontWeight:
+                  700
               }}
             >
               Administrator
             </div>
-
           </div>
         </section>
 
         <section
           className="panel"
           style={{
-            padding: 0,
-            overflow: 'hidden'
+            marginBottom:
+              '22px',
+            padding:
+              0,
+            overflow:
+              'hidden'
           }}
         >
-
           <div
             style={{
-              padding: '24px 26px',
+              padding:
+                '10px 26px',
               borderBottom:
-                '1px solid rgba(15, 39, 71, 0.08)',
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '14px'
+                '1px solid rgba(15,39,71,.08)',
+              display:
+                'flex',
+              gap:
+                '14px',
+              alignItems:
+                'flex-start'
             }}
           >
-            
             <div>
               <h2
                 style={{
-                  margin:
-                    '0 0 5px'
+                  textAlign:
+                    'center',
+                  marginBottom:
+                    '-2px'
                 }}
               >
-                Change Password
+                Organization & Donation Details
               </h2>
-
-              <p
-                className="muted"
-                style={{
-                  margin: 0,
-                  maxWidth: '660px'
-                }}
-              >
-                Update the password used for the WishLink
-                administrator account.
-              </p>
             </div>
           </div>
 
           <div
             style={{
-              padding: '28px'
+              padding:
+                '28px'
             }}
           >
-
-            {error && (
+            {organizationError && (
               <div
                 className="alert"
                 style={{
-                  marginBottom: '20px'
+                  marginBottom:
+                    '18px'
                 }}
               >
-                {error}
+                {organizationError}
               </div>
             )}
 
-            {success && (
+            {organizationMessage && (
+              <div
+                className={
+                  organizationMessage ===
+                  'No changes were made.'
+                    ? 'alert'
+                    : 'success-notice'
+                }
+                role="status"
+                style={{
+                  marginBottom:
+                    '18px'
+                }}
+              >
+                {organizationMessage !==
+                  'No changes were made.'}
+
+                <span>
+                  {organizationMessage}
+                </span>
+              </div>
+            )}
+
+            {organizationLoading ? (
+              <p
+                className="muted"
+              >
+                Loading organization details…
+              </p>
+            ) : (
+              <form
+                onSubmit={
+                  saveOrganization
+                }
+                className="organization-settings-grid"
+                style={{
+                  display:
+                    'grid',
+                  gridTemplateColumns:
+                    'repeat(2, minmax(0, 1fr))',
+                  gap:
+                    '18px'
+                }}
+              >
+                <ModernTextField
+                  label="Contact name / team"
+                  name="contactName"
+                  value={
+                    organization.contactName
+                  }
+                  onChange={
+                    updateOrganization
+                  }
+                  placeholder="MIDSA Christmas Program Team"
+                  span
+                />
+
+                <ModernTextField
+                  label="Contact email"
+                  type="email"
+                  name="contactEmail"
+                  value={
+                    organization.contactEmail
+                  }
+                  onChange={
+                    updateOrganization
+                  }
+                  placeholder="midsa@example.com"
+                  autoComplete="email"
+                />
+
+                <ModernTextField
+                  label="Contact number"
+                  type="tel"
+                  name="contactPhone"
+                  value={
+                    organization.contactPhone
+                  }
+                  onChange={
+                    updateContactNumber
+                  }
+                  placeholder="+639XXXXXXXXX or 09XXXXXXXXX"
+                  inputMode="tel"
+                  maxLength={13}
+                />
+
+                <ModernTextField
+                  label="Gift drop-off location"
+                  name="dropOffLocation"
+                  value={
+                    organization.dropOffLocation
+                  }
+                  onChange={
+                    updateOrganization
+                  }
+                  placeholder="IPDM Office"
+                  span
+                />
+
+                <button
+                  type="submit"
+                  className="primary-button"
+                  disabled={
+                    organizationSaving
+                  }
+                  style={{
+                    gridColumn:
+                      '1 / -1',
+                    minHeight:
+                      '48px',
+                    justifyContent:
+                      'center',
+                    borderRadius:
+                      '12px'
+                  }}
+                >
+                  {organizationSaving
+                    ? 'Saving…'
+                    : 'Save organization details'}
+                </button>
+              </form>
+            )}
+          </div>
+        </section>
+
+        <section
+          className="panel"
+          style={{
+            padding:
+              0,
+            overflow:
+              'hidden'
+          }}
+        >
+          <div
+            style={{
+              padding:
+                '24px 26px',
+              borderBottom:
+                '1px solid rgba(15,39,71,.08)'
+            }}
+          >
+            <h2
+              style={{
+                margin:
+                  '0 0 5px'
+              }}
+            >
+              Account Security
+            </h2>
+
+            <p
+              className="muted"
+              style={{
+                margin:
+                  0
+              }}
+            >
+              Update the password used for the WishLink
+              administrator account.
+            </p>
+          </div>
+
+          <div
+            style={{
+              padding:
+                '28px'
+            }}
+          >
+            {passwordError && (
+              <div
+                className="alert"
+                style={{
+                  marginBottom:
+                    '18px'
+                }}
+              >
+                {passwordError}
+              </div>
+            )}
+
+            {passwordSuccess && (
               <div
                 className="success-notice"
                 role="status"
                 style={{
-                  marginBottom: '20px'
+                  marginBottom:
+                    '18px'
                 }}
               >
                 <CheckCircle2
@@ -342,181 +910,279 @@ export default function AccountSettingsPage() {
                 />
 
                 <span>
-                  {success}
+                  {passwordSuccess}
                 </span>
               </div>
             )}
 
-            <div
+            <form
+              onSubmit={
+                submitPassword
+              }
               style={{
-                display: 'grid',
-
-                gap: '32px',
-                alignItems: 'start'
+                display:
+                  'flex',
+                flexDirection:
+                  'column',
+                gap:
+                  '16px'
               }}
             >
+              <ModernPasswordField
+                label="Current password"
+                name="currentPassword"
+                value={
+                  passwordForm.currentPassword
+                }
+                onChange={
+                  updatePassword
+                }
+                visible={
+                  showCurrent
+                }
+                toggle={() =>
+                  setShowCurrent(
+                    (current) =>
+                      !current
+                  )
+                }
+                placeholder="Enter current password"
+                autoComplete="current-password"
+              />
 
-              <form
-                onSubmit={submit}
+              <ModernPasswordField
+                label="New password"
+                name="newPassword"
+                value={
+                  passwordForm.newPassword
+                }
+                onChange={
+                  updatePassword
+                }
+                visible={
+                  showNew
+                }
+                toggle={() =>
+                  setShowNew(
+                    (current) =>
+                      !current
+                  )
+                }
+                placeholder="Create a new password"
+                autoComplete="new-password"
+                minLength={8}
+                hint="Minimum of 8 characters"
+              />
+
+              <ModernPasswordField
+                label="Confirm new password"
+                name="confirmPassword"
+                value={
+                  passwordForm.confirmPassword
+                }
+                onChange={
+                  updatePassword
+                }
+                visible={
+                  showConfirm
+                }
+                toggle={() =>
+                  setShowConfirm(
+                    (current) =>
+                      !current
+                  )
+                }
+                placeholder="Repeat your new password"
+                autoComplete="new-password"
+                minLength={8}
+              />
+
+              <button
+                type="submit"
+                className="primary-button"
+                disabled={
+                  passwordSaving
+                }
                 style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '16px'
+                  width:
+                    '100%',
+                  minHeight:
+                    '48px',
+                  justifyContent:
+                    'center',
+                  borderRadius:
+                    '12px'
                 }}
               >
+                {passwordSaving
+                  ? 'Changing password…'
+                  : 'Update password'}
+              </button>
+            </form>
 
-                <ModernPasswordField
-                  label="Current password"
-                  name="currentPassword"
-                  value={
-                    form.currentPassword
-                  }
-                  onChange={
-                    update
-                  }
-                  visible={
-                    showCurrent
-                  }
-                  toggle={() =>
-                    setShowCurrent(
-                      (current) =>
-                        !current
-                    )
-                  }
-                  placeholder="Enter current password"
-                  autoComplete="current-password"
-                />
+            <div
+              style={{
+                marginTop:
+                  '20px',
+                padding:
+                  '18px',
+                borderRadius:
+                  '14px',
+                background:
+                  '#f7f9fc',
+                border:
+                  '1px solid rgba(15,39,71,.08)'
+              }}
+            >
+              <strong>
+                Keep your account secure
+              </strong>
 
-                <ModernPasswordField
-                  label="New password"
-                  name="newPassword"
-                  value={
-                    form.newPassword
-                  }
-                  onChange={
-                    update
-                  }
-                  visible={
-                    showNew
-                  }
-                  toggle={() =>
-                    setShowNew(
-                      (current) =>
-                        !current
-                    )
-                  }
-                  placeholder="Create a new password"
-                  autoComplete="new-password"
-                  minLength={8}
-                  hint="Minimum of 8 characters"
-                />
-
-                <ModernPasswordField
-                  label="Confirm new password"
-                  name="confirmPassword"
-                  value={
-                    form.confirmPassword
-                  }
-                  onChange={
-                    update
-                  }
-                  visible={
-                    showConfirm
-                  }
-                  toggle={() =>
-                    setShowConfirm(
-                      (current) =>
-                        !current
-                    )
-                  }
-                  placeholder="Repeat your new password"
-                  autoComplete="new-password"
-                  minLength={8}
-                />
-
-                <button
-                  type="submit"
-                  className="primary-button"
-                  disabled={
-                    saving
-                  }
-                  style={{
-                    width: '100%',
-                    minHeight: '48px',
-                    justifyContent: 'center',
-                    borderRadius: '12px',
-                    fontSize: '14px',
-                    marginTop: '6px'
-                  }}
-                >
-                
-
-                  {saving
-                    ? 'Changing password…'
-                    : 'Update password'}
-                </button>
-
-              </form>
-
-              <aside
+              <div
                 style={{
-                  padding: '20px',
-                  borderRadius: '16px',
-                  background: '#f7f9fc',
-                  border:
-                    '1px solid rgba(15, 39, 71, 0.08)'
+                  marginTop:
+                    '12px',
+                  display:
+                    'grid',
+                  gap:
+                    '9px'
                 }}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '9px',
-                    marginBottom: '16px'
-                  }}
-                >
+                <Guideline>
+                  Use at least 8 characters.
+                </Guideline>
 
-                  <strong>
-                    Keep your account secure
-                  </strong>
-                </div>
+                <Guideline>
+                  Use a password different from the current one.
+                </Guideline>
 
-                <div
-                  style={{
-                    display: 'grid',
-                    gap: '13px'
-                  }}
-                >
-                  <Guideline>
-                    Use at least 8 characters.
-                  </Guideline>
-
-                  <Guideline>
-                    Choose a password different from
-                    the current one.
-                  </Guideline>
-
-                  <Guideline>
-                    Only share access with authorized
-                    MIDSA officers.
-                  </Guideline>
-
-                  <Guideline>
-                    Changing the password will not affect
-                    campaigns or wishes.
-                  </Guideline>
-                </div>
-              </aside>
-
+                <Guideline>
+                  Share access only with authorized MIDSA officers.
+                </Guideline>
+              </div>
             </div>
-
           </div>
-
         </section>
-
       </div>
 
+      <style>
+        {`
+          @media (max-width: 700px) {
+            .organization-settings-grid {
+              grid-template-columns: 1fr !important;
+            }
+
+            .settings-org-field-span {
+              grid-column: auto !important;
+            }
+          }
+        `}
+      </style>
     </div>
+  );
+}
+
+function ModernTextField({
+  label,
+  span = false,
+  ...props
+}) {
+  const [
+    focused,
+    setFocused
+  ] = useState(false);
+
+  return (
+    <label
+      className={
+        span
+          ? 'settings-org-field-span'
+          : ''
+      }
+      style={{
+        display:
+          'block',
+        gridColumn:
+          span
+            ? '1 / -1'
+            : undefined
+      }}
+    >
+      <span
+        style={{
+          display:
+            'block',
+          marginBottom:
+            '8px',
+          fontSize:
+            '13px',
+          fontWeight:
+            650,
+          color:
+            '#17243a'
+        }}
+      >
+        {label}
+      </span>
+
+      <div
+        style={{
+          position:
+            'relative',
+          border:
+            focused
+              ? '1.5px solid #2f62dc'
+              : '1px solid #dbe3ef',
+          borderRadius:
+            '12px',
+          background:
+            '#f8fafc',
+          boxShadow:
+            focused
+              ? '0 0 0 3px rgba(47,98,220,.10)'
+              : 'none',
+          transition:
+            'all 0.18s ease'
+        }}
+      >
+        <input
+          {...props}
+          required
+          onFocus={() =>
+            setFocused(
+              true
+            )
+          }
+          onBlur={() =>
+            setFocused(
+              false
+            )
+          }
+          style={{
+            width:
+              '100%',
+            height:
+              '48px',
+            padding:
+              '0 14px',
+            border:
+              'none',
+            outline:
+              'none',
+            background:
+              'transparent',
+            boxSizing:
+              'border-box',
+            borderRadius:
+              '12px',
+            fontSize:
+              '14px',
+            color:
+              '#17243a'
+          }}
+        />
+      </div>
+    </label>
   );
 }
 
@@ -540,13 +1206,20 @@ function ModernPasswordField({
   return (
     <div>
       <label
-        htmlFor={name}
+        htmlFor={
+          name
+        }
         style={{
-          display: 'block',
-          fontSize: '13px',
-          fontWeight: 650,
-          marginBottom: '8px',
-          color: '#17243a'
+          display:
+            'block',
+          fontSize:
+            '13px',
+          fontWeight:
+            650,
+          marginBottom:
+            '8px',
+          color:
+            '#17243a'
         }}
       >
         {label}
@@ -554,32 +1227,42 @@ function ModernPasswordField({
 
       <div
         style={{
-          position: 'relative',
+          position:
+            'relative',
           border:
             focused
               ? '1.5px solid #2f62dc'
               : '1px solid #dbe3ef',
-          borderRadius: '12px',
-          background: '#f8fafc',
+          borderRadius:
+            '12px',
+          background:
+            '#f8fafc',
           boxShadow:
             focused
-              ? '0 0 0 3px rgba(47, 98, 220, 0.10)'
+              ? '0 0 0 3px rgba(47,98,220,.10)'
               : 'none',
           transition:
             'all 0.18s ease'
         }}
       >
-
         <input
-          id={name}
+          id={
+            name
+          }
           type={
             visible
               ? 'text'
               : 'password'
           }
-          name={name}
-          value={value}
-          onChange={onChange}
+          name={
+            name
+          }
+          value={
+            value
+          }
+          onChange={
+            onChange
+          }
           required
           minLength={
             minLength
@@ -591,24 +1274,36 @@ function ModernPasswordField({
             placeholder
           }
           onFocus={() =>
-            setFocused(true)
+            setFocused(
+              true
+            )
           }
           onBlur={() =>
-            setFocused(false)
+            setFocused(
+              false
+            )
           }
           style={{
-            width: '100%',
-            height: '48px',
+            width:
+              '100%',
+            height:
+              '48px',
             padding:
               '0 48px 0 16px',
-            border: 'none',
-            outline: 'none',
+            border:
+              'none',
+            outline:
+              'none',
             background:
               'transparent',
-            borderRadius: '12px',
-            fontSize: '14px',
-            color: '#17243a',
-            boxSizing: 'border-box'
+            borderRadius:
+              '12px',
+            boxSizing:
+              'border-box',
+            fontSize:
+              '14px',
+            color:
+              '#17243a'
           }}
         />
 
@@ -623,43 +1318,58 @@ function ModernPasswordField({
               : 'Show password'
           }
           style={{
-            position: 'absolute',
-            right: '11px',
-            top: '50%',
+            position:
+              'absolute',
+            right:
+              '11px',
+            top:
+              '50%',
             transform:
               'translateY(-50%)',
-            width: '32px',
-            height: '32px',
-            border: 'none',
-            borderRadius: '8px',
+            width:
+              '32px',
+            height:
+              '32px',
+            border:
+              'none',
+            borderRadius:
+              '8px',
             background:
               'transparent',
-            color: '#61728c',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+            color:
+              '#61728c',
+            cursor:
+              'pointer',
+            display:
+              'flex',
+            alignItems:
+              'center',
+            justifyContent:
+              'center'
           }}
         >
-          {visible ? (
-            <EyeOff
-              size={18}
-            />
-          ) : (
-            <Eye
-              size={18}
-            />
-          )}
+          {visible
+            ? (
+              <EyeOff
+                size={18}
+              />
+            )
+            : (
+              <Eye
+                size={18}
+              />
+            )}
         </button>
       </div>
 
       {hint && (
         <small
+          className="muted"
           style={{
-            display: 'block',
-            marginTop: '7px',
-            color: '#7b899d',
-            fontSize: '12px'
+            display:
+              'block',
+            marginTop:
+              '7px'
           }}
         >
           {hint}
@@ -675,19 +1385,25 @@ function Guideline({
   return (
     <div
       style={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        gap: '8px',
-        fontSize: '13px',
-        lineHeight: 1.5,
-        color: '#65758b'
+        display:
+          'flex',
+        gap:
+          '8px',
+        alignItems:
+          'flex-start',
+        color:
+          '#65758b',
+        fontSize:
+          '13px'
       }}
     >
       <Check
         size={15}
         style={{
-          flexShrink: 0,
-          marginTop: '2px'
+          flexShrink:
+            0,
+          marginTop:
+            '2px'
         }}
       />
 
