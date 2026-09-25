@@ -191,17 +191,6 @@ export default function AccountSettingsPage() {
             Account Settings
           </h1>
 
-          <p
-            className="muted"
-            style={{
-              margin: 0,
-              maxWidth: '620px',
-              fontSize: '20px'
-            }}
-          >
-            Manage the administrator credentials used
-            to access MIDSA WishLink.
-          </p>
         </div>
 
         <section
