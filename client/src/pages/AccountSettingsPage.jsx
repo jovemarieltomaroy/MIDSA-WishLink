@@ -192,9 +192,6 @@ export default function AccountSettingsPage() {
               marginBottom: '10px'
             }}
           >
-            <ShieldCheck
-              size={16}
-            />
 
             Account & Security
           </div>
@@ -255,9 +252,7 @@ export default function AccountSettingsPage() {
                   color: '#2457c5'
                 }}
               >
-                <UserRound
-                  size={23}
-                />
+            
               </div>
 
               <div>
@@ -306,9 +301,7 @@ export default function AccountSettingsPage() {
                 fontWeight: 700
               }}
             >
-              <ShieldCheck
-                size={14}
-              />
+          
 
               Administrator
             </div>
@@ -345,9 +338,6 @@ export default function AccountSettingsPage() {
                 justifyContent: 'center'
               }}
             >
-              <LockKeyhole
-                size={21}
-              />
             </div>
 
             <div>
@@ -536,9 +526,6 @@ export default function AccountSettingsPage() {
                     marginBottom: '16px'
                   }}
                 >
-                  <ShieldCheck
-                    size={19}
-                  />
 
                   <strong>
                     Keep your account secure
@@ -637,21 +624,6 @@ function ModernPasswordField({
             'all 0.18s ease'
         }}
       >
-        <LockKeyhole
-          size={18}
-          style={{
-            position: 'absolute',
-            left: '15px',
-            top: '50%',
-            transform:
-              'translateY(-50%)',
-            color:
-              focused
-                ? '#2f62dc'
-                : '#8090a7',
-            pointerEvents: 'none'
-          }}
-        />
 
         <input
           id={name}
