@@ -611,7 +611,7 @@ function ModernPasswordField({
             width: '100%',
             height: '48px',
             padding:
-              '0 48px 0 46px',
+              '0 48px 0 16px',
             border: 'none',
             outline: 'none',
             background:
