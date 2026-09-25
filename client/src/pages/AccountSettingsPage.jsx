@@ -183,19 +183,6 @@ export default function AccountSettingsPage() {
             marginBottom: '28px'
           }}
         >
-          <div
-            className="eyebrow"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '7px',
-              marginBottom: '10px'
-            }}
-          >
-
-            Account & Security
-          </div>
-
           <h1
             style={{
               marginBottom: '8px'
@@ -208,7 +195,8 @@ export default function AccountSettingsPage() {
             className="muted"
             style={{
               margin: 0,
-              maxWidth: '620px'
+              maxWidth: '620px',
+              fontSize: '20px'
             }}
           >
             Manage the administrator credentials used
@@ -240,20 +228,6 @@ export default function AccountSettingsPage() {
                 gap: '16px'
               }}
             >
-              <div
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  background: '#eef4ff',
-                  color: '#2457c5'
-                }}
-              >
-            
-              </div>
 
               <div>
                 <small
@@ -301,8 +275,6 @@ export default function AccountSettingsPage() {
                 fontWeight: 700
               }}
             >
-          
-
               Administrator
             </div>
 
@@ -327,19 +299,7 @@ export default function AccountSettingsPage() {
               gap: '14px'
             }}
           >
-            <div
-              style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '12px',
-                background: '#f3f6fb',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-            </div>
-
+            
             <div>
               <h2
                 style={{
@@ -498,9 +458,7 @@ export default function AccountSettingsPage() {
                     marginTop: '6px'
                   }}
                 >
-                  <KeyRound
-                    size={18}
-                  />
+                
 
                   {saving
                     ? 'Changing password…'
