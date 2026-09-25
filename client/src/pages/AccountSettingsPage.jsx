@@ -368,9 +368,12 @@ export default function AccountSettingsPage() {
             >
 
               <form
-                onSubmit={
-                  submit
-                }
+                onSubmit={submit}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px'
+                }}
               >
 
                 <ModernPasswordField
@@ -546,11 +549,7 @@ function ModernPasswordField({
   ] = useState(false);
 
   return (
-    <div
-      style={{
-        marginBottom: '22px'
-      }}
-    >
+    <div>
       <label
         htmlFor={name}
         style={{
