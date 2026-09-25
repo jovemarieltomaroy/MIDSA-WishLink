@@ -183,22 +183,6 @@ export default function AccountSettingsPage() {
             marginBottom: '28px'
           }}
         >
-          <div
-            className="eyebrow"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '7px',
-              marginBottom: '10px'
-            }}
-          >
-            <ShieldCheck
-              size={16}
-            />
-
-            Account & Security
-          </div>
-
           <h1
             style={{
               marginBottom: '8px'
@@ -207,16 +191,6 @@ export default function AccountSettingsPage() {
             Account Settings
           </h1>
 
-          <p
-            className="muted"
-            style={{
-              margin: 0,
-              maxWidth: '620px'
-            }}
-          >
-            Manage the administrator credentials used
-            to access MIDSA WishLink.
-          </p>
         </div>
 
         <section
@@ -243,22 +217,6 @@ export default function AccountSettingsPage() {
                 gap: '16px'
               }}
             >
-              <div
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  background: '#eef4ff',
-                  color: '#2457c5'
-                }}
-              >
-                <UserRound
-                  size={23}
-                />
-              </div>
 
               <div>
                 <small
@@ -306,10 +264,6 @@ export default function AccountSettingsPage() {
                 fontWeight: 700
               }}
             >
-              <ShieldCheck
-                size={14}
-              />
-
               Administrator
             </div>
 
@@ -334,22 +288,7 @@ export default function AccountSettingsPage() {
               gap: '14px'
             }}
           >
-            <div
-              style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '12px',
-                background: '#f3f6fb',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <LockKeyhole
-                size={21}
-              />
-            </div>
-
+            
             <div>
               <h2
                 style={{
@@ -411,17 +350,19 @@ export default function AccountSettingsPage() {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns:
-                  'minmax(0, 1fr) 280px',
+
                 gap: '32px',
                 alignItems: 'start'
               }}
             >
 
               <form
-                onSubmit={
-                  submit
-                }
+                onSubmit={submit}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px'
+                }}
               >
 
                 <ModernPasswordField
@@ -508,9 +449,7 @@ export default function AccountSettingsPage() {
                     marginTop: '6px'
                   }}
                 >
-                  <KeyRound
-                    size={18}
-                  />
+                
 
                   {saving
                     ? 'Changing password…'
@@ -536,9 +475,6 @@ export default function AccountSettingsPage() {
                     marginBottom: '16px'
                   }}
                 >
-                  <ShieldCheck
-                    size={19}
-                  />
 
                   <strong>
                     Keep your account secure
@@ -602,11 +538,7 @@ function ModernPasswordField({
   ] = useState(false);
 
   return (
-    <div
-      style={{
-        marginBottom: '22px'
-      }}
-    >
+    <div>
       <label
         htmlFor={name}
         style={{
@@ -637,21 +569,6 @@ function ModernPasswordField({
             'all 0.18s ease'
         }}
       >
-        <LockKeyhole
-          size={18}
-          style={{
-            position: 'absolute',
-            left: '15px',
-            top: '50%',
-            transform:
-              'translateY(-50%)',
-            color:
-              focused
-                ? '#2f62dc'
-                : '#8090a7',
-            pointerEvents: 'none'
-          }}
-        />
 
         <input
           id={name}
@@ -683,7 +600,7 @@ function ModernPasswordField({
             width: '100%',
             height: '48px',
             padding:
-              '0 48px 0 46px',
+              '0 48px 0 16px',
             border: 'none',
             outline: 'none',
             background:
