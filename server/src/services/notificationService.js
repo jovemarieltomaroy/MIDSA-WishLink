@@ -8,16 +8,14 @@ import {
   getPublicOrganizationSettings
 } from './organizationSettingsService.js';
 
-async function contactBlock() {
-  return getPublicOrganizationSettings();
-}
 
 function emailConfigured() {
   return Boolean(
-    process.env.RESEND_API_KEY &&
-    process.env.RESEND_FROM
+    process.env.BREVO_API_KEY &&
+    process.env.BREVO_SENDER_EMAIL
   );
 }
+
 
 function smsConfigured() {
   return Boolean(
@@ -27,6 +25,13 @@ function smsConfigured() {
   );
 }
 
+
+/*
+ * Send email through Brevo's HTTPS API.
+ *
+ * This does not use SMTP, so it works
+ * with Render's free web service.
+ */
 async function sendEmail({
   to,
   subject,
@@ -45,63 +50,82 @@ async function sendEmail({
   }
 
   console.log(
-    `[EMAIL] Sending through Resend HTTP API to ${to}`
+    `[EMAIL] Sending through Brevo API to ${to}`
   );
 
   const response =
     await fetch(
-      'https://api.resend.com/emails',
+      'https://api.brevo.com/v3/smtp/email',
       {
-        method:
-          'POST',
+        method: 'POST',
 
         headers: {
-          Authorization:
-            `Bearer ${process.env.RESEND_API_KEY}`,
+          accept:
+            'application/json',
 
-          'Content-Type':
+          'api-key':
+            process.env.BREVO_API_KEY,
+
+          'content-type':
             'application/json'
         },
 
         body:
           JSON.stringify({
-            from:
-              process.env.RESEND_FROM,
+            sender: {
+              name:
+                process.env.BREVO_SENDER_NAME ||
+                'MIDSA WishLink',
+
+              email:
+                process.env.BREVO_SENDER_EMAIL
+            },
 
             to: [
-              to
+              {
+                email:
+                  to
+              }
             ],
 
             subject,
 
-            html
+            htmlContent:
+              html
           })
       }
     );
 
-  const data =
-    await response.json();
+  let data = {};
+
+  try {
+    data =
+      await response.json();
+  } catch {
+    data = {};
+  }
 
   if (
     !response.ok
   ) {
     console.error(
-      '[EMAIL ERROR]',
+      '[BREVO EMAIL ERROR]',
       data
     );
 
     throw new Error(
       data?.message ||
-      'Unable to send email.'
+      'Unable to send email through Brevo.'
     );
   }
 
   console.log(
-    `[EMAIL SENT] To: ${to} | ID: ${data.id}`
+    `[EMAIL SENT] To: ${to} | Message ID: ${data.messageId || 'unknown'}`
   );
 
   return data;
 }
+
 
 async function sendSms({
   to,
@@ -135,6 +159,10 @@ async function sendSms({
   });
 }
 
+
+/*
+ * EMAIL VERIFICATION CODE
+ */
 export async function sendEmailVerificationCode({
   email,
   code,
@@ -150,7 +178,12 @@ export async function sendEmailVerificationCode({
         color: #23332b;
       "
     >
-      <h2 style="color:#7c2639;">
+      <h2
+        style="
+          color:#7c2639;
+          margin-bottom: 16px;
+        "
+      >
         Verify your email
       </h2>
 
@@ -175,6 +208,7 @@ export async function sendEmailVerificationCode({
           padding: 18px;
           text-align: center;
           margin: 24px 0;
+          color: #17243a;
         "
       >
         ${code}
@@ -194,6 +228,7 @@ export async function sendEmailVerificationCode({
         style="
           color: #68766f;
           font-size: 13px;
+          margin-top: 24px;
         "
       >
         For your security, do not share this code
@@ -213,11 +248,15 @@ export async function sendEmailVerificationCode({
   });
 }
 
+
+/*
+ * RESERVATION CONFIRMATION
+ */
 export async function sendReservationConfirmation(
   wish
 ) {
-  const c =
-    await contactBlock();
+  const organization =
+    await getPublicOrganizationSettings();
 
   const items =
     wish.wishItems.join(
@@ -233,11 +272,13 @@ export async function sendReservationConfirmation(
       wish.reservationExpiresAt
     );
 
+  const publicBaseUrl =
+    process.env.PUBLIC_APP_URL ||
+    process.env.CLIENT_URL ||
+    '';
+
   const publicUrl =
-    `${
-      process.env.PUBLIC_APP_URL ||
-      process.env.CLIENT_URL
-    }/wish/${wish.ornamentCode}`;
+    `${publicBaseUrl}/wish/${wish.ornamentCode}`;
 
   const html = `
     <div
@@ -245,11 +286,16 @@ export async function sendReservationConfirmation(
         font-family: Arial, sans-serif;
         max-width: 620px;
         margin: auto;
-        line-height: 1.55;
+        line-height: 1.6;
         color: #23332b;
       "
     >
-      <h2 style="color:#7c2639;">
+      <h2
+        style="
+          color:#7c2639;
+          margin-bottom: 16px;
+        "
+      >
         You reserved ${wish.nickname}'s wish 🎁
       </h2>
 
@@ -259,41 +305,89 @@ export async function sendReservationConfirmation(
         <strong>${campaignName}</strong>.
       </p>
 
-      <p>
-        <strong>Wish:</strong>
-        ${items}
-        <br />
+      <div
+        style="
+          margin: 24px 0;
+          padding: 18px;
+          background: #f7f9fc;
+          border-radius: 10px;
+        "
+      >
+        <p
+          style="
+            margin: 0 0 8px;
+          "
+        >
+          <strong>Wish:</strong>
+          ${items}
+        </p>
 
-        <strong>Latest drop-off:</strong>
-        ${deadline}
-        <br />
+        <p
+          style="
+            margin: 0 0 8px;
+          "
+        >
+          <strong>Latest drop-off:</strong>
+          ${deadline}
+        </p>
 
-        <strong>Drop-off location:</strong>
-        ${c.dropOffLocation}
-      </p>
+        <p
+          style="
+            margin: 0;
+          "
+        >
+          <strong>Drop-off location:</strong>
+          ${organization.dropOffLocation}
+        </p>
+      </div>
 
       <p>
         If plans change or you need an extension,
         please contact
-        ${c.contactName}
-        ${c.contactEmail
-          ? ` at ${c.contactEmail}`
-          : ''}
-        ${c.contactPhone
-          ? ` / ${c.contactPhone}`
-          : ''}.
+        <strong>
+          ${organization.contactName}
+        </strong>.
+
+        ${
+          organization.contactEmail
+            ? `<br />Email: ${organization.contactEmail}`
+            : ''
+        }
+
+        ${
+          organization.contactPhone
+            ? `<br />Contact number: ${organization.contactPhone}`
+            : ''
+        }
       </p>
 
-      <p>
-        <a href="${publicUrl}">
-          View the wish page
-        </a>
-      </p>
+      ${
+        publicBaseUrl
+          ? `
+            <p
+              style="
+                margin-top: 24px;
+              "
+            >
+              <a
+                href="${publicUrl}"
+                style="
+                  color: #2f62dc;
+                  font-weight: 600;
+                "
+              >
+                View the wish page
+              </a>
+            </p>
+          `
+          : ''
+      }
 
       <p
         style="
           font-size: 13px;
           color: #68766f;
+          margin-top: 26px;
         "
       >
         Please do not forward donor details.
@@ -303,15 +397,17 @@ export async function sendReservationConfirmation(
     </div>
   `;
 
+  const contact =
+    organization.contactPhone ||
+    organization.contactEmail ||
+    'MIDSA';
+
   const sms =
     `MIDSA WishLink: You reserved ` +
     `${wish.nickname}'s wish (${items}). ` +
     `Please drop off by ${deadline} at ` +
-    `${c.dropOffLocation}. Contact: ` +
-    `${
-      c.contactPhone ||
-      c.contactEmail
-    }. Thank you!`;
+    `${organization.dropOffLocation}. ` +
+    `Contact: ${contact}. Thank you!`;
 
   return Promise.allSettled([
     sendEmail({
@@ -334,11 +430,15 @@ export async function sendReservationConfirmation(
   ]);
 }
 
+
+/*
+ * DEADLINE UPDATE
+ */
 export async function sendDeadlineUpdate(
   wish
 ) {
-  const c =
-    await contactBlock();
+  const organization =
+    await getPublicOrganizationSettings();
 
   const deadline =
     formatPHDate(
@@ -351,11 +451,15 @@ export async function sendDeadlineUpdate(
         font-family: Arial, sans-serif;
         max-width: 620px;
         margin: auto;
-        line-height: 1.55;
+        line-height: 1.6;
         color: #23332b;
       "
     >
-      <h2>
+      <h2
+        style="
+          color: #7c2639;
+        "
+      >
         Your MIDSA WishLink drop-off date was updated
       </h2>
 
@@ -366,24 +470,43 @@ export async function sendDeadlineUpdate(
         <strong>${deadline}</strong>.
       </p>
 
-      <p>
-        <strong>Drop-off:</strong>
-        ${c.dropOffLocation}
-        <br />
+      <div
+        style="
+          margin-top: 22px;
+          padding: 18px;
+          background: #f7f9fc;
+          border-radius: 10px;
+        "
+      >
+        <p>
+          <strong>Drop-off:</strong>
+          ${organization.dropOffLocation}
+        </p>
 
-        <strong>Contact:</strong>
-        ${c.contactName}
-        <br />
+        <p>
+          <strong>Contact:</strong>
+          ${organization.contactName}
 
-        ${c.contactEmail}
-        ${
-          c.contactPhone
-            ? `<br />${c.contactPhone}`
-            : ''
-        }
-      </p>
+          ${
+            organization.contactEmail
+              ? `<br />${organization.contactEmail}`
+              : ''
+          }
+
+          ${
+            organization.contactPhone
+              ? `<br />${organization.contactPhone}`
+              : ''
+          }
+        </p>
+      </div>
     </div>
   `;
+
+  const contact =
+    organization.contactPhone ||
+    organization.contactEmail ||
+    'MIDSA';
 
   return Promise.allSettled([
     sendEmail({
@@ -404,10 +527,7 @@ export async function sendDeadlineUpdate(
         `MIDSA WishLink update: ` +
         `${wish.nickname}'s gift drop-off deadline ` +
         `is now ${deadline}. Contact ` +
-        `${
-          c.contactPhone ||
-          c.contactEmail
-        } if needed.`
+        `${contact} if needed.`
     })
   ]);
 }

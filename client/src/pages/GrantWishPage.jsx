@@ -371,26 +371,6 @@ export default function GrantWishPage() {
           >
             <FestiveTopLine />
 
-            <div
-              style={{
-                width: '64px',
-                height: '64px',
-                margin:
-                  '0 auto 20px',
-                borderRadius:
-                  '20px',
-                display: 'flex',
-                alignItems:
-                  'center',
-                justifyContent:
-                  'center',
-                background:
-                  '#edf8f0',
-                color:
-                  '#0f6a4c'
-              }}
-            >
-            </div>
 
             <div
               style={{
