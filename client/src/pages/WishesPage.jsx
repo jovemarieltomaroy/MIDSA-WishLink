@@ -275,7 +275,7 @@ export default function WishesPage() {
           />
 
           <input
-            placeholder="Search nickname, foundation, code, donor…"
+            placeholder="Search nickname, foundation, code…"
             value={q}
             onChange={(
               event

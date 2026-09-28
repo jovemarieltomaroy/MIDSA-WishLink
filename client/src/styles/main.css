@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https\://fonts.googleapis.com/css2?family=Manrope:wght\@400;500;600;700;800&display=swap');
 
-/* --- Root & Global Resets --- */
+
 :root {
   --bg: #eef2f8;
   --paper: #ffffff;
@@ -19,13 +19,12 @@
   --teal-tint: #e1f2ee;
   --line: #dde4ee;
   --shadow: 0 1px 2px rgba(20, 38, 74, 0.05), 0 10px 28px rgba(20, 38, 74, 0.07);
-  
   font-family: 'Manrope', system-ui, sans-serif;
   color: var(--ink);
   background: var(--bg);
 }
 
-* {
+\\\\\\\* {
   box-sizing: border-box;
 }
 
@@ -42,8 +41,11 @@ a {
 }
 
 button,
+
 input,
+
 select,
+
 textarea {
   font: inherit;
 }
@@ -57,7 +59,8 @@ button {
   outline-offset: 2px;
 }
 
-/* --- Brand Elements --- */
+
+
 .brand-lockup {
   display: flex;
   align-items: center;
@@ -126,10 +129,8 @@ button {
   margin-bottom: 12px;
 }
 
-/* --- Typography --- */
-h1,
-h2,
-h3,
+
+h1,h2,h3,
 p {
   margin-top: 0;
 }
@@ -163,7 +164,7 @@ h3 {
   color: var(--muted);
 }
 
-/* --- Buttons --- */
+
 .primary-button,
 .secondary-button,
 .ghost-button,
@@ -243,7 +244,8 @@ h3 {
   border: 1px solid var(--line);
 }
 
-/* --- Public Pages Layout --- */
+
+
 .public-page {
   min-height: 100vh;
   background: var(--bg);
@@ -278,6 +280,7 @@ h3 {
 }
 
 .public-card,
+
 .panel {
   background: var(--paper);
   border: 1px solid var(--line);
@@ -318,7 +321,9 @@ h3 {
 }
 
 .wish-box small,
+
 .summary-box strong,
+
 .donor-grid small {
   display: block;
   font-size: 11px;
@@ -343,7 +348,8 @@ h3 {
   margin: 22px 0;
 }
 
-/* --- Badges & Status Panels --- */
+/* Badges & Status Panels */
+
 .status-badge {
   display: inline-flex;
   padding: 6px 12px;
@@ -465,7 +471,8 @@ h3 {
   color: var(--primary);
 }
 
-/* --- Forms & Inputs --- */
+ /* Forms & Inputs */
+
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -481,7 +488,6 @@ h3 {
   outline: none;
   color: var(--ink);
   font-size: 14.5px;
-
   backdrop-filter: blur(4px);
   transition:
     background 0.15s ease,
@@ -499,7 +505,9 @@ h3 {
 }
 
 .form-grid label,
+
 .login-card label,
+
 .deadline-row label {
   display: flex;
   flex-direction: column;
@@ -510,11 +518,17 @@ h3 {
 }
 
 .form-grid input,
+
 .form-grid select,
+
 .form-grid textarea,
+
 .login-card input,
+
 .toolbar input,
+
 .toolbar select,
+
 .deadline-row input {
   width: 100%;
   border: 1px solid var(--line);
@@ -527,8 +541,11 @@ h3 {
 }
 
 .form-grid input:focus,
+
 .form-grid select:focus,
+
 .form-grid textarea:focus,
+
 .login-card input:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-tint);
@@ -590,6 +607,7 @@ h3 {
 }
 
 /* --- Login Page --- */
+
 .login-page {
   min-height: 100vh;
   display: grid;
@@ -617,23 +635,30 @@ h3 {
   margin-top: 24px;
 }
 
-/* --- Officer Shell & Sidebar --- */
+/* --- Officer Shell & Sidebar ---  */
+
 .shell {
   min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
-  grid-template-columns: 246px 1fr;
+  grid-template-columns: 246px minmax(0, 1fr);
+  overflow: visible;
 }
 
 .sidebar {
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  box-sizing: border-box;
   background: var(--primary-deep);
   border-right: 1px solid var(--primary-deep);
-  padding: 22px 16px;
+  padding: 18px 16px 14px;
   display: flex;
   flex-direction: column;
   color: #cdd9ef;
+  overflow: hidden;
 }
 
 .sidebar .brand-lockup strong {
@@ -647,7 +672,7 @@ h3 {
 .sidebar nav {
   display: grid;
   gap: 4px;
-  margin-top: 30px;
+  margin-top: 22px;
 }
 
 .sidebar nav a {
@@ -673,6 +698,9 @@ h3 {
 
 .sidebar-bottom {
   margin-top: auto;
+  padding-top: 10px;
+  padding-bottom: 0;
+  flex-shrink: 0;
 }
 
 .user-chip {
@@ -680,6 +708,7 @@ h3 {
 }
 
 .user-chip span,
+
 .user-chip small {
   display: block;
   color: #fff;
@@ -703,9 +732,13 @@ h3 {
 
 .shell-main {
   min-width: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
 }
 
 /* --- Internal Admin Pages --- */
+
 .page {
   padding: 36px;
   max-width: 1400px;
@@ -786,6 +819,7 @@ h3 {
 }
 
 /* --- Tables & Lists --- */
+
 .table-wrap {
   overflow: auto;
 }
@@ -823,30 +857,41 @@ td a:hover {
   color: var(--primary);
 }
 
+/* --- Toolbars & Filters ---  */
+
 .toolbar {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
   margin-bottom: 14px;
 }
 
 .searchbox {
   position: relative;
-  flex: 1;
+  flex: 1 1 260px;
+  min-width: 0;
 }
 
 .searchbox svg {
   position: absolute;
   left: 12px;
-  top: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--muted);
+  pointer-events: none;
 }
 
 .searchbox input {
-  padding-left: 38px;
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  padding: 0 13px 0 38px;
 }
 
 .toolbar select {
-  width: 220px;
+  min-width: 0;
 }
 
 .empty {
@@ -855,7 +900,8 @@ td a:hover {
   color: var(--muted);
 }
 
-/* --- Form Details & Fieldsets --- */
+/* --- Form Details & Fieldsets ---  */
+
 .form-panel {
   max-width: 820px;
 }
@@ -893,6 +939,7 @@ td a:hover {
 }
 
 /* --- Detail Pages & Ornaments --- */
+
 .detail-grid {
   display: grid;
   grid-template-columns: 1.3fr 0.75fr;
@@ -924,6 +971,7 @@ td a:hover {
 }
 
 .ornament-front,
+
 .ornament-back {
   background: var(--paper);
   border: 1px dashed var(--line);
@@ -954,6 +1002,7 @@ td a:hover {
 }
 
 .ornament-front small,
+
 .ornament-back small {
   color: var(--muted);
   margin-top: 16px;
@@ -983,6 +1032,7 @@ td a:hover {
 }
 
 .donor-grid strong,
+
 .donor-grid span {
   display: block;
   margin-top: 4px;
@@ -1020,6 +1070,7 @@ td a:hover {
 }
 
 .compact-panel h3,
+
 .compact-panel p {
   margin: 0;
 }
@@ -1054,6 +1105,7 @@ td a:hover {
 }
 
 .timeline p,
+
 .timeline small {
   margin: 3px 0;
   color: var(--muted);
@@ -1088,7 +1140,9 @@ td a:hover {
 }
 
 .deadline-callout-inner small,
+
 .deadline-callout-inner strong,
+
 .deadline-callout-inner span {
   display: block;
 }
@@ -1109,54 +1163,53 @@ td a:hover {
   color: var(--amber-ink);
 }
 
-/* --- Responsive Media Queries --- */
+/* Responsive Media Queries */
+
 @media (max-width: 980px) {
   .shell {
-    grid-template-columns: 1fr;
+    grid-template-columns: 210px minmax(0, 1fr);
   }
-
   .sidebar {
-    position: static;
-    height: auto;
-    flex-direction: row;
-    align-items: center;
-    gap: 18px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 16px 14px 12px;
+    overflow: hidden;
   }
-
   .sidebar nav {
-    display: flex;
-    margin: 0;
-    flex: 1;
+    display: grid;
+    margin-top: 24px;
+    flex: initial;
   }
-
   .sidebar-bottom {
-    margin: 0;
+    margin-top: auto;
   }
-
   .user-chip {
-    display: none;
+    display: block;
   }
-
   .sidebar .ghost-button {
-    width: auto;
+    width: 100%;
   }
-
+  .page {
+    padding: 28px 22px;
+  }
   .stats-grid {
     grid-template-columns: 1fr 1fr;
   }
-
   .detail-grid {
     grid-template-columns: 1fr;
   }
-
   .public-wrap.two-col {
     grid-template-columns: 1fr;
   }
-
   .side-summary {
     position: static;
   }
-
   .donor-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -1166,113 +1219,132 @@ td a:hover {
   .public-header {
     height: 64px;
   }
-
   .public-card {
     padding: 24px 18px;
   }
-
   .public-wrap {
     margin-top: 14px;
   }
-
   .trust-grid,
   .form-grid {
     grid-template-columns: 1fr;
   }
-
   .span-2 {
     grid-column: auto;
   }
-
+  
   .shell {
-    display: block;
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr);
   }
-
   .sidebar {
-    padding: 12px;
-    overflow: auto;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    padding: 10px 8px 8px;
+    overflow: hidden;
+    flex-direction: column;
+    align-items: stretch;
   }
-
   .sidebar .brand-lockup {
+    display: flex;
+    justify-content: center;
+  }
+  .sidebar .brand-lockup > div {
     display: none;
   }
-
+  .sidebar .brand-mark {
+    width: 42px;
+    height: 42px;
+  }
   .sidebar nav {
-    gap: 3px;
+    display: grid;
+    gap: 5px;
+    margin-top: 20px;
   }
-
   .sidebar nav a {
+    min-height: 44px;
+    padding: 10px;
+    justify-content: center;
+    gap: 0;
     white-space: nowrap;
-    font-size: 12px;
+    font-size: 0;
   }
-
+  .sidebar nav a svg {
+    width: 20px;
+    height: 20px;
+    flex: none;
+  }
   .sidebar-bottom {
+    display: block;
+    margin-top: auto;
+  }
+  .user-chip {
     display: none;
   }
-
+  .sidebar .ghost-button {
+    width: 100%;
+    min-height: 42px;
+    padding: 9px;
+    gap: 0;
+    font-size: 0;
+  }
+  .sidebar .ghost-button svg {
+    width: 19px;
+    height: 19px;
+  }
   .page {
     padding: 20px 14px;
   }
-
   .page-head {
     flex-direction: column;
   }
-
   .page-head h1 {
     font-size: 28px;
   }
-
   .stats-grid {
     grid-template-columns: 1fr 1fr;
   }
-
-  .toolbar {
-    flex-direction: column;
-  }
-
-  .toolbar select {
-    width: 100%;
-  }
-
-  .details,
+.details,
   .donor-grid {
     grid-template-columns: 1fr;
   }
-
   .summary-box {
     grid-template-columns: 1fr;
   }
-
   .public-header .brand-lockup span {
     display: none;
   }
 }
 
-/* --- Print Stylesheet --- */
+.wish-toolbar .searchbox,
+
+  .wish-toolbar select {
+    width: 100%;
+  }
+
+
 @media print {
   body {
     background: #fff;
   }
-
   .sidebar,
   .page-head,
   .panel:not(.printable-ornament),
   .alert {
     display: none !important;
   }
-
   .shell {
     display: block;
   }
-
   .page {
     padding: 0;
   }
-
   .detail-grid {
     display: block;
   }
-
   .printable-ornament {
     display: grid !important;
     grid-template-columns: 1fr 1fr;
@@ -1282,7 +1354,6 @@ td a:hover {
     gap: 20px;
     padding: 0;
   }
-
   .ornament-front,
   .ornament-back {
     min-height: 420px;
@@ -1290,8 +1361,7 @@ td a:hover {
     page-break-inside: avoid;
   }
 }
-/* Align the status badge and Public page link
-   in the officer wish-detail header. */
+
 .page-head .inline .status-badge {
   margin-bottom: 0;
 }
@@ -1309,6 +1379,7 @@ td a:hover {
   margin: 0;
   line-height: 1;
 }
+
 .public-header {
   overflow: visible;
 }
@@ -1317,16 +1388,17 @@ td a:hover {
   object-fit: contain;
 }
 
-/* Remove old square-logo restrictions */
+
 .public-header .brand-mark {
   width: auto;
   height: auto;
 }
 
-/* Keep the status badge aligned with the eyebrow */
+
 .hero-card > div:first-child .status-badge {
   margin-bottom: 0;
 }
+
 .confirmation-status {
   display: flex;
   align-items: center;
@@ -1344,13 +1416,14 @@ td a:hover {
   color: #2f63d9;
   flex-shrink: 0;
 }
+
 .confirmation-label {
   color: #2e7d32;
   background: #eaf7ec;
 }
-/* =========================================================
-   Campaign management
-   ========================================================= */
+
+   /* Campaign management */
+
 .campaign-switcher {
   margin: 22px 0 10px;
   padding: 12px;
@@ -1481,6 +1554,7 @@ td a:hover {
 }
 
 .campaign-metrics strong,
+
 .campaign-metrics small {
   display: block;
 }
@@ -1520,6 +1594,7 @@ td a:hover {
 }
 
 .summary-strip small,
+
 .summary-strip strong {
   display: block;
 }
@@ -1535,12 +1610,47 @@ td a:hover {
   font-size: 13px;
 }
 
+/* Wishes page filter layout */
+
 .wish-toolbar {
-  align-items: stretch;
+  display: grid;
+  grid-template-columns:
+    minmax(250px, 1.35fr)
+    minmax(190px, 0.95fr)
+    minmax(175px, 0.9fr)
+    minmax(155px, 0.8fr);
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.wish-toolbar .searchbox {
+  width: 100%;
+  min-width: 0;
+}
+
+.wish-toolbar .searchbox input,
+
+.wish-toolbar select {
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  box-sizing: border-box;
 }
 
 .wish-toolbar select {
-  min-width: 185px;
+  padding: 0 38px 0 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.wish-toolbar .searchbox input:focus,
+
+.wish-toolbar select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-tint);
 }
 
 .public-status-row {
@@ -1552,6 +1662,7 @@ td a:hover {
 }
 
 .public-status-row .eyebrow,
+
 .public-status-row .status-badge {
   margin-bottom: 0;
 }
@@ -1573,17 +1684,16 @@ td a:hover {
   .campaign-switcher {
     display: none;
   }
-
   .campaign-card-grid,
   .summary-strip {
     grid-template-columns: 1fr;
   }
-
   .campaign-metrics {
     grid-template-columns: repeat(3, 1fr);
   }
 }
-/* Current working campaign */
+
+/* Current working campaign  */
 
 .working-campaign-button {
   border: 1px solid #b7ddc1;
@@ -1634,9 +1744,8 @@ td a:hover {
   font-size: 12px;
   color: #60756a;
 }
-/* =========================================================
-   CAMPAIGN LIFECYCLE
-   ========================================================= */
+
+   /* CAMPAIGN LIFECYCLE */
 
 .active-campaign-card {
   margin: 14px 0 18px;
@@ -1687,9 +1796,13 @@ td a:hover {
 }
 
 .active-campaign-banner,
+
 .active-campaign-notice,
+
 .success-notice,
+
 .campaign-info-notice,
+
 .campaign-draft-note {
   display: flex;
   align-items: flex-start;
@@ -1699,7 +1812,9 @@ td a:hover {
 }
 
 .active-campaign-banner,
+
 .active-campaign-notice,
+
 .success-notice {
   padding: 13px 15px;
   background: #eef9f1;
@@ -1708,6 +1823,7 @@ td a:hover {
 }
 
 .active-campaign-banner div,
+
 .active-campaign-notice div {
   display: flex;
   flex-direction: column;
@@ -1715,13 +1831,16 @@ td a:hover {
 }
 
 .active-campaign-banner span,
+
 .active-campaign-notice span,
+
 .success-notice span {
   font-size: 12px;
   color: #61796a;
 }
 
 .campaign-info-notice,
+
 .campaign-draft-note {
   padding: 13px 15px;
   flex-direction: column;
@@ -1732,6 +1851,7 @@ td a:hover {
 }
 
 .campaign-info-notice span,
+
 .campaign-draft-note span {
   color: #75684c;
   font-size: 12px;
@@ -1743,7 +1863,7 @@ td a:hover {
   flex-wrap: wrap;
 }
 
-/* CAMPAIGN STATUS BADGES */
+/* CAMPAIGN STATUS BADGES  */
 
 .campaign-status {
   width: fit-content;
@@ -1779,7 +1899,7 @@ td a:hover {
   color: #6a7280;
 }
 
-/* SUCCESS MESSAGE */
+ /* SUCCESS MESSAGE  */
 
 .success-notice {
   align-items: center;
@@ -1857,6 +1977,7 @@ td a:hover {
 }
 
 .campaign-metrics strong,
+
 .campaign-metrics small {
   display: block;
 }
@@ -1899,6 +2020,7 @@ td a:hover {
 }
 
 .summary-strip small,
+
 .summary-strip strong {
   display: block;
 }
@@ -1912,8 +2034,7 @@ td a:hover {
 .summary-strip strong {
   font-size: 13px;
 }
-
-/* COMPLETE CAMPAIGN BUTTON */
+/* COMPLETE CAMPAIGN BUTTON  */
 
 .danger-button {
   border: 1px solid #efc8c8;
@@ -1941,9 +2062,7 @@ td a:hover {
   cursor: not-allowed;
 }
 
-/* =========================================================
-   CONFIRMATION MODAL
-   ========================================================= */
+   /* CONFIRMATION MODAL */
 
 .modal-backdrop {
   position: fixed;
@@ -2032,10 +2151,7 @@ td a:hover {
   margin-top: 24px;
 }
 
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
+   /* MOBILE */
 @media (max-width: 800px) {
   .summary-strip {
     grid-template-columns:
@@ -2047,27 +2163,730 @@ td a:hover {
   .active-campaign-card {
     display: none;
   }
-
   .campaign-primary-actions {
     width: 100%;
     justify-content:
       flex-start;
   }
-
   .campaign-metrics {
     grid-template-columns: 1fr;
   }
-
   .summary-strip {
     grid-template-columns: 1fr;
   }
-
   .confirm-modal-actions {
     flex-direction:
       column-reverse;
   }
-
   .confirm-modal-actions > button {
+    width: 100%;
+  }
+}
+
+
+
+   /* WISHLINK GOOGLE LOGIN */
+
+.wishlink-login-page {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: linear-gradient(
+    180deg,
+    #18314d 0%,
+    #23486e 36%,
+    #2b3f63 68%,
+    #40233a 100%
+  );
+}
+
+
+   /* SNOW */
+
+.wishlink-login-snow-layer {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wishlink-login-snowflake {
+  position: absolute;
+  top: -10vh;
+  color: rgba(
+    255,
+    255,
+    255,
+    0.95
+  );
+  text-shadow:
+    0 0 10px
+    rgba(
+      255,
+      255,
+      255,
+      0.35
+    );
+  user-select: none;
+  animation-name:
+    wishlinkLoginSnowfall;
+  animation-timing-function:
+    linear;
+  animation-iteration-count:
+    infinite;
+  will-change:
+    transform,
+    opacity;
+}
+
+@keyframes wishlinkLoginSnowfall {
+  0% {
+    transform:
+      translate3d(
+        0,
+        -10vh,
+        0
+      );
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform:
+      translate3d(
+        var(--snow-drift),
+        110vh,
+        0
+      );
+    opacity: 0.15;
+  }
+}
+
+
+   /* MAIN LOGIN CARD */
+
+.wishlink-login-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1040px, 100%);
+  height: min(500px, calc(100dvh - 64px));
+  max-height: calc(100vh - 64px);
+  max-height: calc(100dvh - 64px);
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  overflow: hidden;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 26px 70px rgba(8, 21, 42, 0.34);
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(10px);
+}
+
+
+   /* LEFT PANEL */
+
+.wishlink-login-left {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 28px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(24, 49, 77, 0.90) 0%,
+      rgba(35, 72, 110, 0.92) 55%,
+      rgba(43, 63, 99, 0.94) 100%
+    );
+}
+
+.wishlink-login-left::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 20% 18%,
+      rgba(
+        255,
+        255,
+        255,
+        0.08
+      ),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 80% 82%,
+      rgba(
+        201,
+        168,
+        76,
+        0.08
+      ),
+      transparent 28%
+    );
+}
+
+.wishlink-login-brand-top,
+
+.wishlink-login-logo-wrap,
+
+.wishlink-login-left-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.wishlink-login-brand-top {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wishlink-login-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.wishlink-login-brand-text strong {
+  font-size:
+    clamp(
+      1.35rem,
+      2vw,
+      1.65rem
+    );
+  font-weight: 800;
+  letter-spacing:
+    0.015em;
+}
+
+.wishlink-login-brand-text span {
+  margin-top: 3px;
+  font-size:
+    clamp(
+      0.95rem,
+      1.5vw,
+      1.1rem
+    );
+  font-weight: 700;
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.90
+    );
+}
+
+.wishlink-login-brand-top small {
+  margin-top: 6px;
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.68
+    );
+  font-size: 0.78rem;
+}
+
+.wishlink-login-logo-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+.wishlink-login-main-logo {
+  width: min(250px, 64%);
+  max-height: 230px;
+  object-fit: contain;
+  filter:
+    drop-shadow(
+      0 14px 28px
+      rgba(0, 0, 0, 0.16)
+    );
+}
+
+.wishlink-login-left-footer {
+  margin-top: auto;
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.72
+    );
+  font-size: 0.8rem;
+}
+
+
+   /* RIGHT PANEL */
+
+.wishlink-login-right {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 42px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 253, 250, 0.98) 0%,
+      #ffffff 100%
+    );
+}
+
+.wishlink-login-panel {
+  width: 100%;
+  max-width: 360px;
+}
+
+.wishlink-login-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 12px;
+  color: #2f62dc;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing:
+    0.09em;
+}
+
+.wishlink-login-panel h1 {
+  margin: 0;
+  color: #17243a;
+  font-size:
+    clamp(
+      1.9rem,
+      3vw,
+      2.45rem
+    );
+  line-height: 1.05;
+  font-weight: 800;
+}
+
+.wishlink-login-subtext {
+  margin:
+    10px
+    0
+    22px;
+  color: #55667f;
+  font-size: 0.91rem;
+  line-height: 1.6;
+}
+
+   /* GOOGLE BUTTON */
+
+.wishlink-google-button {
+  width: 100%;
+  min-height: 54px;
+  padding:
+    11px
+    15px;
+  border: 0;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #2f62dc 0%,
+      #325bd0 100%
+    );
+  box-shadow:
+    0 14px 30px
+    rgba(
+      47,
+      98,
+      220,
+      0.22
+    );
+  font-size: 0.91rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    opacity 0.16s ease;
+}
+
+.wishlink-google-button:hover:not(:disabled) {
+  transform:
+    translateY(-1px);
+  box-shadow:
+    0 17px 34px
+    rgba(
+      47,
+      98,
+      220,
+      0.28
+    );
+}
+
+.wishlink-google-button:active:not(:disabled) {
+  transform:
+    translateY(0);
+}
+
+.wishlink-google-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.wishlink-google-button-left {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.wishlink-google-icon-wrap {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #ffffff;
+}
+
+.wishlink-login-note {
+  margin:
+    14px
+    4px
+    0;
+  text-align: center;
+  color: #7c889b;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+/* LOGIN ERROR */
+
+.wishlink-login-panel .alert {
+  margin:
+    0
+    0
+    16px;
+  padding:
+    10px
+    12px;
+  border-radius: 11px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+
+   /* TABLET / IPAD */
+
+@media (max-width: 1024px) {
+  .wishlink-login-page {
+    padding: 16px;
+  }
+  .wishlink-login-shell {
+    width: 100%;
+    height:
+      min(
+        550px,
+        calc(100dvh - 32px)
+      );
+    grid-template-columns:
+      minmax(240px, 0.88fr)
+      minmax(360px, 1.12fr);
+    border-radius: 22px;
+  }
+  .wishlink-login-left {
+    padding:
+      24px
+      25px;
+  }
+  .wishlink-login-main-logo {
+    width:
+      min(
+        220px,
+        70%
+      );
+    max-height: 220px;
+  }
+  .wishlink-login-right {
+    padding:
+      30px
+      34px;
+  }
+}
+
+   /* IPAD MINI / SMALL TABLET */
+
+@media (
+
+  min-width: 641px
+
+) and (
+
+  max-width: 820px
+
+) {
+  .wishlink-login-page {
+    padding: 12px;
+  }
+  .wishlink-login-shell {
+    height:
+      min(
+        520px,
+        calc(100dvh - 24px)
+      );
+    min-height: 440px;
+    grid-template-columns:
+      minmax(210px, 0.78fr)
+      minmax(350px, 1.22fr);
+  }
+  .wishlink-login-left {
+    padding:
+      21px
+      20px;
+  }
+  .wishlink-login-brand-text strong {
+    font-size: 1.25rem;
+  }
+  .wishlink-login-brand-text span {
+    font-size: 0.93rem;
+  }
+  .wishlink-login-brand-top small {
+    font-size: 0.7rem;
+  }
+  .wishlink-login-main-logo {
+    width:
+      min(
+        190px,
+        74%
+      );
+    max-height: 190px;
+  }
+  .wishlink-login-left-footer {
+    font-size: 0.68rem;
+  }
+  .wishlink-login-right {
+    padding:
+      26px
+      28px;
+  }
+  .wishlink-login-panel h1 {
+    font-size: 1.9rem;
+  }
+  .wishlink-login-subtext {
+    font-size: 0.83rem;
+    margin-bottom: 18px;
+  }
+}
+
+/* =========================================================
+   PHONE
+   =========================================================  */
+
+@media (max-width: 640px) {
+  .wishlink-login-page {
+    padding: 8px;
+  }
+  .wishlink-login-shell {
+    width: 100%;
+    height:
+      calc(100dvh - 16px);
+    min-height: 0;
+    grid-template-columns:
+      94px
+      minmax(0, 1fr);
+    border-radius: 18px;
+  }
+  .wishlink-login-left {
+    padding:
+      18px
+      10px;
+    align-items: center;
+  }
+  .wishlink-login-brand-top {
+    align-items: center;
+    text-align: center;
+  }
+  .wishlink-login-brand-text strong {
+    font-size: 0.95rem;
+  }
+  .wishlink-login-brand-text span {
+    font-size: 0.7rem;
+  }
+  .wishlink-login-brand-top small {
+    display: none;
+  }
+  .wishlink-login-logo-wrap {
+    width: 100%;
+    padding:
+      12px
+      0;
+  }
+  .wishlink-login-main-logo {
+    width: 72px;
+    max-height: 105px;
+  }
+  .wishlink-login-left-footer {
+    display: none;
+  }
+  .wishlink-login-right {
+    padding:
+      22px
+      18px;
+  }
+  .wishlink-login-panel {
+    max-width: none;
+  }
+  .wishlink-login-eyebrow {
+    margin-bottom: 9px;
+    font-size: 0.65rem;
+  }
+  .wishlink-login-panel h1 {
+    font-size: 1.65rem;
+  }
+  .wishlink-login-subtext {
+    margin:
+      8px
+      0
+      18px;
+    font-size: 0.79rem;
+    line-height: 1.5;
+  }
+  .wishlink-google-button {
+    min-height: 50px;
+    padding:
+      9px
+      11px;
+    font-size: 0.79rem;
+  }
+  .wishlink-google-icon-wrap {
+    width: 30px;
+    height: 30px;
+  }
+  .wishlink-login-note {
+    margin-top: 12px;
+    font-size: 0.67rem;
+  }
+}
+
+/*SHORT SCREENS / LAPTOPS*/
+
+@media (max-height: 700px) {
+  /* Keep the login card floating in the center on shorter desktop screens. */
+  .wishlink-login-page {
+    padding: 24px;
+  }
+  .wishlink-login-shell {
+    height: min(470px, calc(100dvh - 48px));
+    max-height: calc(100dvh - 48px);
+    min-height: 0;
+  }
+  .wishlink-login-left {
+    padding: 16px 24px;
+  }
+  .wishlink-login-main-logo {
+    width: min(175px, 56%);
+    max-height: 165px;
+  }
+  .wishlink-login-right {
+    padding: 20px 30px;
+  }
+  .wishlink-login-eyebrow {
+    margin-bottom: 6px;
+  }
+  .wishlink-login-panel h1 {
+    font-size: 1.85rem;
+  }
+  .wishlink-login-subtext {
+    margin: 7px 0 14px;
+    font-size: 0.82rem;
+  }
+  .wishlink-google-button {
+    min-height: 48px;
+  }
+  .wishlink-login-note {
+    margin-top: 10px;
+  }
+  /* Sidebar stays fixed and never scrolls; compress spacing instead. */
+  .sidebar {
+    padding-top: 12px;
+    padding-bottom: 10px;
+    overflow: hidden;
+  }
+  .sidebar nav {
+    margin-top: 14px;
+    gap: 2px;
+  }
+  .sidebar nav a {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .active-campaign-card {
+    margin-top: 8px;
+    margin-bottom: 10px;
+    padding: 8px;
+  }
+  .active-campaign-card > small {
+    margin-bottom: 5px;
+  }
+  .active-campaign-card a {
+    padding: 7px 8px;
+  }
+  .sidebar-bottom {
+    padding-top: 6px;
+  }
+  .user-chip {
+    padding: 8px 10px;
+  }
+  .sidebar .ghost-button {
+    min-height: 36px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+
+/* =========================================================
+   WISHES TOOLBAR RESPONSIVENESS
+   ========================================================= \*/
+
+@media (max-width: 1180px) {
+  .wish-toolbar {
+    grid-template-columns:
+      minmax(230px, 1.15fr)
+      minmax(190px, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .wish-toolbar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .wish-toolbar .searchbox,
+  .wish-toolbar select {
     width: 100%;
   }
 }

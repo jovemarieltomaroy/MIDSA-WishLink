@@ -3,51 +3,58 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState
+  useState,
 } from 'react';
 
 import {
-  api
-} from '../utils/api';
+  signInWithPopup,
+  signOut as firebaseSignOut,
+} from 'firebase/auth';
 
-const AuthContext =
-  createContext(null);
+import { api } from '../utils/api';
+import {
+  auth,
+  googleProvider,
+  prepareFirebaseAuth,
+} from '../firebase';
 
-export function AuthProvider({
-  children
-}) {
-  const [
-    user,
-    setUser
-  ] = useState(null);
+const AuthContext = createContext(null);
 
-  const [
-    loading,
-    setLoading
-  ] = useState(true);
+function setStoredToken(token) {
+  if (!token) return;
+
+  localStorage.setItem('wishlink_token', token);
+  api.defaults.headers.common.Authorization = `Bearer ${token}`;
+}
+
+function clearStoredToken() {
+  localStorage.removeItem('wishlink_token');
+  delete api.defaults.headers.common.Authorization;
+}
+
+function restoreStoredToken() {
+  const token = localStorage.getItem('wishlink_token');
+
+  if (token) {
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+  }
+
+  return token;
+}
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function restoreSession() {
       try {
-        const token =
-          localStorage.getItem(
-            'wishlink_token'
-          );
+        restoreStoredToken();
 
-        /*
-         * If there is no saved token, we can still
-         * try /auth/me because the browser may have
-         * a valid HTTP-only cookie.
-         */
-        const response =
-          await api.get(
-            '/auth/me'
-          );
-
-        setUser(
-          response.data.user
-        );
+        const response = await api.get('/auth/me');
+        setUser(response.data.user);
       } catch {
+        clearStoredToken();
         setUser(null);
       } finally {
         setLoading(false);
@@ -57,77 +64,56 @@ export function AuthProvider({
     restoreSession();
   }, []);
 
-  async function login(
-    email,
-    password
-  ) {
-    const response =
-      await api.post(
-        '/auth/login',
-        {
-          email,
-          password
-        }
-      );
+  async function loginWithGoogle() {
+    await prepareFirebaseAuth();
 
-    /*
-     * Save the returned token so authentication
-     * survives refreshes even when cross-origin
-     * cookies are unreliable.
-     */
+    const result = await signInWithPopup(auth, googleProvider);
+    const idToken = await result.user.getIdToken();
+
+    const response = await api.post('/auth/google', {
+      idToken,
+    });
+
     if (response.data.token) {
-      localStorage.setItem(
-        'wishlink_token',
-        response.data.token
-      );
+      setStoredToken(response.data.token);
     }
 
-    setUser(
-      response.data.user
-    );
+    setUser(response.data.user);
 
     return response.data.user;
   }
 
   async function logout() {
     try {
-      await api.post(
-        '/auth/logout'
-      );
+      await api.post('/auth/logout');
+    } catch {
+      // okay if backend session is already gone
     } finally {
-      localStorage.removeItem(
-        'wishlink_token'
-      );
+      clearStoredToken();
+
+      try {
+        await firebaseSignOut(auth);
+      } catch {
+        // okay if firebase session is already cleared
+      }
 
       setUser(null);
     }
   }
 
-  const value =
-    useMemo(
-      () => ({
-        user,
-        loading,
-        login,
-        logout
-      }),
-      [
-        user,
-        loading
-      ]
-    );
-
-  return (
-    <AuthContext.Provider
-      value={value}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      loading,
+      loginWithGoogle,
+      logout,
+    }),
+    [user, loading]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
-  return useContext(
-    AuthContext
-  );
+  return useContext(AuthContext);
 }
