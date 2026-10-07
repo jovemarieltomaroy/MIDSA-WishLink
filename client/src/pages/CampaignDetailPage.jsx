@@ -10,7 +10,6 @@ import {
 
 import {
   Archive,
-  CheckCircle2,
   Gift,
   PlayCircle,
   Save,
@@ -61,19 +60,11 @@ export default function CampaignDetailPage() {
     setError
   ] = useState('');
 
-  /*
-   * General messages for campaign actions
-   * such as activate, complete, or archive.
-   */
   const [
     success,
     setSuccess
   ] = useState('');
 
-  /*
-   * Messages specifically for the
-   * Campaign Settings panel.
-   */
   const [
     settingsMessage,
     setSettingsMessage
@@ -157,10 +148,6 @@ export default function CampaignDetailPage() {
     load();
   }, [id]);
 
-  /*
-   * General action success messages
-   * disappear automatically.
-   */
   useEffect(() => {
     if (!success) {
       return;
@@ -181,10 +168,6 @@ export default function CampaignDetailPage() {
     };
   }, [success]);
 
-  /*
-   * Settings messages also disappear
-   * automatically after a few seconds.
-   */
   useEffect(() => {
     if (!settingsMessage) {
       return;
@@ -217,10 +200,6 @@ export default function CampaignDetailPage() {
       })
     );
 
-    /*
-     * Remove the previous message when
-     * the user starts editing again.
-     */
     if (settingsMessage) {
       setSettingsMessage('');
     }
@@ -304,10 +283,6 @@ export default function CampaignDetailPage() {
     setError('');
     setSettingsMessage('');
 
-    /*
-     * Do not send an unnecessary request
-     * if nothing was changed.
-     */
     if (
       !hasCampaignChanges()
     ) {
@@ -345,10 +320,6 @@ export default function CampaignDetailPage() {
         refreshCampaigns()
       ]);
 
-      /*
-       * Keep settings open so the user
-       * sees the confirmation here.
-       */
       setSettingsMessage(
         'Campaign settings updated successfully.'
       );
@@ -553,9 +524,7 @@ export default function CampaignDetailPage() {
 
   return (
     <div className="page">
-
       <div className="page-head">
-
         <div>
           <div
             className={`campaign-status campaign-${campaign.status}`}
@@ -574,7 +543,6 @@ export default function CampaignDetailPage() {
         </div>
 
         <div className="inline campaign-primary-actions">
-
           {user?.role ===
             'admin' &&
             campaign.status ===
@@ -673,7 +641,6 @@ export default function CampaignDetailPage() {
           >
             View wishes
           </Link>
-
         </div>
       </div>
 
@@ -688,7 +655,6 @@ export default function CampaignDetailPage() {
           className="success-notice"
           role="status"
         >
-
           <span>
             {success}
           </span>
@@ -697,8 +663,6 @@ export default function CampaignDetailPage() {
 
       {isCurrentActive && (
         <div className="active-campaign-notice">
-
-
           <div>
             <strong>
               This is the active campaign.
@@ -729,7 +693,6 @@ export default function CampaignDetailPage() {
       )}
 
       <div className="stats-grid">
-
         <Stat
           label="All wishes"
           value={
@@ -757,11 +720,9 @@ export default function CampaignDetailPage() {
             stats.granted
           }
         />
-
       </div>
 
       <div className="panel campaign-summary-panel">
-
         <div className="panel-head">
           <div>
             <h2>
@@ -777,7 +738,6 @@ export default function CampaignDetailPage() {
         </div>
 
         <div className="summary-strip">
-
           <div>
             <small>
               Start
@@ -821,12 +781,10 @@ export default function CampaignDetailPage() {
               {stats.completionRate}%
             </strong>
           </div>
-
         </div>
       </div>
 
       <div className="panel">
-
         <div className="panel-head">
           <div>
             <h2>
@@ -836,7 +794,6 @@ export default function CampaignDetailPage() {
         </div>
 
         <div className="table-wrap">
-
           <table>
             <thead>
               <tr>
@@ -911,30 +868,26 @@ export default function CampaignDetailPage() {
               to this campaign yet.
             </div>
           )}
-
         </div>
       </div>
 
       {canEditSettings &&
         showSettings && (
-          <div className="panel form-panel">
-
-            <div className="panel-head">
-
+          <div className="panel campaign-settings-panel">
+            <div className="campaign-settings-head">
               <div>
                 <h2>
                   Campaign settings
                 </h2>
 
                 <p>
-                  Update the campaign information
-                  below.
+                  Update the campaign information below.
                 </p>
               </div>
 
               <button
                 type="button"
-                className="ghost-button"
+                className="ghost-button campaign-settings-close"
                 onClick={
                   cancelSettings
                 }
@@ -948,43 +901,41 @@ export default function CampaignDetailPage() {
 
                 Close
               </button>
-
             </div>
 
-           {settingsMessage && (
-          <div
-            className={
-              settingsMessage ===
-              'No changes were made.'
-                ? 'alert'
-                : 'success-notice'
-            }
-            role="status"
-            style={{
-              marginBottom:
-                '18px'
-            }}
-          >
-            {settingsMessage !==
-              'No changes were made.'}
-
-            <span>
-              {settingsMessage}
-            </span>
-          </div>
-        )}
+            {settingsMessage && (
+              <div
+                className={
+                  settingsMessage ===
+                  'No changes were made.'
+                    ? 'alert'
+                    : 'success-notice'
+                }
+                role="status"
+                style={{
+                  marginBottom:
+                    '18px'
+                }}
+              >
+                <span>
+                  {settingsMessage}
+                </span>
+              </div>
+            )}
 
             <form
-              className="form-grid"
+              className="campaign-settings-form"
               onSubmit={
                 save
               }
             >
-
-              <label className="span-2">
-                Campaign name
+              <label className="campaign-settings-field campaign-settings-full">
+                <span>
+                  Campaign name
+                </span>
 
                 <input
+                  type="text"
                   name="name"
                   value={
                     form.name
@@ -996,10 +947,13 @@ export default function CampaignDetailPage() {
                 />
               </label>
 
-              <label className="span-2">
-                Academic period
+              <label className="campaign-settings-field campaign-settings-full">
+                <span>
+                  Academic period
+                </span>
 
                 <input
+                  type="text"
                   name="academicPeriod"
                   value={
                     form.academicPeriod
@@ -1007,11 +961,14 @@ export default function CampaignDetailPage() {
                   onChange={
                     update
                   }
+                  placeholder="e.g. 1st Semester"
                 />
               </label>
 
-              <label>
-                Start date and time
+              <label className="campaign-settings-field">
+                <span>
+                  Start date and time
+                </span>
 
                 <input
                   type="datetime-local"
@@ -1026,8 +983,10 @@ export default function CampaignDetailPage() {
                 />
               </label>
 
-              <label>
-                Final drop-off deadline
+              <label className="campaign-settings-field">
+                <span>
+                  Final drop-off deadline
+                </span>
 
                 <input
                   type="datetime-local"
@@ -1042,8 +1001,10 @@ export default function CampaignDetailPage() {
                 />
               </label>
 
-              <label className="span-2">
-                Description
+              <label className="campaign-settings-field campaign-settings-full">
+                <span>
+                  Description
+                </span>
 
                 <textarea
                   rows="4"
@@ -1054,11 +1015,11 @@ export default function CampaignDetailPage() {
                   onChange={
                     update
                   }
+                  placeholder="Add a short description for this campaign."
                 />
               </label>
 
-              <div className="span-2 actions">
-
+              <div className="campaign-settings-full campaign-settings-actions">
                 <button
                   type="button"
                   className="secondary-button"
@@ -1087,11 +1048,8 @@ export default function CampaignDetailPage() {
                     ? 'Saving…'
                     : 'Save changes'}
                 </button>
-
               </div>
-
             </form>
-
           </div>
         )}
 
@@ -1101,39 +1059,31 @@ export default function CampaignDetailPage() {
             confirmAction
           )
         }
-
         title={
           confirmAction?.title
         }
-
         message={
           confirmAction?.message
         }
-
         confirmLabel={
           confirmAction?.confirmLabel
         }
-
         tone={
           confirmAction?.tone
         }
-
         busy={
           actionBusy
         }
-
         onCancel={() =>
           !actionBusy &&
           setConfirmAction(
             null
           )
         }
-
         onConfirm={
           runConfirmedAction
         }
       />
-
     </div>
   );
 }
