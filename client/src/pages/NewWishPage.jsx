@@ -1,26 +1,26 @@
 import {
   useEffect,
   useMemo,
-  useState
+  useState,
 } from 'react';
 
 import {
   useNavigate,
-  useSearchParams
+  useSearchParams,
 } from 'react-router-dom';
 
 import {
   Plus,
-  Trash2
+  Trash2,
 } from 'lucide-react';
 
 import {
   api,
-  getErrorMessage
+  getErrorMessage,
 } from '../utils/api';
 
 import {
-  useCampaign
+  useCampaign,
 } from '../context/CampaignContext';
 
 export default function NewWishPage() {
@@ -28,12 +28,12 @@ export default function NewWishPage() {
     useNavigate();
 
   const [
-    searchParams
+    searchParams,
   ] = useSearchParams();
 
   const {
     campaigns,
-    activeCampaignId
+    activeCampaignId,
   } = useCampaign();
 
   const campaignIdFromUrl =
@@ -44,8 +44,8 @@ export default function NewWishPage() {
   /*
    * Officers may prepare wishes in:
    *
-   * Draft campaigns
-   * Active campaign
+   * - Draft campaigns
+   * - Active campaign
    *
    * Wishes cannot be added to completed
    * or archived campaigns.
@@ -55,7 +55,7 @@ export default function NewWishPage() {
       (campaign) =>
         [
           'draft',
-          'active'
+          'active',
         ].includes(
           campaign.status
         )
@@ -92,29 +92,29 @@ export default function NewWishPage() {
     }, [
       campaignIdFromUrl,
       activeCampaignId,
-      campaigns
+      campaigns,
     ]);
 
   const [
     form,
-    setForm
+    setForm,
   ] = useState({
     campaignId: '',
     nickname: '',
     partnerFoundation: '',
     ageGroup: '',
     notes: '',
-    wishItems: ['']
+    wishItems: [''],
   });
 
   const [
     error,
-    setError
+    setError,
   ] = useState('');
 
   const [
     saving,
-    setSaving
+    setSaving,
   ] = useState(false);
 
   useEffect(() => {
@@ -125,14 +125,15 @@ export default function NewWishPage() {
       setForm(
         (current) => ({
           ...current,
+
           campaignId:
-            defaultCampaignId
+            defaultCampaignId,
         })
       );
     }
   }, [
     defaultCampaignId,
-    form.campaignId
+    form.campaignId,
   ]);
 
   const selectedCampaign =
@@ -149,7 +150,9 @@ export default function NewWishPage() {
     setForm(
       (current) => ({
         ...current,
-        [key]: value
+
+        [key]:
+          value,
       })
     );
   }
@@ -160,8 +163,12 @@ export default function NewWishPage() {
   ) {
     set(
       'wishItems',
+
       form.wishItems.map(
-        (item, currentIndex) =>
+        (
+          item,
+          currentIndex
+        ) =>
           currentIndex ===
           index
             ? value
@@ -173,8 +180,16 @@ export default function NewWishPage() {
   function removeWishItem(
     index
   ) {
+    if (
+      form.wishItems.length ===
+      1
+    ) {
+      return;
+    }
+
     set(
       'wishItems',
+
       form.wishItems.filter(
         (
           _,
@@ -189,9 +204,10 @@ export default function NewWishPage() {
   function addWishItem() {
     set(
       'wishItems',
+
       [
         ...form.wishItems,
-        ''
+        '',
       ]
     );
   }
@@ -210,13 +226,26 @@ export default function NewWishPage() {
           '/officer/wishes',
           {
             ...form,
+
+            nickname:
+              form.nickname.trim(),
+
+            partnerFoundation:
+              form.partnerFoundation.trim(),
+
+            ageGroup:
+              form.ageGroup.trim(),
+
+            notes:
+              form.notes.trim(),
+
             wishItems:
               form.wishItems
                 .map(
                   (item) =>
                     item.trim()
                 )
-                .filter(Boolean)
+                .filter(Boolean),
           }
         );
 
@@ -241,15 +270,12 @@ export default function NewWishPage() {
           </h1>
 
           <p>
-            Add the child’s
-            anonymized nickname and
-            wishlist under the correct
-            campaign.
+            Add the child’s anonymized nickname and wishlist under the correct campaign.
           </p>
         </div>
       </div>
 
-      <div className="panel form-panel">
+      <div className="panel form-panel new-wish-panel">
         {error && (
           <div className="alert">
             {error}
@@ -259,24 +285,23 @@ export default function NewWishPage() {
         {!usableCampaigns.length ? (
           <div className="empty">
             <h3>
-              No campaign available
-              for new wishes.
+              No campaign available for new wishes.
             </h3>
 
             <p>
-              Create a draft
-              campaign first, or
-              activate an existing
-              campaign.
+              Create a draft campaign first, or activate an existing campaign.
             </p>
           </div>
         ) : (
           <form
             onSubmit={submit}
-            className="form-grid"
+            className="new-wish-form"
           >
-            <label className="span-2">
-              Campaign
+            {/* Campaign */}
+            <label className="new-wish-field new-wish-full">
+              <span>
+                Campaign
+              </span>
 
               <select
                 value={
@@ -326,48 +351,43 @@ export default function NewWishPage() {
               </select>
             </label>
 
+            {/* Campaign status */}
             {selectedCampaign?.status ===
               'draft' && (
-              <div className="span-2 campaign-draft-note">
+              <div className="new-wish-full campaign-draft-note">
                 <strong>
                   Draft campaign
                 </strong>
 
                 <span>
-                  You can create the
-                  wish and prepare its
-                  ornament now, but
-                  students will not be
-                  able to reserve it
-                  until this campaign
-                  is activated.
+                  You can create the wish and prepare its ornament now, but students will not be able to reserve it until this campaign is activated.
                 </span>
               </div>
             )}
 
             {selectedCampaign?.status ===
               'active' && (
-              <div className="span-2 active-campaign-notice">
+              <div className="new-wish-full active-campaign-notice">
                 <div>
                   <strong>
                     Active campaign
                   </strong>
 
                   <span>
-                    Once this wish is
-                    created, its QR
-                    page can accept a
-                    reservation
-                    immediately.
+                    Once this wish is created, its QR page can accept a reservation immediately.
                   </span>
                 </div>
               </div>
             )}
 
-            <label>
-              Nickname
+            {/* Nickname */}
+            <label className="new-wish-field">
+              <span>
+                Nickname
+              </span>
 
               <input
+                type="text"
                 value={
                   form.nickname
                 }
@@ -384,11 +404,18 @@ export default function NewWishPage() {
               />
             </label>
 
-            <label>
-              Age group
-              (optional)
+            {/* Age */}
+            <label className="new-wish-field">
+              <span>
+                Age group
+                <span className="new-wish-optional">
+                  {' '}
+                  (optional)
+                </span>
+              </span>
 
               <input
+                type="text"
                 value={
                   form.ageGroup
                 }
@@ -404,11 +431,14 @@ export default function NewWishPage() {
               />
             </label>
 
-            <label className="span-2">
-              Partner Foundation /
-              Organization
+            {/* Foundation */}
+            <label className="new-wish-field new-wish-full">
+              <span>
+                Partner Foundation / Organization
+              </span>
 
               <input
+                type="text"
                 value={
                   form.partnerFoundation
                 }
@@ -425,74 +455,99 @@ export default function NewWishPage() {
               />
             </label>
 
-            <fieldset className="span-2">
+            {/* Wish list */}
+            <fieldset className="new-wish-full new-wish-wishlist">
               <legend>
                 Wish list
               </legend>
 
-              {form.wishItems.map(
-                (
-                  item,
-                  index
-                ) => (
-                  <div
-                    className="repeat-row"
-                    key={index}
-                  >
-                    <input
-                      value={item}
-                      onChange={(
-                        event
-                      ) =>
-                        updateWishItem(
-                          index,
-                          event.target.value
-                        )
+              <div className="new-wish-items">
+                {form.wishItems.map(
+                  (
+                    item,
+                    index
+                  ) => (
+                    <div
+                      className="new-wish-item-row"
+                      key={
+                        index
                       }
-                      required
-                      placeholder="e.g. Backpack"
-                    />
-
-                    <button
-                      type="button"
-                      className="icon-button"
-                      disabled={
-                        form.wishItems
-                          .length ===
-                        1
-                      }
-                      onClick={() =>
-                        removeWishItem(
-                          index
-                        )
-                      }
-                      title="Remove item"
                     >
-                      <Trash2
-                        size={16}
+                      <input
+                        type="text"
+                        value={
+                          item
+                        }
+                        onChange={(
+                          event
+                        ) =>
+                          updateWishItem(
+                            index,
+                            event.target.value
+                          )
+                        }
+                        required
+                        placeholder={
+                          index === 0
+                            ? 'e.g. Backpack'
+                            : 'Enter another wish item'
+                        }
                       />
-                    </button>
-                  </div>
-                )
-              )}
+
+                      <button
+                        type="button"
+                        className="icon-button"
+                        disabled={
+                          form.wishItems
+                            .length ===
+                          1
+                        }
+                        onClick={() =>
+                          removeWishItem(
+                            index
+                          )
+                        }
+                        title="Remove item"
+                        aria-label="Remove wish item"
+                      >
+                        <Trash2
+                          size={
+                            16
+                          }
+                        />
+                      </button>
+                    </div>
+                  )
+                )}
+              </div>
 
               <button
                 type="button"
-                className="text-button"
+                className="text-button new-wish-add-item"
                 onClick={
                   addWishItem
                 }
               >
                 <Plus
-                  size={16}
+                  size={
+                    16
+                  }
                 />
+
                 Add another item
               </button>
             </fieldset>
 
-            <label className="span-2">
-              Additional Notes
-              (optional)
+            {/* Notes */}
+            <label className="new-wish-field new-wish-full">
+              <span>
+                Additional Notes
+
+                <span className="new-wish-optional">
+                  {' '}
+                  (optional)
+                </span>
+              </span>
 
               <textarea
                 rows="4"
@@ -511,8 +566,10 @@ export default function NewWishPage() {
               />
             </label>
 
-            <div className="span-2 actions">
+            {/* Submit */}
+            <div className="new-wish-full new-wish-actions">
               <button
+                type="submit"
                 className="primary-button"
                 disabled={
                   saving ||
