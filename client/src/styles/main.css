@@ -2890,3 +2890,277 @@ td a:hover {
     width: 100%;
   }
 }
+/* =========================================================
+   ADD WISH FORM
+   ========================================================= */
+
+.new-wish-panel {
+  width: 100%;
+  max-width: 900px;
+
+  overflow: hidden;
+}
+
+.new-wish-form {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
+  gap: 18px 20px;
+
+  align-items: start;
+}
+
+.new-wish-full {
+  grid-column: 1 / -1;
+
+  min-width: 0;
+}
+
+
+/* ---------------------------------------------------------
+   Field labels
+   --------------------------------------------------------- */
+
+.new-wish-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  width: 100%;
+  min-width: 0;
+
+  color: var(--ink-soft);
+
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.new-wish-field > span {
+  display: block;
+}
+
+.new-wish-optional {
+  color: var(--muted);
+
+  font-weight: 400;
+}
+
+
+/* ---------------------------------------------------------
+   Form controls
+   --------------------------------------------------------- */
+
+.new-wish-field input,
+.new-wish-field select,
+.new-wish-field textarea {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid
+    var(--line);
+
+  background:
+    var(--paper);
+
+  border-radius: 9px;
+
+  padding:
+    11px
+    13px;
+
+  outline: none;
+
+  color:
+    var(--ink);
+
+  font: inherit;
+  font-size: 14px;
+}
+
+.new-wish-field input,
+.new-wish-field select {
+  height: 44px;
+}
+
+.new-wish-field textarea {
+  min-height: 96px;
+
+  resize: vertical;
+
+  line-height: 1.5;
+}
+
+.new-wish-field input:focus,
+.new-wish-field select:focus,
+.new-wish-field textarea:focus {
+  border-color:
+    var(--primary);
+
+  box-shadow:
+    0 0 0 3px
+    var(--primary-tint);
+}
+
+
+/* ---------------------------------------------------------
+   Wish list
+   --------------------------------------------------------- */
+
+.new-wish-wishlist {
+  min-width: 0;
+
+  margin: 0;
+
+  padding: 15px;
+
+  border:
+    1px solid
+    var(--line);
+
+  border-radius: 12px;
+
+  background:
+    var(--paper);
+}
+
+.new-wish-wishlist legend {
+  padding:
+    0
+    5px;
+
+  color:
+    var(--ink-soft);
+
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.new-wish-items {
+  display: grid;
+
+  gap: 10px;
+}
+
+.new-wish-item-row {
+  width: 100%;
+  min-width: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    36px;
+
+  gap: 8px;
+
+  align-items: center;
+}
+
+.new-wish-item-row input {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  height: 44px;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid
+    var(--line);
+
+  border-radius: 9px;
+
+  padding:
+    0
+    13px;
+
+  background:
+    var(--paper);
+
+  color:
+    var(--ink);
+
+  outline: none;
+
+  font: inherit;
+  font-size: 14px;
+}
+
+.new-wish-item-row input:focus {
+  border-color:
+    var(--primary);
+
+  box-shadow:
+    0 0 0 3px
+    var(--primary-tint);
+}
+
+.new-wish-item-row .icon-button {
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+
+  padding: 0;
+}
+
+.new-wish-add-item {
+  margin-top: 8px;
+}
+
+
+/* ---------------------------------------------------------
+   Submit button
+   --------------------------------------------------------- */
+
+.new-wish-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  padding-top: 2px;
+}
+
+.new-wish-actions .primary-button {
+  min-width: 210px;
+}
+
+
+/* =========================================================
+   TABLET / MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .new-wish-form {
+    grid-template-columns: 1fr;
+
+    gap: 16px;
+  }
+
+  .new-wish-full {
+    grid-column: auto;
+  }
+
+  .new-wish-actions {
+    justify-content: stretch;
+  }
+
+  .new-wish-actions .primary-button {
+    width: 100%;
+    min-width: 0;
+  }
+}
