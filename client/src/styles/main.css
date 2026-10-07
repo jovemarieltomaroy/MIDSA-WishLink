@@ -3169,11 +3169,11 @@ td a:hover {
    ========================================================= */
 
 .campaign-settings-panel {
-  width: 100%;
-  max-width: 100%;
+  width: auto;
+  max-width: none;
+  box-sizing: border-box;
   overflow: hidden;
 }
-
 .campaign-settings-head {
   display: flex;
   align-items: flex-start;
