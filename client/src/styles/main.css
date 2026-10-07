@@ -24,8 +24,20 @@
   background: var(--bg);
 }
 
-\\\\\\\* {
+* {
   box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+html,
+body {
+  overflow-x: hidden;
 }
 
 body {
@@ -247,36 +259,60 @@ h3 {
 
 
 .public-page {
+  width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
+  overflow-x: hidden;
 }
 
 .public-header {
+  width: min(1120px, calc(100% - 40px));
+  max-width: none;
   height: 80px;
-  max-width: 1120px;
-  margin: auto;
-  padding: 0 22px;
+  margin: 0 auto;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-sizing: border-box;
 }
 
 .public-wrap {
-  max-width: 930px;
+  width: min(930px, calc(100% - 40px));
+  max-width: none;
   margin: 30px auto 0;
-  padding: 0 22px 70px;
+  padding: 0 0 70px;
+  box-sizing: border-box;
 }
 
 .public-wrap.narrow {
-  max-width: 680px;
+  width: min(680px, calc(100% - 40px));
+  max-width: none;
 }
 
 .public-wrap.two-col {
-  max-width: 1080px;
+  width: min(1080px, calc(100% - 40px));
+  max-width: none;
   display: grid;
-  grid-template-columns: 1.45fr 0.7fr;
+  grid-template-columns:
+    minmax(0, 1.45fr)
+    minmax(0, 0.7fr);
   gap: 22px;
   align-items: start;
+}
+
+.public-wrap.two-col > * {
+  min-width: 0;
+}
+
+.public-card,
+.contact-card,
+.state-panel,
+.wish-box,
+.summary-box {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .public-card,
@@ -289,7 +325,13 @@ h3 {
 }
 
 .public-card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-left: auto;
+  margin-right: auto;
   padding: clamp(26px, 5vw, 48px);
+  box-sizing: border-box;
 }
 
 .hero-card {
@@ -1206,6 +1248,9 @@ td a:hover {
   }
   .public-wrap.two-col {
     grid-template-columns: 1fr;
+    width: min(760px, calc(100% - 32px));
+    margin-left: auto;
+    margin-right: auto;
   }
   .side-summary {
     position: static;
@@ -1217,13 +1262,29 @@ td a:hover {
 
 @media (max-width: 680px) {
   .public-header {
+    width: calc(100% - 24px);
     height: 64px;
+    margin-left: auto;
+    margin-right: auto;
   }
+
   .public-card {
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
     padding: 24px 18px;
   }
-  .public-wrap {
-    margin-top: 14px;
+
+  .public-wrap,
+  .public-wrap.narrow,
+  .public-wrap.two-col {
+    width: calc(100% - 24px);
+    max-width: none;
+    margin: 14px auto 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 40px;
   }
   .trust-grid,
   .form-grid {
@@ -3342,3 +3403,38 @@ td a:hover {
     width: 100%;
   }
 }
+
+/* =========================================================
+   PUBLIC PAGE CENTERING SAFETY
+   Keeps every public-facing page centered on narrow and
+   unusual device viewports.
+   ========================================================= */
+
+.public-page > .public-wrap,
+.public-page > main.public-wrap {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 430px) {
+  .public-header {
+    width: calc(100% - 20px);
+  }
+
+  .public-wrap,
+  .public-wrap.narrow,
+  .public-wrap.two-col {
+    width: calc(100% - 20px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 32px;
+  }
+
+  .public-card {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 20px;
+  }
+}
+
