@@ -680,27 +680,36 @@ h3 {
 /* --- Officer Shell & Sidebar ---  */
 
 .shell {
+  width: 100%;
   min-height: 100vh;
   min-height: 100dvh;
-  display: grid;
-  grid-template-columns: 246px minmax(0, 1fr);
-  overflow: visible;
 }
 
 .sidebar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  bottom: 0;
+
+  width: 246px;
   height: 100vh;
   height: 100dvh;
-  min-height: 0;
+
   box-sizing: border-box;
+
   background: var(--primary-deep);
   border-right: 1px solid var(--primary-deep);
+
   padding: 18px 16px 14px;
+
   display: flex;
   flex-direction: column;
+
   color: #cdd9ef;
+
   overflow: hidden;
+
+  z-index: 100;
 }
 
 .sidebar .brand-lockup strong {
@@ -776,6 +785,9 @@ h3 {
   min-width: 0;
   min-height: 100vh;
   min-height: 100dvh;
+
+  margin-left: 246px;
+
   overflow-x: hidden;
 }
 
@@ -1209,19 +1221,31 @@ td a:hover {
 
 @media (max-width: 980px) {
   .shell {
-    grid-template-columns: 210px minmax(0, 1fr);
+    width: 100%;
   }
+
   .sidebar {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: 210px;
     height: 100vh;
     height: 100dvh;
-    min-height: 0;
+
     flex-direction: column;
     align-items: stretch;
+
     gap: 0;
+
     padding: 16px 14px 12px;
+
     overflow: hidden;
+  }
+
+  .shell-main {
+    margin-left: 210px;
   }
   .sidebar nav {
     display: grid;
@@ -1295,19 +1319,29 @@ td a:hover {
   }
   
   .shell {
-    display: grid;
-    grid-template-columns: 78px minmax(0, 1fr);
+    width: 100%;
   }
+
   .sidebar {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: 78px;
     height: 100vh;
     height: 100dvh;
-    min-height: 0;
+
     padding: 10px 8px 8px;
+
     overflow: hidden;
+
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .shell-main {
+    margin-left: 78px;
   }
   .sidebar .brand-lockup {
     display: flex;
@@ -1400,6 +1434,11 @@ td a:hover {
   .shell {
     display: block;
   }
+
+  .shell-main {
+    margin-left: 0;
+  }
+
   .page {
     padding: 0;
   }
@@ -3438,3 +3477,17 @@ td a:hover {
   }
 }
 
+
+/* =========================================================
+   FIXED OFFICER SIDEBAR SAFETY
+   Keeps the sidebar full-height while the content scrolls.
+   The sidebar itself never scrolls.
+   ========================================================= */
+
+.sidebar {
+  overscroll-behavior: none;
+}
+
+.shell-main {
+  width: auto;
+}
