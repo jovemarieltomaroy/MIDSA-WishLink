@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowDown, ArrowUpRight, Gift, Image, Heart, Sparkles } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, Asterisk, Gift, Image, Heart, Sparkles } from 'lucide-react';
 import logo from '../assets/branding/campaign-logo-transparent.png';
 import letterLogo from '../assets/branding/logobranded.png';
 import GalleryGiftTag from '../components/GalleryGiftTag';
@@ -24,7 +24,7 @@ export default function LandingPage() {
           </div>
 
           <div className="brand-tag-scene">
-            <span className="brand-doodle doodle-star" aria-hidden="true">✳</span>
+            <span className="brand-doodle doodle-star" aria-hidden="true"><Asterisk size={62} strokeWidth={1.5} /></span>
             <GalleryGiftTag />
             <span className="brand-doodle doodle-heart" aria-hidden="true">♡</span>
           </div>
