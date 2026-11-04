@@ -6,6 +6,7 @@ import rateLimit from 'express-rate-limit';
 
 import {
   getPublicWish,
+  getPublicWishes,
   requestEmailVerification,
   verifyReservation
 } from '../controllers/publicController.js';
@@ -16,6 +17,8 @@ const router =
 /*
  * Normal public GET requests.
  */
+router.get('/wishes', getPublicWishes);
+
 router.get(
   '/wishes/:code',
   getPublicWish

@@ -1,23 +1,23 @@
-@import url('https\://fonts.googleapis.com/css2?family=Manrope:wght\@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@500;600;700&display=swap');
 
 
 :root {
-  --bg: #eef2f8;
+  --bg: #f3eddf;
   --paper: #ffffff;
-  --paper-2: #f5f8fc;
-  --ink: #101a2b;
-  --ink-soft: #2c3a52;
-  --muted: #64748b;
-  --primary: #2454d1;
-  --primary-deep: #14264a;
-  --primary-hover: #1c3fae;
-  --primary-tint: #e3ecfb;
+  --paper-2: #f7f2e7;
+  --ink: #253d31;
+  --ink-soft: #435546;
+  --muted: #727365;
+  --primary: #086747;
+  --primary-deep: #064d38;
+  --primary-hover: #07533d;
+  --primary-tint: #e4eee1;
   --amber: #e8a33d;
   --amber-tint: #fbeed9;
   --amber-ink: #8a5a13;
   --teal: #0f6e56;
   --teal-tint: #e1f2ee;
-  --line: #dde4ee;
+  --line: #ddd8c8;
   --shadow: 0 1px 2px rgba(20, 38, 74, 0.05), 0 10px 28px rgba(20, 38, 74, 0.07);
   font-family: 'Manrope', system-ui, sans-serif;
   color: var(--ink);
@@ -218,7 +218,7 @@ h3 {
 }
 
 .secondary-button:hover {
-  background: #d3e0f8;
+  background: #d8e5d3;
 }
 
 .ghost-button {
@@ -229,7 +229,7 @@ h3 {
 }
 
 .ghost-button:hover {
-  background: #eaf0f8;
+  background: #eef1e5;
 }
 
 .ghost-button.full {
@@ -691,7 +691,7 @@ h3 {
   left: 0;
   bottom: 0;
 
-  width: 246px;
+  width: 224px;
   height: 100vh;
   height: 100dvh;
 
@@ -717,7 +717,7 @@ h3 {
 }
 
 .sidebar .brand-lockup span {
-  color: #8fa3c9;
+  color: #bbc9af;
 }
 
 .sidebar nav {
@@ -732,7 +732,7 @@ h3 {
   gap: 10px;
   padding: 10px 12px;
   border-radius: 9px;
-  color: #a9bbdd;
+  color: #c0d0ba;
   font-weight: 600;
   font-size: 14px;
 }
@@ -766,7 +766,7 @@ h3 {
 }
 
 .user-chip small {
-  color: #8fa3c9;
+  color: #bbc9af;
   text-transform: capitalize;
   margin-top: 2px;
 }
@@ -786,7 +786,7 @@ h3 {
   min-height: 100vh;
   min-height: 100dvh;
 
-  margin-left: 246px;
+  margin-left: 224px;
 
   overflow-x: hidden;
 }
@@ -1513,7 +1513,7 @@ td a:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #2f63d9;
+  color: #086747;
   flex-shrink: 0;
 }
 
@@ -1990,8 +1990,8 @@ td a:hover {
 }
 
 .campaign-completed {
-  background: #edf2fb;
-  color: #355e9d;
+  background: #edf2e7;
+  color: #395e43;
 }
 
 .campaign-archived {
@@ -2565,7 +2565,7 @@ td a:hover {
   align-items: center;
   gap: 7px;
   margin-bottom: 12px;
-  color: #2f62dc;
+  color: #086747;
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing:
@@ -2613,8 +2613,8 @@ td a:hover {
   background:
     linear-gradient(
       135deg,
-      #2f62dc 0%,
-      #325bd0 100%
+      #086747 0%,
+      #07533d 100%
     );
   box-shadow:
     0 14px 30px

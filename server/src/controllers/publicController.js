@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 
 import Wish from '../models/Wish.js';
+import Campaign from '../models/Campaign.js';
 import EmailVerification from '../models/EmailVerification.js';
 
 import {
@@ -23,6 +24,22 @@ import {
 
 const OTP_EXPIRY_MINUTES = 10;
 const MAX_VERIFICATION_ATTEMPTS = 5;
+
+export async function getPublicWishes(req, res) {
+  await releaseExpiredReservations();
+  const page = Math.max(1, Math.min(10000, Number.parseInt(req.query.page, 10) || 1));
+  const campaigns = await Campaign.find({ status: 'active', deadline: { $gte: new Date() } }).select('_id');
+  const filter = { isPublished: true, campaign: { $in: campaigns.map(campaign => campaign._id) }, status: { $in: ['available', 'reserved', 'granted'] } };
+  if (['available', 'reserved', 'granted'].includes(req.query.status)) filter.status = req.query.status;
+  const [wishes, total] = await Promise.all([
+    Wish.find(filter).select('ornamentCode nickname wishItems ageGroup status campaign reservationExpiresAt').populate('campaign').sort({ createdAt: -1, _id: -1 }).skip((page - 1) * 24).limit(24),
+    Wish.countDocuments(filter),
+  ]);
+  return res.json({ wishes: wishes.map(wish => {
+    const safe = publicWish(wish);
+    return { ornamentCode: safe.ornamentCode, nickname: safe.nickname, wishItems: safe.wishItems, status: safe.status, campaign: safe.campaign, campaignState: safe.campaignState };
+  }), page, total, pages: Math.ceil(total / 24) });
+}
 
 
 /*

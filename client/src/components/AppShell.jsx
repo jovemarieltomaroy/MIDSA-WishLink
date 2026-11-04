@@ -21,7 +21,7 @@ import {
   useCampaign
 } from '../context/CampaignContext';
 
-import logo from '../assets/logo.png';
+import logo from '../assets/branding/midsakatuparan-logo.png';
 
 export default function AppShell() {
   const {
@@ -54,7 +54,7 @@ export default function AppShell() {
           <img
             className="brand-mark"
             src={logo}
-            alt="MIDSA WishLink Logo"
+            alt="MIDSAkatuparan"
           />
 
           <div>

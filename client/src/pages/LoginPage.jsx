@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Snowflake } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import logo from '../assets/logo.png';
+import logo from '../assets/branding/midsakatuparan-logo.png';
 
 function getFriendlyErrorMessage(error) {
   const firebaseCode = error?.code || '';
@@ -153,7 +153,7 @@ export default function LoginPage() {
           <div className="wishlink-login-logo-wrap">
             <img
               src={logo}
-              alt="MIDSA WishLink"
+              alt="MIDSAkatuparan"
               className="wishlink-login-main-logo"
             />
           </div>
@@ -167,15 +167,7 @@ export default function LoginPage() {
 
         <section className="wishlink-login-right">
           <div className="wishlink-login-panel">
-            <div className="wishlink-login-eyebrow">
-              <Snowflake
-                size={14}
-              />
-
-              <span>
-                WELCOME BACK
-              </span>
-            </div>
+            <Link to="/" className="brand-login-home">← Back to MIDSAkatuparan</Link>
 
             <h1>
               Sign in

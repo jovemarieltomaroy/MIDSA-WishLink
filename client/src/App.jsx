@@ -17,6 +17,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AppShell from './components/AppShell';
 
 import PublicWishPage from './pages/PublicWishPage';
+import LandingPage from './pages/LandingPage';
+import WishGalleryPage from './pages/WishGalleryPage';
 import GrantWishPage from './pages/GrantWishPage';
 import LoginPage from './pages/LoginPage';
 
@@ -32,20 +34,23 @@ import CampaignDetailPage from './pages/CampaignDetailPage';
 import AccountSettingsPage from './pages/AccountSettingsPage';
 
 import './styles/main.css';
+import './styles/branding.css';
+import './styles/public-campaign.css';
+import './styles/tag-assets.css';
+import './styles/tag-variants.css';
+import './styles/gallery.css';
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          <Route path="/gallery" element={<WishGalleryPage />} />
 
           <Route
             path="/"
             element={
-              <Navigate
-                to="/officer/login"
-                replace
-              />
+              <LandingPage />
             }
           />
 

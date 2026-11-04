@@ -1,0 +1,83 @@
+/* MIDSAkatuparan: paper, forest green, Christmas red, and handwritten notes.
+   Logo and paper texture are extracted from the supplied branding PDF. */
+:root {
+  --bg: #f3eddf;
+  --paper: #fffdf6;
+  --paper-2: #f7f2e7;
+  --ink: #253d31;
+  --ink-soft: #435546;
+  --muted: #727365;
+  --primary: #086747;
+  --primary-deep: #064d38;
+  --primary-hover: #07533d;
+  --primary-tint: #e4eee1;
+  --teal: #086747;
+  --teal-tint: #e8f0e4;
+  --amber: #b78b39;
+  --amber-tint: #f5e9cb;
+  --amber-ink: #7c5c20;
+  --line: #ddd8c8;
+  --brand-red: #ae2d25;
+  --brand-cream: #f9f2df;
+  --brand-script: 'Caveat', 'Segoe Print', cursive;
+  --brand-public-background: linear-gradient(#f5efdfbd, #f5efdfbd), url('../assets/branding/notebook-paper.jpg') center / 1000px auto repeat;
+  --shadow: 0 2px 3px #453e2510, 0 12px 30px #453e2510;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); }
+.brand-landing { background: var(--brand-public-background); color: var(--ink); min-height: 100vh; }
+.brand-nav, .brand-hero, .brand-section, .brand-footer { width: min(1160px, calc(100% - 80px)); margin-inline: auto; }
+.brand-nav { min-height: 116px; display: flex; align-items: center; justify-content: space-between; gap: 26px; border-bottom: 1px solid #365d3630; }
+.brand-nav img { width: 155px; height: 86px; object-fit: contain; display: block; }
+.brand-nav nav { display: flex; align-items: center; gap: 32px; font-size: 12px; font-weight: 700; }
+.brand-portal-link { display: inline-flex; align-items: center; gap: 12px; padding: 12px 18px; border: 1px solid #086747; border-radius: 6px; }
+.brand-nav a:hover, .brand-footer a:hover { color: var(--brand-red); }
+.brand-hero { display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: 60px; padding-block: 76px 84px; }
+.brand-kicker { display: inline-flex; align-items: center; gap: 10px; color: var(--primary); font-size: 10px; letter-spacing: 2.1px; font-weight: 800; }
+.brand-kicker > span { color: var(--brand-red); font-size: 22px; }
+.brand-hero h1 { font-family: Georgia, 'Times New Roman', serif; font-weight: 500; font-size: clamp(40px, 5.3vw, 68px); line-height: 1.08; letter-spacing: -2.5px; margin: 20px 0 24px; }
+.brand-hero h1 em { font-family: var(--brand-script); color: var(--brand-red); font-weight: 600; font-style: normal; letter-spacing: -1.6px; font-size: 1.12em; }
+.brand-hero-copy > p { max-width: 360px; line-height: 1.85; font-size: 14px; color: #66705f; margin-bottom: 28px; }
+.brand-button { display: inline-flex; align-items: center; gap: 22px; background: var(--primary); color: #fffdf2; padding: 16px 22px; border-radius: 6px; box-shadow: 3px 4px 0 #064d3820; font-size: 12px; font-weight: 700; transition: background .2s; }
+.brand-button:hover { background: var(--primary-hover); }
+.brand-handwritten { font-family: var(--brand-script); font-weight: 600; }
+.hero-postscript { display: block; color: #7c7864; font-size: 22px; margin: 18px 0 0 6px; transform: rotate(-3deg); }
+.brand-tag-scene { position: relative; padding: 24px 20px 34px; }
+.brand-gift-tag { position: relative; max-width: 345px; margin: auto; padding: 15px; border-radius: 55px 55px 12px 12px; background: repeating-linear-gradient(0deg, #b32a23 0 13px, #eee6cd 13px 31px); box-shadow: 10px 13px 0 #244c3220, 0 14px 30px #4540271a; transform: rotate(6deg); }
+.brand-tag-paper { padding: 40px 20px 23px; background: #fcf5e5; border: 9px solid #076348; border-radius: 40px 40px 7px 7px; position: relative; }
+.brand-tag-paper > .brand-handwritten { display: block; text-align: center; font-size: 34px; color: var(--brand-red); line-height: .95; margin-bottom: 24px; }
+.brand-tag-hole { position: absolute; top: -3px; left: calc(50% - 10px); width: 20px; height: 20px; border-radius: 50%; background: #f3ead7; box-shadow: inset 0 2px 2px #0002; }
+.brand-tag-string { position: absolute; z-index: 1; height: 100px; border-left: 2px solid var(--brand-red); top: -84px; left: 50%; transform: rotate(-6deg); }
+.brand-photo-placeholder { min-height: 185px; background: #e6e8da; border: 1px dashed #859580; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; color: #63715e; }
+.brand-photo-placeholder strong { font-size: 11px; }.brand-photo-placeholder span { font-size: 9px; text-transform: uppercase; letter-spacing: 1.3px; }
+.brand-tag-to { display: block; font-family: Georgia, serif; font-style: italic; font-weight: 700; font-size: 12px; margin-top: 22px; }.brand-tag-to > span { font-family: var(--brand-script); font-weight: 500; font-size: 20px; margin-left: 8px; }
+.brand-doodle { position: absolute; font-family: var(--brand-script); color: var(--brand-red); }.doodle-star { top: 0; right: -5px; font-size: 62px; transform: rotate(14deg); }.doodle-heart { bottom: 1px; left: -15px; font-size: 84px; transform: rotate(-16deg); }
+.brand-tag-caption { display: block; text-align: center; font-size: 21px; margin-top: 24px; transform: rotate(3deg); color: #79755e; }
+.brand-ribbon { display: flex; gap: 40px; justify-content: center; align-items: center; padding: 19px 24px; background: var(--primary-deep); color: #f6efd8; font-family: var(--brand-script); font-size: 25px; }.brand-ribbon > span:nth-child(even) { color: #dfc278; font-size: 20px; }
+.brand-section { padding-block: 70px; scroll-margin-top: 24px; }.brand-section h2, .brand-closing h2 { font-family: Georgia, serif; font-size: clamp(28px, 3.4vw, 42px); font-weight: 400; line-height: 1.2; letter-spacing: -1px; margin: 15px 0 18px; }.brand-section h2 em, .brand-closing h2 em { font-family: var(--brand-script); font-weight: 600; color: var(--primary); font-style: normal; font-size: 1.2em; }
+.brand-about { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 100px; }.brand-about > div > p { color: var(--muted); font-size: 12px; }.brand-note { position: relative; background: #fffaf0; padding: 38px 32px 26px; box-shadow: 3px 6px 18px #38311d14; transform: rotate(-2deg); border: 1px solid #e4dac3; }
+.brand-tape { position: absolute; top: -12px; left: calc(50% - 46px); width: 92px; height: 25px; background: #d6b85a66; transform: rotate(4deg); }.brand-placeholder-label { display: block; letter-spacing: 1.4px; color: #8c7050; font-size: 8px; font-weight: 800; }.brand-note h3 { font-family: var(--brand-script); font-size: 31px; color: var(--primary); margin: 18px 0 8px; }.brand-note p { font-size: 12px; color: #746f60; line-height: 1.9; }.brand-note > .brand-handwritten { color: var(--brand-red); font-size: 24px; }
+.brand-details { border-top: 1px solid #365d3625; }.brand-section-heading { text-align: center; margin-bottom: 34px; }.brand-section-heading > p { color: var(--muted); font-size: 12px; line-height: 1.8; }
+.brand-detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }.brand-detail-card { position: relative; padding: 30px 26px; border: 1px solid #bdc6b5; background: #fdf8eb; border-radius: 40px 40px 5px 5px; border-top: 6px solid var(--primary); }.brand-detail-card:nth-child(2) { border-top-color: var(--brand-red); }.brand-detail-card > svg { color: var(--primary); margin-bottom: 20px; }.brand-detail-card:nth-child(2) > svg { color: var(--brand-red); }.brand-detail-card h3 { font-family: Georgia, serif; font-size: 18px; font-weight: 400; margin: 12px 0; }.brand-detail-card p { font-size: 12px; line-height: 1.85; color: var(--muted); margin: 0; }
+.brand-updates { padding-top: 24px; }.brand-scrapbook-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; padding-top: 8px; }.brand-photo-card { background: #fffcf5; margin: 0; padding: 12px 12px 18px; box-shadow: 2px 5px 15px #3f39221a; transform: rotate(-3deg); }.brand-photo-card:nth-child(2) { transform: rotate(3deg); }.brand-photo-card:nth-child(3) { transform: rotate(-1deg); }.brand-photo-card > div { background: #e5e7da; aspect-ratio: 4/3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #77806c; border: 1px dashed #a3aa96; }.brand-photo-card:nth-child(2) > div { background: #edddd2; color: #9b7d68; border-color: #c4a58a; }.brand-photo-card > div > span { font-size: 10px; }.brand-photo-card figcaption { text-align: center; color: var(--primary); font-size: 25px; padding-top: 15px; }
+.brand-closing { text-align: center; background: #e3e9db; border-block: 1px solid #c4ceb8; padding: 48px 24px 54px; }.brand-closing > span { font-size: 36px; color: var(--brand-red); }.brand-closing h2 { margin-top: 8px; }.brand-closing p { font-size: 12px; color: #68705f; margin-bottom: 24px; }
+.brand-footer { display: flex; align-items: center; gap: 32px; padding-block: 30px; }.brand-footer img { width: 120px; display: block; }.brand-footer p { flex: 1; font-size: 10px; color: var(--primary); margin: 0; line-height: 1.9; }.brand-footer p span { display: block; color: var(--muted); }.brand-footer > a:last-child { font-size: 11px; display: inline-flex; align-items: center; gap: 8px; }
+
+/* Apply the same brand to the existing workflows. */
+.sidebar { background: #064d38; border-color: #064d38; color: #f1ecd9; }
+.sidebar .brand-lockup { flex-direction: column; align-items: flex-start; gap: 10px; }
+.sidebar .brand-mark { width: 136px; height: 76px; border-radius: 0; }
+.sidebar .brand-lockup span { color: #c0d0ba; }.sidebar nav a.active { background: #f4ecd5; color: #07543c; }.sidebar nav a:hover { background: #ffffff14; color: #fff; }.sidebar nav a.active:hover { background: #f4ecd5; color: #07543c; }
+.active-campaign-card { background: #ffffff0d; border-color: #ffffff26; }.sidebar .ghost-button { color: #eee7d5; border-color: #ffffff30; }
+.primary-button { background: var(--primary); border-color: var(--primary); }.primary-button:hover { background: var(--primary-hover); }.panel, .stat-card { background: #fffdf7; box-shadow: var(--shadow); }.stat-icon { background: var(--primary-tint); color: var(--primary); }.page-head h1 { color: var(--primary-deep); }
+.public-page, .brand-public-page { background: var(--brand-public-background) !important; }.public-page header, .brand-public-page header { border-bottom: 1px solid #08674720; background: #fffaf280; }.public-page header img, .brand-public-page header img { width: 112px !important; height: 64px !important; }.public-page header span, .brand-public-page header span { color: var(--primary-deep) !important; }.public-page footer, .brand-public-page footer { color: #66705d !important; }.public-card { border-color: #dcd5c2 !important; background: #fffaf0 !important; }
+.wishlink-snow-layer, .wishlink-login-snow-layer { display: none; }
+.wishlink-login-page { background: var(--brand-public-background); position: relative; min-height: 100dvh; height: auto; overflow: auto; }.wishlink-login-shell { border-color: #d4cbb5; background: #fcf6e8; box-shadow: 0 18px 60px #3b351e24; }.wishlink-login-left { background: #07553d; }.wishlink-login-right { background: #fffcf4; }.wishlink-login-main-logo { width: min(100%, 330px); height: auto; filter: drop-shadow(0 6px 8px #00271a30); }.wishlink-login-brand-text span, .wishlink-login-left-footer { color: #eee7d3; }.wishlink-login-eyebrow { color: var(--primary); }.wishlink-login-panel h1 { color: var(--primary-deep); }.wishlink-google-button { background: var(--primary); box-shadow: 0 8px 20px #07553d26; }.wishlink-google-button:hover { background: var(--primary-hover); }
+.brand-login-home { display: inline-block; font-size: 12px; color: var(--primary); margin-bottom: 26px; }
+@media (max-width: 850px) {
+  .brand-nav, .brand-hero, .brand-section, .brand-footer { width: calc(100% - 40px); }.brand-nav nav { gap: 16px; }.brand-hero { gap: 24px; padding-block: 64px; }.brand-hero h1 { font-size: 44px; letter-spacing: -1.5px; }.brand-tag-scene { padding-inline: 4px; }.brand-gift-tag { padding: 11px; }.brand-tag-paper { padding: 36px 12px 20px; }.brand-tag-paper > .brand-handwritten { font-size: 28px; }.brand-photo-placeholder { min-height: 150px; }.doodle-heart { left: -16px; }.brand-about { gap: 35px; }.brand-ribbon { gap: 20px; font-size: 21px; }.brand-section { padding-block: 50px; }.brand-scrapbook-grid { gap: 18px; }.brand-photo-card figcaption { font-size: 21px; }.brand-detail-grid { gap: 14px; }.brand-detail-card { padding: 25px 18px; }
+}
+@media (max-width: 600px) {
+  .brand-nav { min-height: 96px; gap: 12px; }.brand-nav img { width: 120px; height: 70px; }.brand-nav nav > a:not(:last-child) { display: none; }.brand-portal-link { padding: 10px 12px; font-size: 10px; }.brand-hero { grid-template-columns: 1fr; padding-block: 38px 32px; gap: 60px; }.brand-hero h1 { font-size: clamp(41px, 9vw, 56px); }.brand-tag-scene { max-width: 330px; width: 100%; margin: auto; }.brand-gift-tag { max-width: 280px; }.brand-tag-string { height: 72px; top: -56px; }.doodle-star { right: 0; }.brand-tag-caption { font-size: 19px; }.brand-ribbon { gap: 14px; flex-wrap: wrap; font-size: 20px; }.brand-ribbon > span:nth-last-child(-n+2) { display: none; }.brand-about { grid-template-columns: 1fr; gap: 28px; }.brand-about > div { text-align: center; }.brand-note { padding: 32px 25px; }.brand-detail-grid { grid-template-columns: 1fr; gap: 20px; }.brand-detail-card { border-radius: 24px 24px 4px 4px; padding: 24px; }.brand-scrapbook-grid { grid-template-columns: 1fr; gap: 30px; padding-inline: 12px; }.brand-photo-card > div { aspect-ratio: 16/10; }.brand-footer { flex-wrap: wrap; gap: 18px; }.brand-footer img { width: 104px; }.brand-footer p { min-width: 150px; }.brand-footer > a:last-child { margin-left: 122px; }.public-page header img, .brand-public-page header img { width: 100px !important; }.sidebar .brand-lockup { gap: 7px; }.sidebar .brand-mark { width: 110px; height: 60px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }

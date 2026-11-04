@@ -68,12 +68,12 @@ export async function getPublicOrganizationSettings() {
       contactName:
         settings.contactName ||
         process.env.ORG_CONTACT_NAME ||
-        'MIDSA Christmas Program Team',
+        'MIDSA Public Relations Committee',
 
       contactEmail:
         settings.contactEmail ||
         process.env.ORG_CONTACT_EMAIL ||
-        '',
+        'midsapartnerships@gmail.com',
 
       contactPhone:
         settings.contactPhone ||

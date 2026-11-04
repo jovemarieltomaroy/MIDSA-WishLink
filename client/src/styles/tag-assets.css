@@ -1,0 +1,90 @@
+/* Single artwork exports from the updated branding PDF. */
+.brand-artwork .brand-art-scene {
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  object-fit: cover;
+  object-position: center;
+  mix-blend-mode: normal;
+  opacity: .38;
+}
+.brand-artwork { position: fixed; }
+.brand-landing { background: #f8f4e9; }
+.brand-landing .brand-art-scene { object-fit: contain; opacity: .2; }
+.brand-landing .brand-artwork::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #faf6ed66, #faf6edbf 35%, #faf6ed80); }
+.brand-landing .brand-hero-copy, .brand-landing .brand-about > div { background: #faf6eddb; border-radius: 12px; padding: 24px; }
+.brand-landing .brand-section-heading { background: #faf6ede6; border-radius: 12px; padding: 18px; }
+.brand-landing .brand-footer { padding-bottom: 32px; }
+.wish-tag-contents h1 { padding-left: .12em; }
+.brand-landing .brand-gift-tag { aspect-ratio: 706 / 1184; display: flex; align-items: center; }
+.brand-landing .brand-tag-paper { width: 100%; }
+.qr-tag-preview { justify-items: center; padding: 20px; }
+.qr-gift-tag { width: min(100%, 330px); height: auto; display: block; filter: drop-shadow(3px 6px 4px #423d2426); }
+.qr-tag-hint { margin: 0; text-align: center; color: var(--muted); font-size: 11px; line-height: 1.7; }
+@media (max-width: 600px) {
+  .brand-artwork .brand-art-scene { object-fit: cover; object-position: center; }
+  .brand-landing .brand-art-scene { object-fit: contain; }
+  .brand-landing .brand-hero-copy { padding: 16px; }
+  .brand-landing .brand-footer { padding-bottom: 28px; }
+  .qr-tag-preview { padding: 14px; }
+}
+
+/* Fit the wish overview into the viewport without clipping long wishes. */
+.public-compact { --wish-tag-width: clamp(210px, calc((100dvh - 220px) * .596), 280px); }
+.public-compact .campaign-public-header { min-height: 64px; }
+.public-compact .campaign-public-header img { width: 100px; height: 54px; }
+.public-compact .campaign-public-content { display: flex; align-items: center; }
+.public-compact .campaign-public-footer { padding: 10px 16px 16px; gap: 2px; font-size: 8px; }
+.public-compact .campaign-public-footer strong { font-size: 18px; }
+.public-compact .public-wish-main { width: min(900px, calc(100% - 40px)); margin: 12px auto; }
+.public-compact .public-wish-heading { margin-bottom: 14px; }
+.public-compact .public-wish-heading > p { margin: 6px 0 0; font-size: 11px; }
+.public-compact .public-wish-grid { grid-template-columns: var(--wish-tag-width) minmax(0, 1fr); gap: 36px; }
+.public-compact .wish-gift-tag { min-height: calc(var(--wish-tag-width) / var(--tag-ratio, .596)); aspect-ratio: auto; }
+.public-compact .wish-tag-contents { padding: 28% 21% 20%; }
+.public-compact .wish-tag-contents h1 { font-size: 36px; margin: 6px 0 18px; }
+.public-compact .wish-tag-label { font-size: 8px; letter-spacing: 1.2px; }
+.public-compact .wish-tag-contents ul { margin-top: 10px; }
+.public-compact .wish-tag-contents li { font-size: 12px; padding: 8px 0; gap: 7px; }
+.public-compact .wish-tag-signoff { padding-top: 18px; }
+.public-compact .wish-tag-signoff > span:last-child { font-size: 22px; }
+.public-compact .wish-action-card { padding: 22px; }
+.public-compact .wish-action-card h2 { font-size: 24px; margin: 12px 0; }
+.public-compact .wish-action-card > p { font-size: 12px; line-height: 1.7; margin-bottom: 14px; }
+.wish-step-details { margin: 12px 0 16px; font-size: 12px; color: #305d41; }
+.wish-step-details summary { cursor: pointer; padding-block: 8px; font-weight: 700; }
+.wish-step-details .wish-next-steps { margin: 12px 0; gap: 12px; }
+.public-compact .wish-reserve-button { padding: 14px 18px; }
+.public-compact .wish-privacy-note { margin-top: 14px; padding-top: 12px; }
+.public-compact .wish-state-notice { padding: 14px; margin-top: 14px; }
+@media (max-width: 600px) {
+  .public-compact { --wish-tag-width: clamp(160px, calc((100dvh - 350px) * .596), 210px); }
+  .public-compact .campaign-public-header { min-height: 58px; }
+  .public-compact .campaign-public-header img { height: 48px; width: 90px; }
+  .public-compact .public-wish-main { margin: 8px auto; width: calc(100% - 32px); }
+  .public-compact .public-wish-heading { margin-bottom: 12px; }
+  .public-compact .public-wish-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .public-compact .wish-gift-tag { width: var(--wish-tag-width); max-width: 100%; margin-inline: auto; }
+  .public-compact .wish-tag-contents h1 { font-size: 30px; margin-bottom: 12px; }
+  .public-compact .wish-tag-contents li { font-size: 11px; padding-block: 6px; }
+  .public-compact .wish-tag-label { font-size: 7px; letter-spacing: .7px; }
+  .public-compact .wish-tag-signoff { padding-top: 12px; }
+  .public-compact .wish-tag-signoff > span:last-child { font-size: 18px; }
+  .public-compact .wish-action-card { padding: 14px 18px; }
+  .public-compact .wish-action-card h2 { font-size: 19px; margin: 8px 0; }
+  .public-compact .wish-action-card > p { display: none; }
+  .public-compact .wish-privacy-note { margin-top: 10px; padding-top: 8px; }
+  .public-compact .wish-privacy-note p { font-size: 9px; }
+  .public-compact .wish-step-details { margin: 2px 0 8px; font-size: 11px; }
+  .public-compact .campaign-public-footer { padding: 6px 16px 10px; }
+}
+@media (max-width: 600px) and (max-height: 740px) {
+  .public-compact { --wish-tag-width: clamp(150px, calc((100dvh - 390px) * .596), 200px); }
+  .public-compact .wish-tag-contents { padding-top: 25%; padding-bottom: 15%; }
+  .public-compact .wish-tag-contents h1 { font-size: 28px; margin: 4px 0 10px; }
+  .public-compact .wish-tag-signoff { padding-top: 8px; }
+  .public-compact .wish-tag-signoff > span:last-child { font-size: 16px; }
+  .public-compact .wish-action-card h2 { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .public-compact .campaign-public-footer strong { font-size: 16px; }
+  .public-compact .campaign-public-footer { padding-block: 4px 6px; }
+}

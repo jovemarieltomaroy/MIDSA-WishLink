@@ -1,6 +1,5 @@
 import {
   useEffect,
-  useMemo,
   useState
 } from 'react';
 
@@ -26,7 +25,8 @@ import {
   getErrorMessage
 } from '../utils/api';
 
-import logo from '../assets/logo.png';
+import PublicLayout from '../components/PublicLayout';
+import { getTagStyle } from '../utils/tagDesigns';
 
 const empty = {
   fullName: '',
@@ -341,10 +341,18 @@ export default function GrantWishPage() {
     setError('');
   }
 
+  if (!wish) {
+    return <PublicLayout><main className="wish-message-card">
+      <h1>{error ? 'Wish unavailable' : 'Loading your wish…'}</h1>
+      <p role={error ? 'alert' : 'status'}>{error || 'Getting the reservation details.'}</p>
+      {error && <button type="button" className="primary-button" onClick={() => navigate(`/wish/${code}`)}>Back to wish</button>}
+    </main></PublicLayout>;
+  }
+
   if (done) {
     return (
-      <PublicFrame>
-        <main
+      <PublicLayout stage={done ? 'confirmed' : step === 'form' ? 'details' : 'verify'}>
+        <main className="grant-public-main"
           style={{
             width: '100%',
             maxWidth: '780px',
@@ -359,7 +367,7 @@ export default function GrantWishPage() {
               position: 'relative',
               overflow: 'hidden',
               background:
-                  'linear-gradient(180deg, #fffdfad5 0%, #ffffff 100%)',
+                  'linear-gradient(180deg, #fffaf0 0%, #ffffff 100%)',
               borderRadius: '28px',
               padding: '42px',
               boxShadow:
@@ -408,7 +416,7 @@ export default function GrantWishPage() {
                 margin:
                   '0 0 12px',
                 color:
-                  '#17243a',
+                  '#243e32',
                 fontSize:
                   'clamp(2rem, 5vw, 2.8rem)'
               }}
@@ -509,13 +517,13 @@ export default function GrantWishPage() {
             </button>
           </section>
         </main>
-      </PublicFrame>
+      </PublicLayout>
     );
   }
 
   return (
-    <PublicFrame>
-      <main
+    <PublicLayout stage={done ? 'confirmed' : step === 'form' ? 'details' : 'verify'}>
+      <main className="grant-public-main"
         style={{
           width: '100%',
           maxWidth: '1120px',
@@ -586,7 +594,7 @@ export default function GrantWishPage() {
               overflow:
                 'hidden',
               background:
-                  'linear-gradient(180deg, #fffdfad5 0%, #ffffff 100%)',
+                  'linear-gradient(180deg, #fffaf0 0%, #ffffff 100%)',
               borderRadius:
                 '28px',
               padding:
@@ -638,7 +646,7 @@ export default function GrantWishPage() {
                     margin:
                       '0 0 8px',
                     color:
-                      '#17243a',
+                      '#243e32',
                     fontSize:
                       'clamp(2rem, 4vw, 2.7rem)'
                   }}
@@ -647,7 +655,7 @@ export default function GrantWishPage() {
                   <span
                     style={{
                       color:
-                        '#2f62dc'
+                        '#086747'
                     }}
                   >
                     {wish?.nickname ||
@@ -661,7 +669,7 @@ export default function GrantWishPage() {
                     margin:
                       '0 0 22px',
                     color:
-                      '#64758c',
+                      '#68735f',
                     lineHeight:
                       1.65
                   }}
@@ -904,9 +912,9 @@ export default function GrantWishPage() {
                     borderRadius:
                       '999px',
                     background:
-                      '#eef4ff',
+                      '#e9efdf',
                     color:
-                      '#2f62dc',
+                      '#086747',
                     fontWeight:
                       700,
                     fontSize:
@@ -927,7 +935,7 @@ export default function GrantWishPage() {
                     margin:
                       '0 0 8px',
                     color:
-                      '#17243a'
+                      '#243e32'
                   }}
                 >
                   Check your inbox.
@@ -951,7 +959,7 @@ export default function GrantWishPage() {
                     marginBottom:
                       '20px',
                     color:
-                      '#17243a',
+                      '#243e32',
                     wordBreak:
                       'break-word'
                   }}
@@ -989,7 +997,7 @@ export default function GrantWishPage() {
                       fontWeight:
                         650,
                       color:
-                        '#17243a',
+                        '#243e32',
                       marginBottom:
                         '8px'
                     }}
@@ -1038,11 +1046,11 @@ export default function GrantWishPage() {
                       boxSizing:
                         'border-box',
                       border:
-                        '1px solid #d7e0ed',
+                        '1px solid #d6d4be',
                       borderRadius:
                         '14px',
                       background:
-                        '#f8fafc',
+                        '#fdfaf1',
                       textAlign:
                         'center',
                       fontSize:
@@ -1052,7 +1060,7 @@ export default function GrantWishPage() {
                       fontWeight:
                         800,
                       color:
-                        '#17243a',
+                        '#243e32',
                       outline:
                         'none',
                       marginBottom:
@@ -1105,7 +1113,7 @@ export default function GrantWishPage() {
                       background:
                         'transparent',
                       color:
-                        '#2f62dc',
+                        '#086747',
                       fontWeight:
                         650,
                       cursor:
@@ -1121,6 +1129,7 @@ export default function GrantWishPage() {
 
           <aside
             style={{
+              ...getTagStyle(code),
               display:
                 'grid',
               gap:
@@ -1130,7 +1139,7 @@ export default function GrantWishPage() {
             <div
               style={{
                 background:
-                     'linear-gradient(180deg, #fffdfad5 0%, #ffffff 100%)',
+                     'linear-gradient(180deg, #fffaf0 0%, #ffffff 100%)',
                 borderRadius:
                   '22px',
                 padding:
@@ -1168,9 +1177,9 @@ export default function GrantWishPage() {
                     borderRadius:
                       '11px',
                     background:
-                      '#eef4ff',
+                      '#e9efdf',
                     color:
-                      '#2f62dc'
+                      '#086747'
                   }}
                 >
                   <Gift
@@ -1182,7 +1191,7 @@ export default function GrantWishPage() {
                   <small
                     style={{
                       color:
-                        '#75859b'
+                        '#727c66'
                     }}
                   >
                     Christmas wish
@@ -1193,7 +1202,7 @@ export default function GrantWishPage() {
                       display:
                         'block',
                       color:
-                        '#17243a'
+                        '#243e32'
                     }}
                   >
                     {wish?.nickname}
@@ -1208,7 +1217,7 @@ export default function GrantWishPage() {
                   paddingLeft:
                     '20px',
                   color:
-                    '#17243a',
+                    '#243e32',
                   fontWeight:
                     650,
                   lineHeight:
@@ -1232,7 +1241,7 @@ export default function GrantWishPage() {
             <div
               style={{
                 background:
-                    'linear-gradient(180deg, #fffdfad5 0%, #ffffff 100%)',
+                    'linear-gradient(180deg, #fffaf0 0%, #ffffff 100%)',
                 borderRadius:
                   '22px',
                 padding:
@@ -1269,7 +1278,7 @@ export default function GrantWishPage() {
                       display:
                         'block',
                       color:
-                        '#17243a',
+                        '#243e32',
                       marginBottom:
                         '6px'
                     }}
@@ -1282,7 +1291,7 @@ export default function GrantWishPage() {
                       margin:
                         '0 0 9px',
                       color:
-                        '#55667f'
+                        '#626b5f'
                     }}
                   >
                     {wish?.organization
@@ -1329,253 +1338,7 @@ export default function GrantWishPage() {
           }
         `}
       </style>
-    </PublicFrame>
-  );
-}
-
-function PublicFrame({
-  children
-}) {
-  return (
-    <div
-      style={{
-        minHeight:
-          '100vh',
-        background:
-          'linear-gradient(180deg, #18314d 0%, #23486e 36%, #2b3f63 68%, #40233a 100%)',
-        position:
-          'relative',
-        overflow:
-          'hidden'
-      }}
-    >
-      <SnowfallBackground />
-
-      <div
-        style={{
-          position:
-            'relative',
-          zIndex:
-            1
-        }}
-      >
-        <header
-          style={{
-            minHeight:
-              '82px',
-            display:
-              'flex',
-            alignItems:
-              'center'
-          }}
-        >
-          <div
-            style={{
-              width:
-                '100%',
-              maxWidth:
-                '1120px',
-              margin:
-                '0 auto',
-              padding:
-                '14px 24px',
-              display:
-                'flex',
-              alignItems:
-                'center',
-              gap:
-                '14px'
-            }}
-          >
-            <img
-              src={
-                logo
-              }
-              alt="MIDSA WishLink"
-              style={{
-                width:
-                  '42px',
-                height:
-                  '52px',
-                objectFit:
-                  'contain'
-              }}
-            />
-
-            <div
-              style={{
-                width:
-                  '1px',
-                height:
-                  '26px',
-                background:
-                  'rgba(255, 255, 255, 0.24)'
-              }}
-            />
-
-            <span
-              style={{
-                color:
-                  'rgba(255, 255, 255, 0.88)',
-                fontSize:
-                  '13px'
-              }}
-            >
-              Share a little wonder.
-            </span>
-          </div>
-        </header>
-
-        {children}
-
-        <footer
-          style={{
-            textAlign:
-              'center',
-            color:
-              'rgba(255,255,255,0.72)',
-            fontSize:
-              '13px',
-            padding:
-              '0 24px 28px'
-          }}
-        >
-          #DasigMIDSA{' '} <br></br>
-          <i>
-            Lagi't lagi para sa bayan.
-          </i>
-        </footer>
-      </div>
-    </div>
-  );
-}
-
-function SnowfallBackground() {
-  const flakes =
-    useMemo(
-      () =>
-        Array.from(
-          {
-            length:
-              40
-          },
-          (
-            _,
-            index
-          ) => ({
-            id:
-              index,
-
-            left:
-              `${Math.random() * 100}%`,
-
-            size:
-              `${12 + Math.random() * 16}px`,
-
-            duration:
-              `${10 + Math.random() * 10}s`,
-
-            delay:
-              `${Math.random() * 10}s`,
-
-            opacity:
-              0.45 +
-              Math.random() *
-                0.4,
-
-            drift:
-              `${(Math.random() - 0.5) * 120}px`
-          })
-        ),
-      []
-    );
-
-  return (
-    <>
-      <style>
-        {`
-          @keyframes wishlinkSnowfall {
-            0% {
-              transform: translate3d(0, -10vh, 0);
-              opacity: 0;
-            }
-
-            10% {
-              opacity: 1;
-            }
-
-            100% {
-              transform:
-                translate3d(
-                  var(--snow-drift),
-                  110vh,
-                  0
-                );
-              opacity: 0.15;
-            }
-          }
-
-          .wishlink-snow-layer {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 0;
-          }
-
-          .wishlink-snowflake {
-            position: absolute;
-            top: -10vh;
-            color: rgba(255, 255, 255, 0.98);
-            text-shadow:
-              0 0 8px rgba(255,255,255,0.70),
-              0 0 18px rgba(255,255,255,0.34);
-            user-select: none;
-            animation-name: wishlinkSnowfall;
-            animation-timing-function: linear;
-            animation-iteration-count: infinite;
-            will-change: transform, opacity;
-          }
-        `}
-      </style>
-
-      <div
-        className="wishlink-snow-layer"
-        aria-hidden="true"
-      >
-        {flakes.map(
-          (flake) => (
-            <span
-              key={
-                flake.id
-              }
-              className="wishlink-snowflake"
-              style={{
-                left:
-                  flake.left,
-
-                fontSize:
-                  flake.size,
-
-                opacity:
-                  flake.opacity,
-
-                animationDuration:
-                  flake.duration,
-
-                animationDelay:
-                  `-${flake.delay}`,
-
-                '--snow-drift':
-                  flake.drift
-              }}
-            >
-              ❄
-            </span>
-          )
-        )}
-      </div>
-    </>
+    </PublicLayout>
   );
 }
 
@@ -1604,7 +1367,7 @@ function ModernField({
             ? '1 / -1'
             : undefined,
         color:
-          '#17243a',
+          '#243e32',
         fontWeight:
           650,
         fontSize:
@@ -1646,19 +1409,19 @@ function ModernField({
             'border-box',
           border:
             focused
-              ? '1.5px solid #2f62dc'
-              : '1px solid #d8e1ed',
+              ? '1.5px solid #086747'
+              : '1px solid #d6d4be',
           borderRadius:
             '12px',
           background:
-            '#f8fafc',
+            '#fdfaf1',
           color:
-            '#17243a',
+            '#243e32',
           outline:
             'none',
           boxShadow:
             focused
-              ? '0 0 0 3px rgba(47, 98, 220, 0.09)'
+              ? '0 0 0 3px rgba(8, 103, 71, 0.09)'
               : 'none',
           transition:
             'all 0.18s ease'
@@ -1679,7 +1442,7 @@ function ModernSelect({
         display:
           'block',
         color:
-          '#17243a',
+          '#243e32',
         fontWeight:
           650,
         fontSize:
@@ -1710,13 +1473,13 @@ function ModernSelect({
           boxSizing:
             'border-box',
           border:
-            '1px solid #d8e1ed',
+            '1px solid #d6d4be',
           borderRadius:
             '12px',
           background:
-            '#f8fafc',
+            '#fdfaf1',
           color:
-            '#17243a',
+            '#243e32',
           outline:
             'none'
         }}
@@ -1747,17 +1510,17 @@ function NoticeBox({
         borderRadius:
           '14px',
         background:
-          '#f6f9fd',
+          '#f4f1e5',
         border:
-          '1px solid rgba(47, 98, 220, 0.10)',
+          '1px solid rgba(8, 103, 71, 0.10)',
         color:
-          '#55667f'
+          '#626b5f'
       }}
     >
       <div
         style={{
           color:
-            '#2f62dc',
+            '#086747',
           flexShrink:
             0,
           marginTop:
@@ -1906,7 +1669,7 @@ function SummaryRow({
       <strong
         style={{
           color:
-            '#17243a'
+            '#243e32'
         }}
       >
         {label}

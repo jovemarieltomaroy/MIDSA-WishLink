@@ -840,7 +840,7 @@ export default function AccountSettingsPage() {
           </div>
         </section>
 
-        <section
+        {/* <section
           className="panel"
           style={{
             padding:
@@ -1062,7 +1062,7 @@ export default function AccountSettingsPage() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
       </div>
 
       <style>
@@ -1131,7 +1131,7 @@ function ModernTextField({
             'relative',
           border:
             focused
-              ? '1.5px solid #2f62dc'
+              ? '1.5px solid #086747'
               : '1px solid #dbe3ef',
           borderRadius:
             '12px',
@@ -1231,7 +1231,7 @@ function ModernPasswordField({
             'relative',
           border:
             focused
-              ? '1.5px solid #2f62dc'
+              ? '1.5px solid #086747'
               : '1px solid #dbe3ef',
           borderRadius:
             '12px',

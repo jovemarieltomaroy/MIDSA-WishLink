@@ -9,7 +9,8 @@ import {
   RefreshCcw,
   Shield,
 } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
+import QrGiftTag from '../components/QrGiftTag';
+import { downloadQrTag } from '../utils/downloadQrTag';
 import { api, getErrorMessage } from '../utils/api';
 import StatusBadge from '../components/StatusBadge';
 
@@ -112,178 +113,17 @@ export default function WishDetailPage() {
       );
     }
   }
-function downloadQrPng() {
-  const svg =
-    document.getElementById(
-      'wish-qr-code'
-    );
-
-  if (!svg) {
-    setError(
-      'QR code could not be prepared for download.'
-    );
-
-    return;
+  async function downloadQrPng() {
+    try {
+      setError('');
+      await downloadQrTag(
+        document.getElementById('wish-qr-tag'),
+        `wishlink-${wish.nickname}-qr-tag.png`.replace(/[^a-zA-Z0-9._-]+/g, '-').toLowerCase()
+      );
+    } catch (err) {
+      setError(err.message || 'QR tag could not be downloaded.');
+    }
   }
-
-  const serializer =
-    new XMLSerializer();
-
-  const svgString =
-    serializer.serializeToString(
-      svg
-    );
-
-  const svgBlob =
-    new Blob(
-      [svgString],
-      {
-        type:
-          'image/svg+xml;charset=utf-8',
-      }
-    );
-
-  const svgUrl =
-    URL.createObjectURL(
-      svgBlob
-    );
-
-  const image =
-    new Image();
-
-  image.onload = () => {
-    const qrSize = 1000;
-    const sidePadding = 100;
-    const topPadding = 100;
-    const textAreaHeight = 180;
-    const bottomPadding = 90;
-
-    const canvas =
-      document.createElement(
-        'canvas'
-      );
-
-    canvas.width =
-      qrSize +
-      sidePadding * 2;
-
-    canvas.height =
-      topPadding +
-      qrSize +
-      textAreaHeight +
-      bottomPadding;
-
-    const context =
-      canvas.getContext(
-        '2d'
-      );
-
-    context.fillStyle =
-      '#ffffff';
-
-    context.fillRect(
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
-
-    context.drawImage(
-      image,
-      sidePadding,
-      topPadding,
-      qrSize,
-      qrSize
-    );
-
-    const caption =
-      `Scan to grant ${wish.nickname}’s wish`;
-
-    context.fillStyle =
-      '#0f2747';
-
-    context.font =
-      '700 48px Arial, sans-serif';
-
-    context.textAlign =
-      'center';
-
-    context.textBaseline =
-      'middle';
-
-    context.fillText(
-      caption,
-      canvas.width / 2,
-      topPadding +
-        qrSize +
-        85
-    );
-
-    URL.revokeObjectURL(
-      svgUrl
-    );
-
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) {
-          setError(
-            'QR code could not be downloaded.'
-          );
-
-          return;
-        }
-
-        const url =
-          URL.createObjectURL(
-            blob
-          );
-
-        const link =
-          document.createElement(
-            'a'
-          );
-
-        link.href =
-          url;
-
-        link.download =
-          `wishlink-${wish.nickname}-qr.png`
-            .replace(
-              /\s+/g,
-              '-'
-            )
-            .toLowerCase();
-
-        document.body.appendChild(
-          link
-        );
-
-        link.click();
-
-        link.remove();
-
-        URL.revokeObjectURL(
-          url
-        );
-      },
-      'image/png'
-    );
-  };
-
-  image.onerror = () => {
-    URL.revokeObjectURL(
-      svgUrl
-    );
-
-    setError(
-      'QR code could not be prepared for download.'
-    );
-  };
-
-  image.src =
-    svgUrl;
-}
-
   if (!wish) {
     return (
       <div className="page">
@@ -376,7 +216,7 @@ function downloadQrPng() {
             size={17}
           />
 
-          Download QR PNG
+          Download QR tag PNG
         </button>
       </div>
 
@@ -467,20 +307,9 @@ function downloadQrPng() {
           </dl>
         </section>
 
-        <aside className="panel ornament-preview">
-          <div className="ornament-back">
-          <QRCodeSVG
-            id="wish-qr-code"
-            value={publicUrl}
-            size={180}
-            level="M"
-            includeMargin
-          />
-
-          <strong>
-            Scan to grant {wish.nickname}’s wish
-          </strong>
-        </div>
+        <aside className="panel ornament-preview qr-tag-preview" aria-label="Printable QR gift tag">
+          <QrGiftTag value={publicUrl} nickname={wish.nickname} code={wish.ornamentCode} />
+          <p className="qr-tag-hint">Download the PNG to print this tag.</p>
         </aside>
 
       </div>
