@@ -73,10 +73,15 @@
 .brand-campaign-dates li:nth-child(3) strong { color: #7c5c20; }
 .brand-landing .brand-detail-card > svg { display: block; margin-bottom: 0; }
 .brand-landing .brand-detail-card h3 { margin-top: 10px; }
-.brand-participation-steps { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 12px; }
-.brand-participation-steps li { display: flex; align-items: center; gap: 7px; font-size: 12px; line-height: 1.85; color: var(--muted); }
-.brand-participation-steps li > span:last-child, .brand-landing .brand-detail-card > p { text-align: justify; }
-.brand-step-number { display: grid; place-items: center; flex-shrink: 0; width: 20px; height: 26px; padding-bottom: 4px; background: var(--primary); color: #fffaf0; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); font-size: 11px; font-weight: 700; line-height: 1; }
+.brand-participation-steps { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 0; }
+.brand-participation-steps li { position: relative; display: grid; grid-template-columns: 30px minmax(0, 1fr); align-items: start; column-gap: 13px; padding-bottom: 22px; text-align: left; }
+.brand-participation-steps li:last-child { padding-bottom: 0; }
+.brand-participation-steps li:not(:last-child)::before { content: ''; position: absolute; top: 35px; bottom: 5px; left: 14px; width: 1px; background: #d4ddcf; }
+.brand-landing .brand-detail-card > p { text-align: justify; }
+.brand-step-number { position: relative; display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid #cbd8c8; border-radius: 50%; background: #edf2e7; color: var(--primary); font-size: 12px; font-weight: 700; line-height: 1; }
+.brand-step-copy { padding-top: 3px; }
+.brand-step-copy strong { display: block; margin-bottom: 5px; color: var(--primary); font-size: 13px; font-weight: 600; line-height: 1.4; }
+.brand-landing .brand-step-copy p { margin: 0; color: #646d61; font-size: 12px; line-height: 1.65; text-align: left; }
 .sidebar .brand-lockup { align-items: center; gap: 10px; padding: 4px 0 12px; }
 .sidebar .brand-mark { width: 124px; max-width: 100%; height: auto; flex-shrink: 0; object-fit: contain; display: block; background: transparent; padding: 0; border-radius: 0; }
 .sidebar .brand-lockup > div { text-align: center; }

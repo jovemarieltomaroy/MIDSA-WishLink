@@ -17,7 +17,7 @@ export default function LandingPage() {
       <main>
         <section className="brand-hero">
           <div className="brand-hero-copy">
-            <span className="brand-kicker"><span aria-hidden="true">✶</span> HANDOG NG PASKO</span>
+        
             <h1><em>MIDSAkatuparan:</em><br />Handog ng Pasko</h1>
             <p>Learn about the campaign, find participation details, and follow updates from MIDSA.</p>
             <a href="#about" className="brand-button">Get to know the campaign <ArrowDown size={17} /></a>
@@ -53,13 +53,16 @@ export default function LandingPage() {
             <h3>How to take part</h3>
             <ol className="brand-participation-steps" role="list">
               {[
-                'Visit any MIDSAKatuparan Christmas tree station across campus.',
-                'Pick a wish card and scan the QR code attached to it.',
-                'View the wish and decide if you would like to fulfill it.',
-                'If you choose to give, follow the instructions to reserve the wish.',
-                'Purchase the requested gift and arrange its drop-off.',
+                { title: 'Find a tree', description: 'Visit a MIDSAKatuparan Christmas tree station on campus.' },
+                { title: 'Choose a wish', description: 'Pick a wish card and scan its QR code.' },
+                { title: 'Read their story', description: 'View the request and choose a wish you can fulfill.' },
+                { title: 'Reserve your wish', description: 'Follow the instructions on the wish page to reserve it.' },
+                { title: 'Make it happen', description: 'Purchase the gift and coordinate its drop-off.' },
               ].map((step, index) => (
-                <li key={step}><span className="brand-step-number" aria-hidden="true">{index + 1}</span><span>{step}</span></li>
+                <li key={step.title}>
+                  <span className="brand-step-number" aria-hidden="true">{index + 1}</span>
+                  <div className="brand-step-copy"><strong>{step.title}</strong><p>{step.description}</p></div>
+                </li>
               ))}
             </ol>
           </article>
