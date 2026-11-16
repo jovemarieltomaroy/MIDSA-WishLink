@@ -18,12 +18,12 @@ if (!admin) {
 }
 
 const year = new Date().getFullYear();
-let campaign = await Campaign.findOne({ name: `Christmas ${year}` });
+let campaign = await Campaign.findOne({ name: `Holiday ${year}` });
 if (!campaign) {
   campaign = await Campaign.create({
-    name: `Christmas ${year}`,
+    name: `Holiday ${year}`,
     academicPeriod: `1st Semester AY ${year}–${year + 1}`,
-    description: 'MIDSA Christmas giving campaign.',
+    description: 'MIDSA Holiday giving campaign.',
     startDate: new Date(`${year}-11-01T08:00:00+08:00`),
     deadline: process.env.CAMPAIGN_DEADLINE
       ? new Date(process.env.CAMPAIGN_DEADLINE)

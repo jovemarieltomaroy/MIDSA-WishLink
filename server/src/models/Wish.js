@@ -110,6 +110,15 @@ const wishSchema =
         }
       ],
 
+      childProfile: {
+        type: new mongoose.Schema({
+          interests: { type: String, default: '' },
+          otherWishes: { type: String, default: '' },
+          worksheetImage: { type: String, default: '' }
+        }, { _id: false }),
+        default: () => ({})
+      },
+
       notes: {
         type: String,
         trim: true,
@@ -149,6 +158,11 @@ const wishSchema =
         type: Date,
         default: null,
         index: true
+      },
+
+      reminderSentForDeadline: {
+        type: Date,
+        default: null
       },
 
       grantedAt: {

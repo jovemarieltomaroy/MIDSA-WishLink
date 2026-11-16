@@ -4,7 +4,8 @@ import Wish from '../models/Wish.js';
 import User from '../models/User.js';
 import Campaign from '../models/Campaign.js';
 import { createOrnamentCode } from '../utils/codes.js';
-import { sendDeadlineUpdate } from '../services/notificationService.js';
+import { cleanChildProfile } from '../utils/childProfile.js';
+import { sendDeadlineUpdate, sendDonorLifecycleEmail } from '../services/notificationService.js';
 import { releaseExpiredReservations } from '../services/wishService.js';
 
 function campaignFilter(campaignId) {
@@ -97,10 +98,13 @@ export async function getWish(req, res) {
 }
 
 export async function createWish(req, res) {
-  const { campaignId, nickname, partnerFoundation, wishItems, notes, ageGroup } = req.body;
+  let childProfile;
+  try { childProfile = cleanChildProfile(req.body.childProfile); }
+  catch (error) { return res.status(400).json({ message: error.message }); }
+  const { campaignId, nickname, partnerFoundation, notes, ageGroup } = req.body;
   if (!campaignId) return res.status(400).json({ message: 'Please choose a campaign.' });
-  if (!nickname || !partnerFoundation || !Array.isArray(wishItems) || !wishItems.filter(Boolean).length) {
-    return res.status(400).json({ message: 'Nickname, partner foundation, and at least one wish item are required.' });
+  if (!nickname || !partnerFoundation) {
+    return res.status(400).json({ message: 'Nickname and partner foundation are required.' });
   }
 
   const campaign = await Campaign.findById(campaignId);
@@ -113,9 +117,10 @@ export async function createWish(req, res) {
   do { code = createOrnamentCode(); } while (await Wish.exists({ ornamentCode: code }));
   const wish = await Wish.create({
     campaign: campaign._id,
+    childProfile,
     nickname: nickname.trim(),
     partnerFoundation: partnerFoundation.trim(),
-    wishItems: wishItems.map((x) => String(x).trim()).filter(Boolean),
+    wishItems: [],
     notes: notes?.trim() || '',
     ageGroup: ageGroup?.trim() || '',
     ornamentCode: code,
@@ -133,9 +138,15 @@ export async function createWish(req, res) {
 }
 
 export async function updateWish(req, res) {
+  let childProfile;
+  if (req.body.childProfile !== undefined) {
+    try { childProfile = cleanChildProfile(req.body.childProfile); }
+    catch (error) { return res.status(400).json({ message: error.message }); }
+  }
   const wish = await Wish.findById(req.params.id);
   if (!wish) return res.status(404).json({ message: 'Wish not found.' });
   const allowed = ['nickname', 'partnerFoundation', 'wishItems', 'notes', 'ageGroup'];
+  if (childProfile) wish.childProfile = childProfile;
   for (const key of allowed) if (req.body[key] !== undefined) wish[key] = req.body[key];
 
   if (req.body.campaignId !== undefined) {
@@ -164,10 +175,14 @@ export async function changeStatus(req, res) {
   }
 
   const from = wish.status;
+  const releasedReservation = from === 'reserved' && status === 'available' && wish.donor
+    ? { nickname: wish.nickname, wishItems: [...wish.wishItems], donor: { email: wish.donor.email } }
+    : null;
   wish.status = status;
   if (status === 'available') {
     wish.donor = undefined;
     wish.reservationExpiresAt = null;
+    wish.reminderSentForDeadline = null;
     wish.grantedAt = null;
     wish.grantedByOfficer = null;
   }
@@ -178,7 +193,24 @@ export async function changeStatus(req, res) {
   }
   wish.history.push({ action: 'status_changed', fromStatus: from, toStatus: status, note: note || '', actorName: req.user.name, actorType: 'officer' });
   await wish.save();
-  res.json({ wish });
+  let releaseEmail;
+  if (releasedReservation) {
+    if (!releasedReservation.donor.email) {
+      releaseEmail = { status: 'missing_email' };
+    } else {
+      try {
+        const result = await sendDonorLifecycleEmail(releasedReservation, 'manuallyReleased');
+        releaseEmail = { status: result?.mocked ? 'not_configured' : 'accepted' };
+      } catch (error) {
+        console.error('Manual reservation release email failed:', error);
+        releaseEmail = { status: 'failed' };
+      }
+    }
+  }
+  if (status === 'granted' && from !== 'granted') {
+    sendDonorLifecycleEmail(wish, 'received').catch((error) => console.error('Gift receipt email failed:', error));
+  }
+  res.json({ wish, ...(releaseEmail ? { releaseEmail } : {}) });
 }
 
 export async function extendDeadline(req, res) {

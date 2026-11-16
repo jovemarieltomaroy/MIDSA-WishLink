@@ -1,8 +1,15 @@
 export function getDefaultExpiry(campaignDeadline = null) {
   const days = Number(process.env.DEFAULT_RESERVATION_DAYS || 5);
-  const d = new Date();
-  d.setDate(d.getDate() + days);
-  return clampToDeadline(d, campaignDeadline);
+  // Read the reservation's calendar date in the Philippines, independent of
+  // the server timezone. Manila is UTC+8; 5 PM there is 09:00 UTC.
+  const phDate = new Date(Date.now() + 8 * 60 * 60 * 1000);
+  const expiry = new Date(Date.UTC(
+    phDate.getUTCFullYear(),
+    phDate.getUTCMonth(),
+    phDate.getUTCDate() + days,
+    9
+  ));
+  return clampToDeadline(expiry, campaignDeadline);
 }
 
 export function clampToDeadline(date, deadline = null) {

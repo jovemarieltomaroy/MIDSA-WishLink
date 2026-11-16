@@ -4,14 +4,14 @@ function getFallbackSettings() {
   return {
     contactName:
       process.env.ORG_CONTACT_NAME ||
-      'MIDSA Christmas Program Team',
+      'MIDSA Holiday Program Team',
 
     contactEmail:
       process.env.ORG_CONTACT_EMAIL ||
       '',
 
-    contactPhone:
-      process.env.ORG_CONTACT_PHONE ||
+    messengerUrl:
+      process.env.ORG_MESSENGER_URL ||
       '',
 
     dropOffLocation:
@@ -75,9 +75,9 @@ export async function getPublicOrganizationSettings() {
         process.env.ORG_CONTACT_EMAIL ||
         'midsapartnerships@gmail.com',
 
-      contactPhone:
-        settings.contactPhone ||
-        process.env.ORG_CONTACT_PHONE ||
+      messengerUrl:
+        settings.messengerUrl ||
+        process.env.ORG_MESSENGER_URL ||
         '',
 
       dropOffLocation:

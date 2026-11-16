@@ -1,3 +1,4 @@
+import { isValidMessengerUrl } from '../utils/messenger.js';
 import OrganizationSettings from '../models/OrganizationSettings.js';
 
 import {
@@ -14,58 +15,11 @@ function normalizeEmail(
     .toLowerCase();
 }
 
-function normalizePhoneNumber(
-  value
-) {
-  let phoneNumber =
-    String(
-      value || ''
-    )
-      .trim()
-      .replace(
-        /[^\d+]/g,
-        ''
-      );
-
-  /*
-   * If + is used, it must be
-   * the first and only +.
-   */
-  if (
-    phoneNumber.includes('+')
-  ) {
-    phoneNumber =
-      '+' +
-      phoneNumber
-        .replace(
-          /\+/g,
-          ''
-        );
-  }
-
-  return phoneNumber;
-}
-
 function isValidEmail(
   email
 ) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
     email
-  );
-}
-
-function isValidPhoneNumber(
-  phoneNumber
-) {
-  /*
-   * Accepted Philippine formats:
-   *
-   * 09171234567
-   * 639171234567
-   * +639171234567
-   */
-  return /^(09\d{9}|639\d{9}|\+639\d{9})$/.test(
-    phoneNumber
   );
 }
 
@@ -86,8 +40,8 @@ export async function getSettings(
         contactEmail:
           settings.contactEmail,
 
-        contactPhone:
-          settings.contactPhone,
+        messengerUrl:
+          settings.messengerUrl,
 
         dropOffLocation:
           settings.dropOffLocation
@@ -107,7 +61,7 @@ export async function updateSettings(
     const {
       contactName,
       contactEmail,
-      contactPhone,
+      messengerUrl,
       dropOffLocation
     } =
       req.body;
@@ -123,10 +77,8 @@ export async function updateSettings(
           contactEmail
         ),
 
-      contactPhone:
-        normalizePhoneNumber(
-          contactPhone
-        ),
+      messengerUrl:
+        String(messengerUrl || '').trim(),
 
       dropOffLocation:
         String(
@@ -140,7 +92,6 @@ export async function updateSettings(
     if (
       !cleaned.contactName ||
       !cleaned.contactEmail ||
-      !cleaned.contactPhone ||
       !cleaned.dropOffLocation
     ) {
       return res
@@ -168,18 +119,18 @@ export async function updateSettings(
     }
 
     /*
-     * Phone-number validation
+     * Messenger-link validation
      */
     if (
-      !isValidPhoneNumber(
-        cleaned.contactPhone
+      !isValidMessengerUrl(
+        cleaned.messengerUrl
       )
     ) {
       return res
         .status(400)
         .json({
           message:
-            'Please enter a valid Philippine contact number using 09XXXXXXXXX, 639XXXXXXXXX, or +639XXXXXXXXX.'
+            'Please enter a valid HTTPS Messenger link, such as https://m.me/yourpage.'
         });
     }
 
@@ -191,8 +142,8 @@ export async function updateSettings(
         cleaned.contactName ||
       current.contactEmail !==
         cleaned.contactEmail ||
-      current.contactPhone !==
-        cleaned.contactPhone ||
+      current.messengerUrl !==
+        cleaned.messengerUrl ||
       current.dropOffLocation !==
         cleaned.dropOffLocation;
 
@@ -210,8 +161,8 @@ export async function updateSettings(
           contactEmail:
             current.contactEmail,
 
-          contactPhone:
-            current.contactPhone,
+          messengerUrl:
+            current.messengerUrl,
 
           dropOffLocation:
             current.dropOffLocation
@@ -255,8 +206,8 @@ export async function updateSettings(
         contactEmail:
           settings.contactEmail,
 
-        contactPhone:
-          settings.contactPhone,
+        messengerUrl:
+          settings.messengerUrl,
 
         dropOffLocation:
           settings.dropOffLocation

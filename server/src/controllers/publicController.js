@@ -150,6 +150,10 @@ function publicWish(
     wishItems:
       wish.wishItems,
 
+    childProfile: wish.childProfile ? {
+      worksheetImage: wish.childProfile.worksheetImage || ''
+    } : null,
+
     ageGroup:
       wish.ageGroup,
 
@@ -215,16 +219,16 @@ function publicWish(
       contactName:
         organization.contactName ||
         process.env.ORG_CONTACT_NAME ||
-        'MIDSA Christmas Program Team',
+        'MIDSA Holiday Program Team',
 
       contactEmail:
         organization.contactEmail ||
         process.env.ORG_CONTACT_EMAIL ||
         '',
 
-      contactPhone:
-        organization.contactPhone ||
-        process.env.ORG_CONTACT_PHONE ||
+      messengerUrl:
+        organization.messengerUrl ||
+        process.env.ORG_MESSENGER_URL ||
         '',
 
       dropOffLocation:

@@ -14,7 +14,7 @@ const organizationSettingsSchema =
         type: String,
         trim: true,
         default:
-          'MIDSA Christmas Program Team'
+          'MIDSA Holiday Program Team'
       },
 
       contactEmail: {
@@ -24,7 +24,7 @@ const organizationSettingsSchema =
         default: ''
       },
 
-      contactPhone: {
+      messengerUrl: {
         type: String,
         trim: true,
         default: ''

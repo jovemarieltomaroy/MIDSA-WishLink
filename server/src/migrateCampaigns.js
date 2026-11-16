@@ -18,10 +18,10 @@ const earliestCreated = unassigned[0]?.createdAt ? new Date(unassigned[0].create
 const defaultStart = new Date(Math.min(earliestCreated.getTime(), Date.now()));
 const defaultDeadline = validOldDeadline || new Date(`${year}-12-15T17:00:00+08:00`);
 
-let campaign = await Campaign.findOne({ name: `Christmas ${year}` });
+let campaign = await Campaign.findOne({ name: `Holiday ${year}` });
 if (!campaign) {
   campaign = await Campaign.create({
-    name: `Christmas ${year}`,
+    name: `Holiday ${year}`,
     academicPeriod: '',
     description: 'Created automatically to group wishes that existed before campaign support was added.',
     startDate: defaultStart < defaultDeadline ? defaultStart : new Date(defaultDeadline.getTime() - 86400000),
