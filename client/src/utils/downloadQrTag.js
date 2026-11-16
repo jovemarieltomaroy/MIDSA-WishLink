@@ -7,7 +7,7 @@ function asDataUrl(blob) {
   });
 }
 
-export async function downloadQrTag(svg, filename) {
+export async function qrTagPng(svg) {
   if (!svg) throw new Error('QR tag could not be prepared for download.');
   const copy = svg.cloneNode(true);
   // Embed the artwork so the exported SVG is self-contained before rasterizing.
@@ -32,6 +32,13 @@ export async function downloadQrTag(svg, filename) {
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
     if (!blob) throw new Error('QR tag could not be downloaded.');
+    return blob;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+export function downloadBlob(blob, filename) {
     const downloadUrl = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = downloadUrl;
@@ -40,7 +47,8 @@ export async function downloadQrTag(svg, filename) {
     link.click();
     link.remove();
     setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
-  } finally {
-    URL.revokeObjectURL(url);
-  }
+}
+
+export async function downloadQrTag(svg, filename) {
+  downloadBlob(await qrTagPng(svg), filename);
 }

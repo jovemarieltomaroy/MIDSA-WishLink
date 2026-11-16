@@ -41,6 +41,7 @@ import './styles/tag-assets.css';
 import './styles/tag-variants.css';
 import './styles/gallery.css';
 import './styles/content-spacing.css';
+import './styles/landing-palette.css';
 
 export default function App() {
   return (

@@ -55,6 +55,12 @@ The public experience intentionally excludes the child’s real name, foundation
 
 ## Requirements
 
+### Start with a fresh database
+
+Set `MONGODB_DB_NAME=midsa_wishlink_fresh_20261116` in `server/.env` for local development and in the deployed backend's environment settings, then restart/redeploy the backend. This overrides the database name in `MONGODB_URI` while keeping the same cluster and credentials. The old database remains intact. Use an unused database name to start empty.
+
+Sign in with the Google account configured in `ADMIN_GOOGLE_EMAIL`; the app creates its admin record automatically. Do not run the sample seed command if you want no sample campaigns or wishes. MongoDB creates the new database on the first write. Local and deployed instances share data when they use the same cluster and database name.
+
 - Node.js 20+
 - npm
 - MongoDB Atlas database

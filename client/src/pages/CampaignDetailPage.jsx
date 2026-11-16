@@ -33,6 +33,7 @@ import {
 } from '../context/CampaignContext';
 
 import ConfirmModal from '../components/ConfirmModal';
+import CampaignTagDownload from '../components/CampaignTagDownload';
 
 export default function CampaignDetailPage() {
   const { id } =
@@ -642,6 +643,7 @@ export default function CampaignDetailPage() {
           >
             View wishes
           </Link>
+          <CampaignTagDownload campaignId={campaign._id} campaignName={holidayCampaignName(campaign.name)} />
         </div>
       </div>
 
