@@ -42,6 +42,7 @@ import './styles/tag-variants.css';
 import './styles/gallery.css';
 import './styles/content-spacing.css';
 import './styles/landing-palette.css';
+import './styles/public-chrome.css';
 
 export default function App() {
   return (

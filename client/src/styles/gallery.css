@@ -45,3 +45,13 @@
   .brand-landing .brand-nav { gap: 8px; }
   .brand-landing .brand-portal-link { padding-inline: 8px; }
 }
+.campaign-public-page:has(.wish-gallery) {
+  --brand-public-background: linear-gradient(#eaf5f78c, #eaf5f78c), url('../assets/branding/notebook-paper.jpg') center / 1000px auto repeat;
+  --muted: #586c6b;
+}
+
+/* Neutralize the illustrated background's yellow cast without hiding its detail. */
+.campaign-public-page:has(.wish-gallery) > .brand-artwork .brand-art-scene {
+  filter: saturate(.65) hue-rotate(12deg);
+}
+

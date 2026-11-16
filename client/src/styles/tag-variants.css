@@ -13,9 +13,15 @@
   border-bottom: 0;
 }
 .brand-landing > .brand-nav::after { content: ''; position: absolute; bottom: 0; left: clamp(20px, 3vw, 48px); right: clamp(20px, 3vw, 48px); height: 1px; background: #365d3630; }
+.brand-landing > .brand-footer {
+  width: calc(100% - 2 * clamp(20px, 3vw, 48px));
+  max-width: none;
+  margin-inline: auto;
+}
 @media (max-width: 900px) {
   .brand-landing > .brand-nav { padding-inline: 20px; }
   .brand-landing > .brand-nav::after { left: 20px; right: 20px; }
+  .brand-landing > .brand-footer { width: calc(100% - 40px); }
 }
 @media (max-width: 600px) {
   .brand-landing { padding-top: 80px; }

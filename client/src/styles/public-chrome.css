@@ -1,0 +1,50 @@
+/* Shared edge spacing and warm navigation surfaces on every public route. */
+:is(.brand-landing, .campaign-public-page) {
+  --chrome-gutter: clamp(16px, 2vw, 32px);
+}
+
+:is(.brand-landing, .campaign-public-page) > :is(.brand-nav, .campaign-public-header) {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: var(--chrome-gutter);
+  background: #f0e3c9;
+}
+
+:is(.brand-landing, .campaign-public-page) > :is(.brand-nav, .campaign-public-header)::before {
+  inset-inline: 0;
+  background: #f0e3c9;
+}
+
+.brand-landing > .brand-nav::after {
+  left: var(--chrome-gutter);
+  right: var(--chrome-gutter);
+}
+
+:is(.brand-landing, .campaign-public-page) > :is(.brand-footer, .campaign-public-footer) {
+  width: calc(100% - 2 * var(--chrome-gutter));
+  max-width: none;
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+.campaign-public-page > .campaign-public-footer {
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.campaign-public-page:has(.wish-gallery) > .campaign-public-footer {
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+@media (max-width: 600px) {
+  .campaign-public-page > .brand-nav nav { gap: 10px; }
+  .campaign-public-page > .brand-nav nav > .brand-gallery-link { display: inline-flex; }
+  .campaign-public-page > .brand-nav img { width: 100px; }
+  .campaign-public-page > .brand-nav { gap: 8px; }
+  .campaign-public-page .brand-portal-link { padding-inline: 8px; }
+  .campaign-public-page > .campaign-public-footer { flex-direction: column; gap: 6px; }
+}
