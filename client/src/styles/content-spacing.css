@@ -1,0 +1,73 @@
+/* Outer page gutters only; sidebar geometry and inner component padding stay local. */
+@media screen {
+  :root { --content-gutter: clamp(20px, 7vw, 96px); }
+
+  /* The shell already offsets the content by the sidebar's responsive width. */
+  .shell-main > .page {
+    width: calc(100% - 2 * var(--content-gutter));
+    max-width: none;
+    margin-inline: var(--content-gutter);
+    padding-inline: 0;
+  }
+
+  .brand-landing > main,
+  .campaign-public-page > .campaign-public-content {
+    width: calc(100% - 2 * var(--content-gutter));
+    min-width: 0;
+    max-width: none;
+    margin-inline: var(--content-gutter);
+    padding-inline: 0;
+  }
+
+  .brand-landing > main > :is(.brand-hero, .brand-section) {
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+  .campaign-public-content > :is(.public-wish-main, .wish-gallery, .wish-message-card, .grant-public-main) {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    margin-inline: 0;
+  }
+
+  /* Reservation pages currently declare their outer width and padding inline. */
+  .campaign-public-content > .grant-public-main {
+    width: 100% !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+  }
+
+  .campaign-public-page > .campaign-countdown {
+    width: calc(100% - 2 * var(--content-gutter));
+    max-width: none;
+    margin-inline: var(--content-gutter);
+  }
+
+  .public-page > :is(.public-wrap, main.public-wrap) {
+    width: calc(100% - 2 * var(--content-gutter));
+    max-width: none;
+    margin-inline: var(--content-gutter);
+    padding-inline: 0;
+  }
+
+  .wishlink-login-page,
+  .login-page,
+  .center-page {
+    padding-inline: var(--content-gutter);
+  }
+
+  .wishlink-login-page > .wishlink-login-shell,
+  .login-page > .login-card {
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+  }
+
+  @media (max-width: 600px) {
+    :root { --content-gutter: 20px; }
+  }
+}

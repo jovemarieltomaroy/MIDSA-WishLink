@@ -1,3 +1,4 @@
+import { holidayCampaignName } from '../utils/holidayCopy';
 import {
   useEffect,
   useMemo,
@@ -10,11 +11,6 @@ import {
 } from 'react-router-dom';
 
 import {
-  Plus,
-  Trash2,
-} from 'lucide-react';
-
-import {
   api,
   getErrorMessage,
 } from '../utils/api';
@@ -22,6 +18,7 @@ import {
 import {
   useCampaign,
 } from '../context/CampaignContext';
+import ChildProfileFields from '../components/ChildProfileFields';
 
 export default function NewWishPage() {
   const navigate =
@@ -104,7 +101,7 @@ export default function NewWishPage() {
     partnerFoundation: '',
     ageGroup: '',
     notes: '',
-    wishItems: [''],
+    childProfile: {},
   });
 
   const [
@@ -157,61 +154,6 @@ export default function NewWishPage() {
     );
   }
 
-  function updateWishItem(
-    index,
-    value
-  ) {
-    set(
-      'wishItems',
-
-      form.wishItems.map(
-        (
-          item,
-          currentIndex
-        ) =>
-          currentIndex ===
-          index
-            ? value
-            : item
-      )
-    );
-  }
-
-  function removeWishItem(
-    index
-  ) {
-    if (
-      form.wishItems.length ===
-      1
-    ) {
-      return;
-    }
-
-    set(
-      'wishItems',
-
-      form.wishItems.filter(
-        (
-          _,
-          currentIndex
-        ) =>
-          currentIndex !==
-          index
-      )
-    );
-  }
-
-  function addWishItem() {
-    set(
-      'wishItems',
-
-      [
-        ...form.wishItems,
-        '',
-      ]
-    );
-  }
-
   async function submit(
     event
   ) {
@@ -239,13 +181,6 @@ export default function NewWishPage() {
             notes:
               form.notes.trim(),
 
-            wishItems:
-              form.wishItems
-                .map(
-                  (item) =>
-                    item.trim()
-                )
-                .filter(Boolean),
           }
         );
 
@@ -333,7 +268,7 @@ export default function NewWishPage() {
                         campaign._id
                       }
                     >
-                      {campaign.name}
+                      {holidayCampaignName(campaign.name)}
 
                       {campaign.academicPeriod
                         ? ` · ${campaign.academicPeriod}`
@@ -455,88 +390,7 @@ export default function NewWishPage() {
               />
             </label>
 
-            {/* Wish list */}
-            <fieldset className="new-wish-full new-wish-wishlist">
-              <legend>
-                Wish list
-              </legend>
-
-              <div className="new-wish-items">
-                {form.wishItems.map(
-                  (
-                    item,
-                    index
-                  ) => (
-                    <div
-                      className="new-wish-item-row"
-                      key={
-                        index
-                      }
-                    >
-                      <input
-                        type="text"
-                        value={
-                          item
-                        }
-                        onChange={(
-                          event
-                        ) =>
-                          updateWishItem(
-                            index,
-                            event.target.value
-                          )
-                        }
-                        required
-                        placeholder={
-                          index === 0
-                            ? 'e.g. Backpack'
-                            : 'Enter another wish item'
-                        }
-                      />
-
-                      <button
-                        type="button"
-                        className="icon-button"
-                        disabled={
-                          form.wishItems
-                            .length ===
-                          1
-                        }
-                        onClick={() =>
-                          removeWishItem(
-                            index
-                          )
-                        }
-                        title="Remove item"
-                        aria-label="Remove wish item"
-                      >
-                        <Trash2
-                          size={
-                            16
-                          }
-                        />
-                      </button>
-                    </div>
-                  )
-                )}
-              </div>
-
-              <button
-                type="button"
-                className="text-button new-wish-add-item"
-                onClick={
-                  addWishItem
-                }
-              >
-                <Plus
-                  size={
-                    16
-                  }
-                />
-
-                Add another item
-              </button>
-            </fieldset>
+            <ChildProfileFields value={form.childProfile} onChange={value => set('childProfile', value)} />
 
             {/* Notes */}
             <label className="new-wish-field new-wish-full">

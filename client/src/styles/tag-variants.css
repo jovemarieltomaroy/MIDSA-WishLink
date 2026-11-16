@@ -1,5 +1,5 @@
 /* Notebook paper on the landing page; illustration backgrounds stay on wish pages. */
-.brand-landing { background: var(--brand-public-background); padding-top: 116px; }
+.brand-landing { background: var(--brand-public-background); padding-top: 96px; }
 .brand-landing > .brand-nav {
   position: fixed;
   top: 0;
@@ -18,20 +18,24 @@
   .brand-landing > .brand-nav::after { left: 20px; right: 20px; }
 }
 @media (max-width: 600px) {
-  .brand-landing { padding-top: 96px; }
+  .brand-landing { padding-top: 80px; }
 }
-.brand-landing :is(#about, #updates) { scroll-margin-top: 132px; }
+.brand-landing :is(#about, #updates) { scroll-margin-top: 112px; }
 .brand-landing .brand-partners { padding-block: 32px 44px; border-top: 1px solid #365d3625; }
 .brand-partners .brand-section-heading { margin-bottom: 24px; }
 .brand-partners .brand-section-heading h2 { font-size: clamp(24px, 3vw, 32px); }
-.brand-partner-logos { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px; }
+.brand-partner-logos { list-style: none; padding: 6px 0 16px; margin: 0; display: grid; grid-template-columns: repeat(6, minmax(124px, 1fr)); gap: 20px; overflow-x: auto; }
+.brand-partner-logo { width: 124px; height: 124px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; border: 1px solid #cbd6c4; border-radius: 50%; background: #fffdf7; overflow: hidden; }
+.brand-partner-logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.brand-partner-logo.is-pending { border-style: dashed; color: #77806c; }
+.brand-partner-logo.is-pending span { max-width: 85px; font-size: 10px; line-height: 1.4; }
 .brand-partner-logos li { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; font-size: 10px; line-height: 1.6; color: var(--muted); }
 .brand-partner-placeholder { width: 100%; max-width: 132px; aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; border: 1px dashed #a3aa96; border-radius: 12px; background: #fffaf0cc; color: #77806c; }
 @media (max-width: 900px) {
-  .brand-partner-logos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .brand-partner-logos { grid-template-columns: repeat(6, minmax(124px, 1fr)); }
 }
 @media (max-width: 480px) {
-  .brand-partner-logos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .brand-partner-logos { grid-template-columns: repeat(6, 124px); gap: 16px; }
 }
 .brand-landing .brand-scrapbook-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
 .brand-landing .brand-photo-card figcaption { font-size: 21px; }
@@ -65,12 +69,17 @@
 .brand-note .brand-letter-signoff p + p { margin-top: 3px; color: var(--primary); font-weight: 700; font-size: 11px; letter-spacing: 1px; }
 .brand-campaign-dates { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 14px; font-size: 12px; line-height: 1.85; color: var(--muted); }
 .brand-campaign-dates strong, .brand-campaign-dates span { display: block; }
-.brand-campaign-dates li { padding: 10px 12px; border-left: 3px solid var(--primary); border-radius: 0 8px 8px 0; background: #e4eee16b; }
-.brand-campaign-dates li:nth-child(2) { border-left-color: var(--brand-red); background: #ae2d2509; }
-.brand-campaign-dates li:nth-child(3) { border-left-color: #b78b39; background: #b78b3910; }
-.brand-campaign-dates strong { color: var(--primary); font-size: 12px; }
-.brand-campaign-dates li:nth-child(2) strong { color: var(--brand-red); }
-.brand-campaign-dates li:nth-child(3) strong { color: #7c5c20; }
+.brand-campaign-dates li { --calendar-accent: var(--primary); display: grid; grid-template-columns: 66px minmax(0, 1fr); align-items: center; gap: 15px; padding: 0 0 14px; border-bottom: 1px dashed #d9dece; }
+.brand-campaign-dates li:last-child { padding-bottom: 0; border-bottom: 0; }
+.brand-campaign-dates li:nth-child(2) { --calendar-accent: var(--brand-red); }
+.brand-campaign-dates li:nth-child(3) { --calendar-accent: #806022; }
+.brand-calendar-date { position: relative; display: block; overflow: hidden; border: 1px solid var(--calendar-accent); border-radius: 7px; background: #fffdf6; text-align: center; box-shadow: 0 3px 0 #243c2510; line-height: 1; }
+.brand-calendar-date .brand-calendar-month { padding: 7px 4px 5px; background: var(--calendar-accent); color: #fff; font-size: 10px; font-weight: 700; letter-spacing: 2px; }
+.brand-calendar-date .brand-calendar-day { padding-top: 7px; color: var(--calendar-accent); font-family: Georgia, serif; font-size: 30px; }
+.brand-calendar-date .brand-calendar-year { padding: 5px 0 7px; color: #687062; font-size: 9px; letter-spacing: 1px; }
+.brand-calendar-event { text-align: left; line-height: 1.6; }
+.brand-calendar-event .brand-calendar-weekday { margin-bottom: 3px; color: #687062; font-size: 10px; letter-spacing: .6px; }
+.brand-campaign-dates strong { color: var(--calendar-accent); font-size: 12px; margin-bottom: 3px; }
 .brand-landing .brand-detail-card > svg { display: block; margin-bottom: 0; }
 .brand-landing .brand-detail-card h3 { margin-top: 10px; }
 .brand-participation-steps { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 0; }
@@ -81,7 +90,37 @@
 .brand-step-number { position: relative; display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid #cbd8c8; border-radius: 50%; background: #edf2e7; color: var(--primary); font-size: 12px; font-weight: 700; line-height: 1; }
 .brand-step-copy { padding-top: 3px; }
 .brand-step-copy strong { display: block; margin-bottom: 5px; color: var(--primary); font-size: 13px; font-weight: 600; line-height: 1.4; }
-.brand-landing .brand-step-copy p { margin: 0; color: #646d61; font-size: 12px; line-height: 1.65; text-align: left; }
+.brand-landing .brand-step-copy p { margin: 0; color: #646d61; font-size: 16px; line-height: 1.65; text-align: left; }
+
+/* Larger reading sizes throughout the landing page. */
+.brand-landing .brand-midsa-story .brand-story-copy > p,
+.brand-landing .brand-initiative-story .brand-story-copy > p { text-align: justify; }
+.brand-landing .brand-hero h1 { font-size: clamp(36px, 4.8vw, 64px); }
+.brand-landing .brand-hero-copy > p { max-width: 420px; font-size: 16px; }
+.brand-landing .brand-note p,
+.brand-landing .brand-detail-card p,
+.brand-landing .brand-story-copy > p,
+.brand-landing .brand-section-heading > p { font-size: 16px; }
+.brand-landing .brand-section h2 { font-size: clamp(32px, 3.8vw, 48px); }
+.brand-landing .brand-partners .brand-section-heading h2 { font-size: clamp(28px, 3.4vw, 38px); }
+.brand-landing .brand-note h3 { font-size: clamp(34px, 4vw, 40px); }
+.brand-landing .brand-detail-card h3 { font-size: 22px; }
+.brand-landing .brand-step-copy strong,
+.brand-landing .brand-campaign-dates strong { font-size: 16px; }
+.brand-landing .brand-campaign-dates { font-size: 15px; }
+.brand-landing .brand-calendar-event .brand-calendar-weekday,
+.brand-landing .brand-note .brand-letter-signoff p + p,
+.brand-landing .brand-kicker,
+.brand-landing .brand-partner-logos li,
+.brand-landing .brand-photo-card > div > span { font-size: 13px; }
+.brand-landing .brand-button,
+.brand-landing .brand-nav nav { font-size: 14px; }
+.brand-landing .brand-footer p,
+.brand-landing .brand-footer > a:last-child { font-size: 13px; }
+
+@media (max-width: 600px) {
+  .brand-landing .brand-hero h1 { font-size: clamp(34px, 8.5vw, 50px); }
+}
 .sidebar .brand-lockup { align-items: center; gap: 10px; padding: 4px 0 12px; }
 .sidebar .brand-mark { width: 124px; max-width: 100%; height: auto; flex-shrink: 0; object-fit: contain; display: block; background: transparent; padding: 0; border-radius: 0; }
 .sidebar .brand-lockup > div { text-align: center; }
@@ -95,8 +134,8 @@
 .wish-tag-contents h1, .wish-tag-contents li { color: var(--tag-ink, #096448); }
 .wish-tag-contents .wish-tag-label { color: var(--tag-muted, #7c785f); }
 .wish-tag-contents li svg, .wish-tag-signoff > span:last-child { color: var(--tag-accent, #a33125); }
-.grant-wish-layout > aside > div:first-child { padding-top: var(--tag-top, 28%) !important; }
-.grant-wish-layout > aside > div:first-child :is(strong, li, small) { color: var(--tag-ink, #096448) !important; }
+
+
 @media (max-width: 600px) {
   .public-compact .campaign-public-footer img { width: 40px; height: 21px; }
 }

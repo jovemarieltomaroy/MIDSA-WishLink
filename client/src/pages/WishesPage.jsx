@@ -1,3 +1,4 @@
+import { holidayCampaignName } from '../utils/holidayCopy';
 import {
   useEffect,
   useMemo,
@@ -317,7 +318,7 @@ export default function WishesPage() {
                   campaign._id
                 }
               >
-                {campaign.name}
+                {holidayCampaignName(campaign.name)}
                 {' · '}
                 {prettyStatus(
                   campaign.status
@@ -380,11 +381,11 @@ export default function WishesPage() {
           </option>
 
           <option value="available">
-            Waiting for a Santa
+            Waiting for a donor
           </option>
 
           <option value="reserved">
-            Santa on the Way
+            Gift on the way
           </option>
 
           <option value="granted">
@@ -518,9 +519,7 @@ export default function WishesPage() {
                     </td>
 
                     <td>
-                      {wish.wishItems.join(
-                        ', '
-                      )}
+                      {(wish.wishItems?.join(', ') || 'See wishlist worksheet')}
                     </td>
 
                     <td>

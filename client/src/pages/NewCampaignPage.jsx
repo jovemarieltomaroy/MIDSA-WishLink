@@ -132,7 +132,7 @@ export default function NewCampaignPage() {
               value={form.name}
               onChange={update}
               required
-              placeholder="e.g. Christmas 2026"
+              placeholder="e.g. Holiday 2026"
             />
           </label>
 

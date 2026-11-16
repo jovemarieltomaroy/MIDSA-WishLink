@@ -15,6 +15,7 @@ import {
 
 import ProtectedRoute from './components/ProtectedRoute';
 import AppShell from './components/AppShell';
+import RouteScrollReset from './components/RouteScrollReset';
 
 import PublicWishPage from './pages/PublicWishPage';
 import LandingPage from './pages/LandingPage';
@@ -39,10 +40,12 @@ import './styles/public-campaign.css';
 import './styles/tag-assets.css';
 import './styles/tag-variants.css';
 import './styles/gallery.css';
+import './styles/content-spacing.css';
 
 export default function App() {
   return (
     <BrowserRouter>
+      <RouteScrollReset />
       <AuthProvider>
         <Routes>
           <Route path="/gallery" element={<WishGalleryPage />} />

@@ -1,10 +1,11 @@
+import { holidayCampaignName } from '../utils/holidayCopy';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowRight, CalendarClock, Gift, LockKeyhole, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { api, getErrorMessage } from '../utils/api';
 import StatusBadge from '../components/StatusBadge';
+import WishlistImage from '../components/WishlistImage';
 import PublicLayout from '../components/PublicLayout';
-import { getTagDesign, getTagStyle } from '../utils/tagDesigns';
 
 export default function PublicWishPage() {
   const { code } = useParams();
@@ -15,14 +16,27 @@ export default function PublicWishPage() {
     let active = true;
     setWish(null);
     setError('');
-    api.get(`/public/wishes/${code}`)
-      .then(response => { if (active) setWish(response.data.wish); })
-      .catch(err => { if (active) setError(getErrorMessage(err)); });
-    return () => { active = false; };
+    async function refresh() {
+      try {
+        const response = await api.get(`/public/wishes/${code}`, { params: { _refresh: Date.now() } });
+        if (active) { setWish(response.data.wish); setError(''); }
+      } catch (err) { if (active) setError(getErrorMessage(err)); }
+    }
+    const refreshWhenVisible = () => { if (document.visibilityState === 'visible') refresh(); };
+    refresh();
+    window.addEventListener('focus', refreshWhenVisible);
+    window.addEventListener('pageshow', refreshWhenVisible);
+    document.addEventListener('visibilitychange', refreshWhenVisible);
+    return () => {
+      active = false;
+      window.removeEventListener('focus', refreshWhenVisible);
+      window.removeEventListener('pageshow', refreshWhenVisible);
+      document.removeEventListener('visibilitychange', refreshWhenVisible);
+    };
   }, [code]);
 
-  if (error) return <PublicLayout compact><main className="wish-message-card"><span className="wish-message-icon"><Gift size={28} /></span><h1>Wish unavailable</h1><p role="alert">{error}</p><p>Check the code on your ornament or ask the MIDSA team for help.</p><Link className="brand-button" to="/">Back to the campaign <ArrowRight size={16} /></Link></main></PublicLayout>;
-  if (!wish) return <PublicLayout compact><main className="wish-message-card" role="status"><Gift size={30} /><h1>Loading your wish…</h1><p>Getting the details from your ornament.</p></main></PublicLayout>;
+  if (error) return <PublicLayout><main className="wish-message-card"><span className="wish-message-icon"><Gift size={28} /></span><h1>Wish unavailable</h1><p role="alert">{error}</p><p>Check the code on your ornament or ask the MIDSA team for help.</p><Link className="brand-button" to="/">Back to the campaign <ArrowRight size={16} /></Link></main></PublicLayout>;
+  if (!wish) return <PublicLayout><main className="wish-message-card" role="status"><Gift size={30} /><h1>Loading your wish…</h1><p>Getting the details from your ornament.</p></main></PublicLayout>;
 
   const concluded = wish.campaignState === 'concluded';
   const upcoming = wish.campaignState === 'upcoming';
@@ -35,12 +49,12 @@ export default function PublicWishPage() {
   else if (wish.status === 'paused') notice = { Icon: LockKeyhole, title: 'This wish is temporarily unavailable.', text: 'The MIDSA team is checking its details. Please choose another ornament for now.' };
   else if (!canReserve) notice = { Icon: LockKeyhole, title: 'Reservations are currently unavailable.', text: 'Please check back later or ask the MIDSA team for the campaign schedule.' };
 
-  return <PublicLayout compact><main className="public-wish-main">
-    <div className="public-wish-heading"><span className="brand-kicker">CHRISTMAS WISH</span>{wish.campaign && <p>{wish.campaign.name}{wish.campaign.academicPeriod ? ` · ${wish.campaign.academicPeriod}` : ''}</p>}</div>
+  return <PublicLayout><main className="public-wish-main">
+    <div className="public-wish-heading"><span className="brand-kicker">HOLIDAY WISH</span>{wish.campaign && <p>{holidayCampaignName(wish.campaign.name)}{wish.campaign.academicPeriod ? ` · ${wish.campaign.academicPeriod}` : ''}</p>}</div>
     <div className="public-wish-grid">
-      <section className="wish-gift-tag" data-tag-design={getTagDesign(code).id} style={getTagStyle(code)} aria-labelledby="wish-recipient"><div className="wish-tag-contents"><span className="wish-tag-label">TO</span><h1 id="wish-recipient">{wish.nickname}</h1><span className="wish-tag-label">CHRISTMAS WISH LIST</span><ul>{wish.wishItems.map((item, index) => <li key={`${item}-${index}`}><Gift size={16} aria-hidden="true" /><span>{item}</span></li>)}</ul><div className="wish-tag-signoff"><span className="wish-tag-label">FROM</span><span>Your Secret Santa</span></div></div></section>
-      <section className="wish-action-card" aria-labelledby="wish-action-title"><StatusBadge status={wish.status} /><h2 id="wish-action-title">{canReserve ? 'Prepare this Christmas gift' : 'About this wish'}</h2>
-        {canReserve && <><p>Reserve the wish, prepare the gift, and follow the drop-off instructions.</p><details className="wish-step-details"><summary>How reservations work</summary><ol className="wish-next-steps"><li><span>1</span><div><strong>Leave your details</strong><p>Tell the team how to contact you.</p></div></li><li><span>2</span><div><strong>Verify your email</strong><p>Enter the code sent to your inbox to confirm your reservation.</p></div></li><li><span>3</span><div><strong>Prepare and drop off the gift</strong><p>Follow the location and deadline shown after confirmation.</p></div></li></ol></details><Link to={`/wish/${encodeURIComponent(code)}/grant`} className="brand-button wish-reserve-button">Reserve this wish <ArrowRight size={18} /></Link></>}
+      <section className="public-wishlist-image" aria-labelledby="wish-recipient"><h1 id="wish-recipient">{wish.nickname}'s wishlist</h1><WishlistImage key={code} image={wish.childProfile?.worksheetImage} nickname={wish.nickname} /></section>
+      <section className="wish-action-card" aria-labelledby="wish-action-title"><StatusBadge status={wish.status} /><h2 id="wish-action-title">{canReserve ? 'A little kindness goes a long way' : 'About this wish'}</h2>
+        {canReserve && <><p>You're welcome to grant any wish or want shown in this wishlist. Choose what fits your budget and what you're comfortable giving; there is no expectation to fulfill everything. Any gift you choose is warmly appreciated.</p><p>Be this child's holiday donor. Your reservation pairs you with this child while you prepare your chosen gift.</p><details className="wish-step-details"><summary>How reservations work</summary><ol className="wish-next-steps"><li><span>1</span><div><strong>Leave your details</strong><p>Tell the team how to contact you.</p></div></li><li><span>2</span><div><strong>Verify your email</strong><p>Enter the code sent to your inbox to confirm your reservation.</p></div></li><li><span>3</span><div><strong>Prepare and drop off the gift</strong><p>Follow the location and deadline shown after confirmation.</p></div></li></ol></details><Link to={`/wish/${encodeURIComponent(code)}/grant`} className="brand-button wish-reserve-button">Be this child's holiday donor <ArrowRight size={18} /></Link></>}
         {notice && <div className={`wish-state-notice wish-state-${wish.status}`} role="status"><notice.Icon size={24} /><div><h3>{notice.title}</h3><p>{notice.text}</p></div></div>}
       </section>
     </div>

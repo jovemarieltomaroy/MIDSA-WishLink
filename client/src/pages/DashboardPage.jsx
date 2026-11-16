@@ -1,3 +1,4 @@
+import { holidayCampaignName } from '../utils/holidayCopy';
 import { useEffect, useState } from 'react';
 import {
   Gift,
@@ -91,7 +92,7 @@ export default function DashboardPage() {
             active
           </div>
 
-          <h1>{activeCampaign.name}</h1>
+          <h1>{holidayCampaignName(activeCampaign.name)}</h1>
 
           <p>
             {activeCampaign.academicPeriod ||
@@ -117,13 +118,13 @@ export default function DashboardPage() {
 
         <Stat
           icon={<Sparkles />}
-          label="Waiting for a Santa"
+          label="Waiting for a donor"
           value={stats.available || 0}
         />
 
         <Stat
           icon={<TimerReset />}
-          label="Santa on the Way"
+          label="Gift on the way"
           value={stats.reserved || 0}
         />
 
@@ -226,7 +227,7 @@ export default function DashboardPage() {
                     <small>#{wish.ornamentCode}</small>
                   </td>
 
-                  <td>{wish.wishItems.join(', ')}</td>
+                  <td>{(wish.wishItems?.join(', ') || 'See wishlist worksheet')}</td>
 
                   <td>
                     {wish.partnerFoundation}

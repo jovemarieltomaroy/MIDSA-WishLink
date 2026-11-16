@@ -1,3 +1,4 @@
+import { holidayCampaignName } from '../utils/holidayCopy';
 import {
   NavLink,
   Outlet,
@@ -82,7 +83,7 @@ export default function AppShell() {
               to={`/officer/campaigns/${activeCampaign._id}`}
             >
               <strong>
-                {activeCampaign.name}
+                {holidayCampaignName(activeCampaign.name)}
               </strong>
 
               <span>

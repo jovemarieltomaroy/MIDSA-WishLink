@@ -1,3 +1,4 @@
+import { isValidMessengerUrl } from '../utils/messenger';
 import {
   useEffect,
   useState
@@ -22,7 +23,7 @@ import {
 const emptyOrganization = {
   contactName: '',
   contactEmail: '',
-  contactPhone: '',
+  messengerUrl: '',
   dropOffLocation: ''
 };
 
@@ -213,84 +214,14 @@ export default function AccountSettingsPage() {
     setOrganizationMessage('');
   }
 
-  /*
-   * Contact number:
-   *
-   * Allowed examples:
-   * 09171234567
-   * 639171234567
-   * +639171234567
-   *
-   * Letters, spaces, dashes,
-   * parentheses and other characters
-   * are automatically removed.
-   */
-  function updateContactNumber(
-    event
-  ) {
-    let value =
-      event.target.value;
-
-    /*
-     * Remove everything except
-     * numbers and plus signs.
-     */
-    value =
-      value.replace(
-        /[^\d+]/g,
-        ''
-      );
-
-    /*
-     * If a plus sign exists,
-     * force it to be the first
-     * and only plus sign.
-     */
-    if (
-      value.includes('+')
-    ) {
-      const numbersOnly =
-        value
-          .replace(
-            /\+/g,
-            ''
-          )
-          .slice(
-            0,
-            12
-          );
-
-      value =
-        `+${numbersOnly}`;
-    } else {
-      value =
-        value.slice(
-          0,
-          12
-        );
-    }
-
-    setOrganization(
-      (current) => ({
-        ...current,
-
-        contactPhone:
-          value
-      })
-    );
-
-    setOrganizationError('');
-    setOrganizationMessage('');
-  }
-
   function organizationChanged() {
     return (
       organization.contactName !==
         savedOrganization.contactName ||
       organization.contactEmail !==
         savedOrganization.contactEmail ||
-      organization.contactPhone !==
-        savedOrganization.contactPhone ||
+      organization.messengerUrl !==
+        savedOrganization.messengerUrl ||
       organization.dropOffLocation !==
         savedOrganization.dropOffLocation
     );
@@ -302,16 +233,6 @@ export default function AccountSettingsPage() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
       String(
         email || ''
-      ).trim()
-    );
-  }
-
-  function isValidPhoneNumber(
-    phoneNumber
-  ) {
-    return /^(09\d{9}|639\d{9}|\+639\d{9})$/.test(
-      String(
-        phoneNumber || ''
       ).trim()
     );
   }
@@ -330,7 +251,6 @@ export default function AccountSettingsPage() {
     if (
       !organization.contactName.trim() ||
       !organization.contactEmail.trim() ||
-      !organization.contactPhone.trim() ||
       !organization.dropOffLocation.trim()
     ) {
       setOrganizationError(
@@ -360,12 +280,12 @@ export default function AccountSettingsPage() {
      * validation.
      */
     if (
-      !isValidPhoneNumber(
-        organization.contactPhone
+      !isValidMessengerUrl(
+        organization.messengerUrl
       )
     ) {
       setOrganizationError(
-        'Please enter a valid Philippine contact number using 09XXXXXXXXX, 639XXXXXXXXX, or +639XXXXXXXXX.'
+        'Please enter a valid HTTPS Messenger link, such as https://m.me/yourpage.'
       );
 
       return;
@@ -402,8 +322,8 @@ export default function AccountSettingsPage() {
                 .trim()
                 .toLowerCase(),
 
-            contactPhone:
-              organization.contactPhone.trim(),
+            messengerUrl:
+              organization.messengerUrl.trim(),
 
             dropOffLocation:
               organization.dropOffLocation.trim()
@@ -768,7 +688,7 @@ export default function AccountSettingsPage() {
                   onChange={
                     updateOrganization
                   }
-                  placeholder="MIDSA Christmas Program Team"
+                  placeholder="MIDSA Holiday Program Team"
                   span
                 />
 
@@ -787,18 +707,16 @@ export default function AccountSettingsPage() {
                 />
 
                 <ModernTextField
-                  label="Contact number"
-                  type="tel"
-                  name="contactPhone"
+                  label="Messenger link (optional)"
+                  type="url"
+                  name="messengerUrl"
                   value={
-                    organization.contactPhone
+                    organization.messengerUrl
                   }
                   onChange={
-                    updateContactNumber
+                    updateOrganization
                   }
-                  placeholder="+639XXXXXXXXX or 09XXXXXXXXX"
-                  inputMode="tel"
-                  maxLength={13}
+                  placeholder="https://m.me/yourpage"
                 />
 
                 <ModernTextField

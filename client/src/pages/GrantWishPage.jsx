@@ -26,7 +26,7 @@ import {
 } from '../utils/api';
 
 import PublicLayout from '../components/PublicLayout';
-import { getTagStyle } from '../utils/tagDesigns';
+import WishlistImage from '../components/WishlistImage';
 
 const empty = {
   fullName: '',
@@ -421,7 +421,7 @@ export default function GrantWishPage() {
                   'clamp(2rem, 5vw, 2.8rem)'
               }}
             >
-              You’re {done.nickname}’s Secret Santa.
+              You’re {done.nickname}’s holiday donor. Happy holidays!
             </h1>
 
             <p
@@ -464,9 +464,7 @@ export default function GrantWishPage() {
               <SummaryRow
                 label="Wish"
                 value={
-                  done.wishItems.join(
-                    ', '
-                  )
+                  'Any gift you choose from the wishlist; no need to fulfill everything'
                 }
               />
 
@@ -491,7 +489,7 @@ export default function GrantWishPage() {
 
               <SummaryRow
                 label="Contact"
-                value={`${done.organization.contactEmail} · ${done.organization.contactPhone}`}
+                value={<>{done.organization.contactEmail}{done.organization.messengerUrl && <> · <a href={done.organization.messengerUrl} target="_blank" rel="noreferrer">Message us on Messenger</a></>}</>}
               />
             </div>
 
@@ -579,7 +577,7 @@ export default function GrantWishPage() {
             display:
               'grid',
             gridTemplateColumns:
-              'minmax(0, 1fr) minmax(270px, 330px)',
+              'repeat(2, minmax(0, 1fr))',
             gap:
               '20px',
             alignItems:
@@ -638,7 +636,7 @@ export default function GrantWishPage() {
                     size={14}
                   />
 
-                  Secret Santa details
+                  Holiday donor details
                 </div>
 
                 <h1
@@ -1129,7 +1127,6 @@ export default function GrantWishPage() {
 
           <aside
             style={{
-              ...getTagStyle(code),
               display:
                 'grid',
               gap:
@@ -1194,7 +1191,7 @@ export default function GrantWishPage() {
                         '#727c66'
                     }}
                   >
-                    Christmas wish
+                    Holiday wish
                   </small>
 
                   <strong
@@ -1210,32 +1207,8 @@ export default function GrantWishPage() {
                 </div>
               </div>
 
-              <ul
-                style={{
-                  margin:
-                    '0',
-                  paddingLeft:
-                    '20px',
-                  color:
-                    '#243e32',
-                  fontWeight:
-                    650,
-                  lineHeight:
-                    1.7
-                }}
-              >
-                {wish?.wishItems.map(
-                  (item) => (
-                    <li
-                      key={
-                        item
-                      }
-                    >
-                      {item}
-                    </li>
-                  )
-                )}
-              </ul>
+              <WishlistImage image={wish?.childProfile?.worksheetImage} nickname={wish?.nickname || 'This child'} />
+              <p>Choose any wish or want that fits your budget. There is no expectation to fulfill everything; any gift you choose is warmly appreciated.</p>
             </div>
 
             <div
@@ -1309,10 +1282,7 @@ export default function GrantWishPage() {
                     {wish?.organization
                       .contactEmail}
 
-                    <br />
-
-                    {wish?.organization
-                      .contactPhone}
+                    {wish?.organization?.messengerUrl && <><br /><a href={wish.organization.messengerUrl} target="_blank" rel="noreferrer">Message us on Messenger</a></>}
                   </small>
                 </div>
               </div>
@@ -1655,11 +1625,10 @@ function SummaryRow({
 }) {
   return (
     <div
+      className="reservation-summary-row"
       style={{
         display:
           'grid',
-        gridTemplateColumns:
-          '150px 1fr',
         gap:
           '14px',
         alignItems:

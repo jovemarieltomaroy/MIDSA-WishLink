@@ -1,6 +1,6 @@
 const labels = {
-  available: 'Waiting for a Santa',
-  reserved: 'Santa on the Way',
+  available: 'Waiting for a donor',
+  reserved: 'Gift on the way',
   granted: 'Wish Granted',
   paused: 'Temporarily Hidden'
 };

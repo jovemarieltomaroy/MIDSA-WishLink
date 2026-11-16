@@ -1,0 +1,69 @@
+.campaign-intro {
+  --intro-ease: cubic-bezier(.22, 1, .36, 1);
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  pointer-events: none;
+}
+.campaign-intro-backdrop { position: absolute; inset: 0; background: #fffdf6; }
+.campaign-intro-scene {
+  position: relative;
+  width: min(100%, 560px, 150vh);
+  aspect-ratio: 1656 / 791;
+  transform-origin: center;
+}
+.campaign-intro-composition { display: block; width: 100%; height: 100%; overflow: visible; visibility: hidden; }
+.campaign-intro.is-ready .campaign-intro-composition { visibility: visible; }
+.campaign-intro-destination { visibility: hidden; }
+.intro-pen { stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
+.intro-reveal { opacity: 0; transform-origin: 828px 395px; }
+.intro-mark-flight { opacity: 0; offset-path: path('M 245 500 C 510 105 1140 -120 1462 83'); offset-rotate: 0deg; offset-distance: 0%; }
+.intro-complete { visibility: hidden; }
+.intro-sparkle { fill: #b78b39; opacity: 0; }
+/* 0–1180 write; 1180–1630 reveal; 1630–2480 flight;
+   2480–2760 settle; 2760–3210 hold; 3210–4060 header handoff. */
+.is-ready .intro-pen { animation: intro-write var(--duration) var(--delay) linear both; }
+.is-ready .intro-reveal { animation: intro-reveal 450ms 1180ms var(--intro-ease) both; }
+.is-ready .intro-mark-flight {
+  animation: intro-mark-appear 120ms 1510ms ease-out both,
+    intro-flight 850ms 1630ms cubic-bezier(.4, 0, .22, 1) both;
+}
+.is-ready .intro-mark-settle { animation: intro-settle 280ms 2480ms ease-in-out both; }
+/* Swap only after assembly, on the same frame, without doubled opacity. */
+.is-ready .intro-parts { animation: intro-hide 1ms 2760ms steps(1, end) forwards; }
+.is-ready .intro-complete { animation: intro-show 1ms 2760ms steps(1, end) forwards; }
+.is-ready .intro-sparkle { animation: intro-sparkle 260ms var(--delay) ease-in-out both; }
+.campaign-intro.is-ready .campaign-intro-scene {
+  animation: campaign-intro-to-nav 850ms 3210ms cubic-bezier(.45, 0, .22, 1) both;
+  will-change: transform;
+}
+.campaign-intro.is-ready .campaign-intro-backdrop { animation: intro-page-reveal 850ms 3210ms ease-in-out both; }
+@keyframes intro-write {
+  0% { opacity: 0; stroke-dashoffset: 1; }
+  .01% { opacity: 1; }
+  100% { opacity: 1; stroke-dashoffset: 0; }
+}
+@keyframes intro-reveal { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
+@keyframes intro-mark-appear { from { opacity: 0; } to { opacity: 1; } }
+@keyframes intro-flight { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+@keyframes intro-settle {
+  0% { transform: translateY(0); }
+  35% { transform: translateY(-5px); }
+  72% { transform: translateY(2px); }
+  100% { transform: translateY(0); }
+}
+@keyframes intro-hide { to { visibility: hidden; } }
+@keyframes intro-show { to { visibility: visible; } }
+@keyframes intro-sparkle { 0%, 100% { opacity: 0; } 45% { opacity: .55; } }
+@keyframes intro-page-reveal { from { opacity: 1; } to { opacity: 0; } }
+@keyframes campaign-intro-to-nav {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(var(--intro-x, 0px), var(--intro-y, 0px)) scale(var(--intro-scale, 1)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .campaign-intro { display: none; }
+  .campaign-intro-destination { visibility: visible; }
+}

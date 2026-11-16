@@ -1,3 +1,4 @@
+import { holidayCampaignName } from '../utils/holidayCopy';
 import {
   useEffect,
   useState
@@ -95,7 +96,7 @@ export default function CampaignDetailPage() {
   ) {
     return {
       name:
-        campaign.name,
+        holidayCampaignName(campaign.name),
 
       academicPeriod:
         campaign.academicPeriod ||
@@ -360,7 +361,7 @@ export default function CampaignDetailPage() {
         'activate',
 
       title:
-        `Activate “${campaign.name}”?`,
+        `Activate “${holidayCampaignName(campaign.name)}”?`,
 
       message:
         startsLater
@@ -390,7 +391,7 @@ export default function CampaignDetailPage() {
         'complete',
 
       title:
-        `Complete “${campaign.name}”?`,
+        `Complete “${holidayCampaignName(campaign.name)}”?`,
 
       message:
         'Donors will no longer be able to make new reservations under this campaign. Existing records and campaign history will remain available.',
@@ -416,7 +417,7 @@ export default function CampaignDetailPage() {
         'archive',
 
       title:
-        `Archive “${campaign.name}”?`,
+        `Archive “${holidayCampaignName(campaign.name)}”?`,
 
       message:
         'The campaign will be kept for historical records but moved out of the normal active campaign view. Its data will not be deleted.',
@@ -533,7 +534,7 @@ export default function CampaignDetailPage() {
           </div>
 
           <h1>
-            {campaign.name}
+            {holidayCampaignName(campaign.name)}
           </h1>
 
           <p>
@@ -708,7 +709,7 @@ export default function CampaignDetailPage() {
         />
 
         <Stat
-          label="Santa on the Way"
+          label="Gift on the way"
           value={
             stats.reserved
           }

@@ -1,3 +1,77 @@
+/* A solid full-width header separates navigation from the notebook artwork. */
+.brand-nav,
+.campaign-public-header { isolation: isolate; border-bottom: 0; }
+.brand-nav::before,
+.campaign-public-header::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc((100% - 100vw) / 2);
+  z-index: -1;
+  background: #f0e3c9;
+  border-top: 3px solid #086747;
+  border-bottom: 1px solid #08674740;
+  box-shadow: 0 4px 16px #243c3212;
+  pointer-events: none;
+}
+
+/* Optional donor profile and reviewed worksheet. */
+.public-wish-grid:has(.public-wishlist-image) { grid-template-columns: minmax(0, 1.15fr) minmax(320px, 1fr); align-items: start; gap: 40px; }
+.public-wishlist-image { min-width: 0; }
+.public-wishlist-image h1 { color: #086747; font-family: Georgia, serif; font-size: clamp(26px, 3vw, 36px); margin: 0 0 20px; }
+.wishlist-image-button { display: block; width: 100%; padding: 0; border: 1px solid #08674726; border-radius: 14px; overflow: hidden; background: #fffdf7; color: #086747; cursor: zoom-in; box-shadow: 0 10px 30px #243c3212; }
+.wishlist-image-button > img { display: block; width: 100%; height: auto; }
+.wishlist-image-button > span { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 12px; font: inherit; }
+.wishlist-image-button:focus-visible { outline: 3px solid #086747; outline-offset: 4px; }
+.wishlist-download-button { margin-top: 14px; justify-content: center; gap: 10px; }
+.wishlist-download-button:disabled { opacity: .65; cursor: wait; }
+.grant-wish-layout > section,
+.grant-wish-layout > aside { min-width: 0; }
+.grant-wish-layout > aside .wishlist-download-button { width: 100%; }
+.wishlist-image-empty { padding: 48px 24px; border: 1px dashed #08674760; border-radius: 14px; background: #fffdf7; text-align: center; color: #526757; }
+@media (max-width: 850px) { .public-wish-grid:has(.public-wishlist-image) { grid-template-columns: minmax(0, 1fr); } }
+.child-profile-invitation { margin-top: 24px; padding-top: 24px; border-top: 1px solid #08674724; }
+.child-profile-invitation h3 { margin: 0; }
+.child-profile-invitation .brand-button:disabled { opacity: .55; cursor: not-allowed; }
+.child-profile-dialog { width: min(900px, calc(100% - 32px)); max-height: 90dvh; padding: 0; border: 1px solid #08674730; border-radius: 20px; background: #fffdf7; color: #243c32; box-shadow: 0 24px 80px #0004; }
+.child-profile-dialog::backdrop { background: #102c22b3; }
+.child-profile-dialog-content { position: relative; padding: clamp(20px, 4vw, 36px); overflow-wrap: anywhere; }
+.child-profile-dialog h2 { padding-right: 32px; margin-top: 12px; }
+.child-profile-dialog p { line-height: 1.65; }
+.child-profile-close { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: #eaf0e7; color: #086747; cursor: pointer; }
+.child-profile-guidance { padding: 16px; border-radius: 12px; background: #f3ead5; }
+.child-profile-text { white-space: pre-wrap; }
+.child-profile-worksheet { display: block; width: 100%; height: auto; border-radius: 10px; }
+.child-profile-fields { min-width: 0; border: 1px solid #08674730; border-radius: 12px; padding: 20px; }
+.child-profile-fields label, .child-profile-editor > label { display: grid; gap: 8px; margin-bottom: 16px; }
+.child-profile-fields p { font-size: 14px; line-height: 1.6; }
+.child-profile-fields textarea, .child-profile-editor textarea { width: 100%; box-sizing: border-box; }
+.child-profile-preview { display: block; max-width: 100%; max-height: 300px; margin-block: 12px; object-fit: contain; }
+.child-profile-editor { display: grid; gap: 20px; }
+.child-profile-editor > button { justify-self: start; }
+.child-profile-fields legend { padding-inline: 8px; font-weight: 600; }
+.worksheet-optional { font-weight: 400; color: var(--muted); font-size: 13px; }
+.child-profile-fields .worksheet-intro { margin: 0 0 18px; color: var(--muted); }
+.worksheet-upload-layout { display: grid; gap: 24px; min-width: 0; }
+.worksheet-upload-layout.has-preview { grid-template-columns: minmax(0, 1fr) minmax(180px, .7fr); align-items: start; }
+.worksheet-upload-controls { min-width: 0; }
+.child-profile-fields .worksheet-upload-area { margin: 0; padding: 20px; gap: 12px; border: 1px dashed #8caa94; border-radius: 10px; background: #f1f5ed; }
+.worksheet-upload-heading { display: flex; align-items: center; gap: 10px; color: var(--primary); font-size: 15px; font-weight: 600; }
+.worksheet-file-hint { color: var(--muted); font-size: 13px; }
+.worksheet-upload-area input { width: 100%; min-width: 0; font-size: 13px; color: var(--ink-soft); }
+.worksheet-upload-area input::file-selector-button { margin-right: 12px; padding: 10px 14px; border: 1px solid var(--primary); border-radius: 6px; background: var(--primary); color: white; font: inherit; cursor: pointer; }
+.worksheet-upload-area:focus-within { outline: 2px solid var(--primary); outline-offset: 3px; }
+.worksheet-upload-guidance { padding-top: 14px; }
+.child-profile-fields .worksheet-upload-guidance p { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.worksheet-preview-panel { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: #fffdf7; overflow-wrap: anywhere; }
+.worksheet-preview-panel .child-profile-preview { width: 100%; margin: 0; }
+.child-profile-fields .worksheet-preview-panel p { margin: 12px 0; font-size: 13px; }
+.worksheet-preview-panel .text-button { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
+@media (max-width: 800px) {
+  .worksheet-upload-layout.has-preview { grid-template-columns: minmax(0, 1fr); }
+  .child-profile-fields { padding: 16px; }
+  .child-profile-fields .worksheet-upload-area { padding: 16px; }
+}
+
 /* Original drawings and gift tags from the campaign artwork. */
 .brand-landing, .campaign-public-page { position: relative; isolation: isolate; }
 .brand-artwork { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
@@ -22,7 +96,7 @@
 
 .campaign-public-page { background: var(--brand-public-background); min-height: 100dvh; display: flex; flex-direction: column; }
 .campaign-public-header { position: relative; z-index: 1; width: min(1100px, calc(100% - 48px)); margin-inline: auto; min-height: 100px; display: flex; justify-content: space-between; align-items: center; gap: 20px; border-bottom: 1px solid #08674724; }
-.campaign-public-header img { width: 132px; height: 78px; object-fit: contain; display: block; }
+.campaign-public-header img { width: 170px; height: 82px; object-fit: cover; display: block; }
 .campaign-home-link { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #30563d; padding: 10px 0 10px 10px; }
 .campaign-home-link:hover { text-decoration: underline; }
 .campaign-public-content { flex: 1; position: relative; z-index: 1; width: 100%; }
@@ -43,8 +117,58 @@
 .grant-public-main { padding-top: 14px !important; }.grant-public-main > button { color: #07593e !important; border: 1px solid #bcc9b0 !important; background: #fffaf0d9 !important; }
 .grant-public-main > section, .grant-wish-layout > section, .grant-wish-layout > aside > div { border: 1px solid #d8d2bd !important; box-shadow: 3px 6px 22px #3f3b2315 !important; border-radius: 8px !important; background: #fffcf4 !important; }
 .grant-wish-layout > section::before, .grant-public-main > section::before { content: ''; position: absolute; inset: 0 0 auto; height: 6px; background: repeating-linear-gradient(135deg, #a32c23 0 12px, #f7f0dc 12px 24px, #096247 24px 36px, #f7f0dc 36px 48px); }
-.grant-wish-layout > aside > div:first-child { background: var(--tag-image, url('../assets/branding/campaign-tag.png')) center / 100% 100% no-repeat !important; border: 0 !important; min-height: 460px; padding: 86px 20% 65px !important; filter: drop-shadow(4px 8px 4px #383e2420); box-shadow: none !important; }.grant-wish-layout > aside > div:first-child strong { font-family: var(--brand-script); font-size: 30px; line-height: 1.15; overflow-wrap: anywhere; }.grant-wish-layout > aside li { font-size: 13px; overflow-wrap: anywhere; }
+.grant-wish-layout > aside > div:first-child { padding: 22px !important; }.grant-wish-layout > aside > div:first-child strong { font-family: var(--brand-script); font-size: 30px; line-height: 1.15; overflow-wrap: anywhere; }.grant-wish-layout > aside li { font-size: 13px; overflow-wrap: anywhere; }
 .campaign-public-page h1 { overflow-wrap: anywhere; }.grant-public-main input, .grant-public-main select { min-height: 46px; }.grant-wish-layout > section { padding: 30px !important; }
 .campaign-public-page .brand-art-bird { top: 165px; right: 10px; }
-@media (max-width: 850px) { .public-wish-grid { gap: 26px; grid-template-columns: minmax(0, 310px) minmax(0, 1fr); }.public-wish-main { width: calc(100% - 40px); }.wish-action-card { padding: 23px; }.wish-action-card h2 { font-size: 24px; }.wish-tag-contents { padding-inline: 21%; }.grant-wish-layout { grid-template-columns: minmax(0, 1fr) !important; }.grant-wish-layout > aside { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }.grant-wish-layout > aside > div:first-child { min-height: 420px; } }
-@media (max-width: 600px) { .brand-art-tree { width: 210px; left: -110px; opacity: .4; }.brand-art-bird { width: 95px; right: -8px; top: 105px; }.brand-art-children { height: 115px; }.brand-landing .brand-hero h1 { font-size: clamp(30px, 7.7vw, 45px); letter-spacing: -.5px; }.brand-landing .brand-footer { padding-bottom: 20px; }.campaign-public-header { width: calc(100% - 36px); min-height: 90px; }.campaign-public-header img { width: 116px; height: 68px; }.campaign-home-link { font-size: 11px; }.public-wish-heading { margin-bottom: 38px; }.public-wish-main { margin-top: 28px; }.public-wish-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }.wish-gift-tag { max-width: 345px; min-height: 560px; margin: auto; }.wish-tag-contents { padding: 96px 21% 68px; }.wish-tag-contents h1 { font-size: 42px; }.wish-action-card { padding: 25px; }.campaign-public-footer { padding-bottom: 16px; }.reservation-progress ol { gap: 14px; }.reservation-progress li { gap: 5px; font-size: 9px; }.reservation-progress li > span { width: 22px; height: 22px; }.grant-public-main { padding: 12px 16px 28px !important; }.grant-wish-layout > section { padding: 24px 20px !important; }.grant-wish-layout > aside { grid-template-columns: minmax(0, 1fr); }.grant-wish-layout > aside > div:first-child { max-width: 345px; width: 100%; margin: auto; }.wish-message-card { padding: 36px 23px; margin-block: 42px; } }
+@media (max-width: 850px) { .public-wish-grid { gap: 26px; grid-template-columns: minmax(0, 310px) minmax(0, 1fr); }.public-wish-main { width: calc(100% - 40px); }.wish-action-card { padding: 23px; }.wish-action-card h2 { font-size: 24px; }.wish-tag-contents { padding-inline: 21%; }.grant-wish-layout { grid-template-columns: minmax(0, 1fr) !important; }.grant-wish-layout > aside { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
+@media (max-width: 600px) { .brand-art-tree { width: 210px; left: -110px; opacity: .4; }.brand-art-bird { width: 95px; right: -8px; top: 105px; }.brand-art-children { height: 115px; }.brand-landing .brand-hero h1 { font-size: clamp(30px, 7.7vw, 45px); letter-spacing: -.5px; }.brand-landing .brand-footer { padding-bottom: 20px; }.campaign-public-header { width: calc(100% - 36px); min-height: 90px; }.campaign-public-header img { width: 116px; height: 68px; }.campaign-home-link { font-size: 11px; }.public-wish-heading { margin-bottom: 38px; }.public-wish-main { margin-top: 28px; }.public-wish-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }.wish-gift-tag { max-width: 345px; min-height: 560px; margin: auto; }.wish-tag-contents { padding: 96px 21% 68px; }.wish-tag-contents h1 { font-size: 42px; }.wish-action-card { padding: 25px; }.campaign-public-footer { padding-bottom: 16px; }.reservation-progress ol { gap: 14px; }.reservation-progress li { gap: 5px; font-size: 9px; }.reservation-progress li > span { width: 22px; height: 22px; }.grant-public-main { padding: 12px 16px 28px !important; }.grant-wish-layout > section { padding: 24px 20px !important; }.grant-wish-layout > aside { grid-template-columns: minmax(0, 1fr); }.wish-message-card { padding: 36px 23px; margin-block: 42px; } }
+
+/* Keep gallery navigation visible as visitors browse wishes. */
+.has-sticky-header .campaign-public-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--brand-public-background);
+  box-shadow: 0 4px 12px #253d3108;
+}
+.has-sticky-header .campaign-public-header img {
+  width: 170px;
+  height: 82px;
+  object-fit: cover;
+}
+@media (max-width: 850px) {
+  .has-sticky-header .campaign-public-header img { width: 155px; height: 76px; }
+}
+@media (max-width: 600px) {
+  .has-sticky-header .campaign-public-header img { width: 138px; height: 67px; }
+}
+
+@media (max-width: 600px) {
+  .campaign-public-header img { width: 138px; height: 67px; object-fit: cover; }
+}
+
+/* Give the worksheet overview room to read instead of fitting the old tag. */
+.campaign-public-page:has(.public-wish-main) .campaign-public-header { min-height: 88px; }
+.campaign-public-page:has(.public-wish-main) .campaign-public-header img { width: 170px; height: 82px; }
+.campaign-public-page:has(.public-wish-main) .campaign-home-link { font-size: 16px; }
+.public-wish-main { width: min(1200px, calc(100% - 64px)); margin-block: 32px; }
+.public-wish-heading .brand-kicker { font-size: 14px; }
+.public-wish-heading > p { font-size: 15px; }
+.public-wishlist-image h1 { font-size: clamp(28px, 3vw, 36px); line-height: 1.15; }
+.public-wish-main .wish-action-card { padding: 32px; }
+.public-wish-main .wish-action-card h2 { font-size: clamp(25px, 2.4vw, 30px); }
+.public-wish-main .wish-action-card > p { font-size: 15px; line-height: 1.75; color: #4f604f; }
+.public-wish-main .wish-step-details,
+.public-wish-main .wish-next-steps strong,
+.public-wish-main .wish-next-steps p,
+.public-wish-main .wish-state-notice p { font-size: 14px; }
+.public-wish-main .status-badge { font-size: 13px; }
+.public-wish-main .wish-reserve-button { font-size: 15px; padding: 18px 20px; }
+@media (max-width: 600px) {
+  .campaign-public-page:has(.public-wish-main) .campaign-public-header { min-height: 76px; }
+  .campaign-public-page:has(.public-wish-main) .campaign-public-header img { width: 145px; height: 70px; }
+  .campaign-public-page:has(.public-wish-main) .campaign-home-link { font-size: 13px; }
+  .public-wish-main { width: calc(100% - 32px); margin-block: 24px; }
+  .public-wish-main .wish-action-card { padding: 24px; }
+  .public-wish-main .wish-action-card > p { font-size: 15px; }
+}

@@ -1,3 +1,4 @@
+import { holidayCampaignName } from '../utils/holidayCopy';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
@@ -13,13 +14,17 @@ import QrGiftTag from '../components/QrGiftTag';
 import { downloadQrTag } from '../utils/downloadQrTag';
 import { api, getErrorMessage } from '../utils/api';
 import StatusBadge from '../components/StatusBadge';
+import ChildProfileFields from '../components/ChildProfileFields';
 
 export default function WishDetailPage() {
   const { id } = useParams();
 
   const [wish, setWish] = useState(null);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [deadline, setDeadline] = useState('');
+  const [childProfile, setChildProfile] = useState({});
+  const [savingProfile, setSavingProfile] = useState(false);
 
   async function load() {
     try {
@@ -33,6 +38,7 @@ export default function WishDetailPage() {
         response.data.wish;
 
       setWish(loadedWish);
+      setChildProfile(loadedWish.childProfile || {});
 
       if (
         loadedWish.reservationExpiresAt
@@ -67,13 +73,30 @@ export default function WishDetailPage() {
       }/wish/${wish.ornamentCode}`;
     }, [wish]);
 
+  async function saveProfile(event) {
+    event.preventDefault();
+    setSavingProfile(true);
+    setError('');
+    setNotice('');
+    try {
+      const response = await api.patch(`/officer/wishes/${id}`, { childProfile });
+      if ((response.data.wish.childProfile?.worksheetImage || '') !== (childProfile.worksheetImage || '')) {
+        throw new Error('The server did not save the worksheet image. Keep this page open and try saving again.');
+      }
+      await load();
+      setNotice(childProfile.worksheetImage ? 'Wishlist and worksheet image saved. The image is available on the public wish page.' : 'Wishlist details saved.');
+    } catch (err) { setError(getErrorMessage(err)); }
+    finally { setSavingProfile(false); }
+  }
+
   async function updateStatus(
     newStatus
   ) {
     try {
       setError('');
+      setNotice('');
 
-      await api.patch(
+      const response = await api.patch(
         `/officer/wishes/${id}/status`,
         {
           status:
@@ -82,6 +105,15 @@ export default function WishDetailPage() {
       );
 
       await load();
+      if (newStatus === 'available') {
+        const messages = {
+          accepted: 'Reservation released. The email provider accepted the donor notification; delivery may take a few minutes.',
+          failed: 'Reservation released, but the donor email could not be sent. Check the server logs for the email provider error.',
+          missing_email: 'Reservation released, but no donor email address was saved for this reservation.',
+          not_configured: 'Reservation released, but email sending is not configured on the server.'
+        };
+        setNotice(messages[response.data.releaseEmail?.status] || 'Reservation released. This server did not report an email result; ensure the latest backend is running.');
+      }
     } catch (err) {
       setError(
         getErrorMessage(err)
@@ -139,7 +171,7 @@ export default function WishDetailPage() {
       <div className="page-head">
         <div>
           <div className="eyebrow">
-            {wish.campaign?.name ||
+            {holidayCampaignName(wish.campaign?.name) ||
               'Unassigned campaign'}
             {' · '}
             Wish #{wish.ornamentCode}
@@ -220,6 +252,7 @@ export default function WishDetailPage() {
         </button>
       </div>
 
+      {notice && <div className="alert" role="status">{notice}</div>}
       {error && (
         <div className="alert">
           {error}
@@ -245,7 +278,7 @@ export default function WishDetailPage() {
               </dt>
 
               <dd>
-                {wish.campaign?.name ||
+                {holidayCampaignName(wish.campaign?.name) ||
                   'Unassigned'}
               </dd>
             </div>
@@ -287,9 +320,7 @@ export default function WishDetailPage() {
               </dt>
 
               <dd>
-                {wish.wishItems.join(
-                  ', '
-                )}
+                {wish.childProfile?.worksheetImage ? 'See the worksheet image below' : 'No worksheet image added yet'}
               </dd>
             </div>
 
@@ -314,13 +345,23 @@ export default function WishDetailPage() {
 
       </div>
 
+      <section className="panel">
+        <div className="panel-head"><div><h2>Wishlist & worksheet image</h2><p>Donors see the worksheet image and may choose any gift within their budget.</p></div></div>
+        <form className="child-profile-editor" onSubmit={saveProfile}>
+          <ChildProfileFields value={childProfile} onChange={setChildProfile} />
+          <button type="submit" className="primary-button" disabled={savingProfile}>{savingProfile ? 'Saving…' : 'Save wishlist & donor profile'}</button>
+          {notice && <p role="status">{notice}</p>}
+          {error && <div className="alert" role="alert">{error}</div>}
+        </form>
+      </section>
+
       {wish.donor && (
         <div className="panel">
 
           <div className="panel-head">
             <div>
               <h2>
-                Secret Santa commitment
+                holiday donor commitment
               </h2>
 
               <p>
@@ -470,7 +511,7 @@ export default function WishDetailPage() {
 
               <p>
                 The QR can be scanned by
-                a Secret Santa.
+                a holiday donor.
               </p>
             </div>
 

@@ -1,6 +1,6 @@
 # MIDSA WishLink
 
-**MIDSA WishLink** is a MERN-based Christmas wish-giving tracker designed for a university organization. It keeps the physical Christmas tree and QR ornaments, while moving reservation, donor coordination, expiry, and officer tracking online.
+**MIDSA WishLink** is a MERN-based Holiday wish-giving tracker designed for a university organization. It keeps the physical holiday giving tree and QR ornaments, while moving reservation, donor coordination, expiry, and officer tracking online.
 
 ## Core flow
 
@@ -11,7 +11,7 @@
 5. A student scans the QR and sees the anonymized wish page.
 6. If available, they click **“I’d like to grant [nickname]’s wish.”**
 7. They provide name, university email, active phone number, program, year level, and whether their name may appear on the gift.
-8. WishLink atomically reserves the wish and changes it from **Waiting for a Santa** to **Santa on the Way**.
+8. WishLink atomically reserves the wish and changes it from **Waiting for a donor** to **Gift on the way**.
 9. The donor receives email/SMS confirmation when messaging credentials are configured.
 10. If the commitment deadline passes without officer action, WishLink automatically reopens the wish.
 11. Officers may extend the deadline if the donor communicates a valid delay.
@@ -21,15 +21,15 @@
 
 | Database status | Public/officer label | Meaning |
 |---|---|---|
-| `available` | **Waiting for a Santa** | Anyone may reserve the wish. |
-| `reserved` | **Santa on the Way** | A donor has committed and the wish is temporarily locked. |
+| `available` | **Waiting for a donor** | Anyone may reserve the wish. |
+| `reserved` | **Gift on the way** | A donor has committed and the wish is temporarily locked. |
 | `granted` | **Wish Granted** | MIDSA has physically received the gift. |
 | `paused` | **Temporarily Hidden** | Officers temporarily removed the wish from reservation without deleting it. |
 
 ## Included features
 
 - Public QR wish page with nickname and wish only
-- Secret Santa reservation form
+- holiday donor reservation form
 - Concurrent/atomic reservation protection
 - Configurable automatic reservation expiry
 - Officer-controlled deadline extension
@@ -210,9 +210,13 @@ For a Philippine university rollout, you may later replace Twilio with your pref
 
 ## Reservation deadline behavior
 
-`DEFAULT_RESERVATION_DAYS=5` means a donor normally gets five days to hand over the gift. The date is also clamped to `CAMPAIGN_DEADLINE`.
+Officer actions that release a reserved wish back to available also email the former donor. Manual release messages identify the officer action rather than saying the deadline expired.
 
-The server checks every 10 minutes for expired commitments. Expired reservations are automatically changed back to **Waiting for a Santa**, and the previous donor information is cleared from the active wish record. The action remains represented in the audit history without exposing donor details publicly.
+Donors are emailed in the final 24 hours before their current deadline, including officer-recorded extensions. The server checks every 10 minutes and sends one reminder per deadline, retrying failed reminders on the next check. Expired reservations trigger a release email. When an officer marks a gift **Wish Granted**, its donor receives a drop-off confirmation and thank-you email. Repeating the granted status does not send another receipt. These emails use the existing Brevo configuration (mock logs when unconfigured). Receipt and release email failures are logged without undoing the status change and are not automatically retried.
+
+`DEFAULT_RESERVATION_DAYS=5` sets new reservations to expire at **5:00 PM Philippine time on the fifth calendar day after reservation**. For example, reserving any time on November 8 gives a November 13, 5:00 PM deadline. An earlier campaign deadline still takes precedence. Existing reservations keep their saved deadlines; officers can update them from the wish detail page.
+
+The server checks every 10 minutes for expired commitments. Expired reservations are automatically changed back to **Waiting for a donor**, and the previous donor information is cleared from the active wish record. The action remains represented in the audit history without exposing donor details publicly.
 
 An officer can extend a reserved wish’s deadline from its detail page when the donor has contacted MIDSA about a delay.
 
@@ -270,7 +274,6 @@ midsa-wishlink/
 
 - CSV/bulk wish import from partner foundations
 - One-click downloadable print sheets for many ornaments
-- Donor reminder email/SMS 24 hours before deadline
 - Campaign analytics by foundation and fulfillment rate
 - Gift intake receipt/claim stub
 - Volunteer role with narrower permissions than officers

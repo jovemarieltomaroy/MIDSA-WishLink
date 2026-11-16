@@ -12,14 +12,16 @@ function nameLines(name) {
   return lines;
 }
 
-export default function QrGiftTag({ value, nickname, code, idPrefix = 'wish', showCord = false }) {
+export default function QrGiftTag({ value, nickname, code, wishItems = [], idPrefix = 'wish', showCord = false }) {
   const design = getTagDesign(code);
   const cordColor = { striped: '#ac3025', dotted: '#086747', tartan: '#b78b39', vertical: '#ac3025', red: '#fffaf0', bow: '#b78b39', candy: '#fffaf0' }[design.id] || '#ac3025';
   const height = Math.round(706 * design.height / design.width);
   const top = design.top * 706;
   const available = height - top - 90;
-  const qrSize = Math.min(420, Math.floor(available - 310));
-  const qrY = top + 150;
+  const giftName = wishItems.filter(Boolean).join(', ');
+  const giftSpace = giftName ? 40 : 0;
+  const qrSize = Math.min(420, Math.floor(available - 310 - giftSpace));
+  const qrY = top + 150 + giftSpace;
   const captionY = qrY + qrSize + 44;
   const lines = nameLines(nickname);
   const fontSize = Math.min(46, 70 / lines.length);
@@ -32,8 +34,9 @@ export default function QrGiftTag({ value, nickname, code, idPrefix = 'wish', sh
       <path d="M349 -24 C320 -32 319 4 342 0 C365 -5 369 -30 349 -24 Z" />
     </g>}
     <g textAnchor="middle" fontFamily="Arial, sans-serif" fill={design.ink || '#07593f'}>
-      <text x="353" y={top + 18} fontSize="19" letterSpacing="3">CHRISTMAS WISH</text>
+      <text x="353" y={top + 18} fontSize="19" letterSpacing="3">HOLIDAY WISH</text>
       {lines.map((line, index) => <text key={index} x="353" y={top + 65 + index * fontSize * 1.15} fontSize={fontSize} fontWeight="700" textLength={line.length > 18 ? 410 : undefined} lengthAdjust="spacingAndGlyphs">{line}</text>)}
+      {giftName && <text x="353" y={qrY - 28} fontSize="26" fontWeight="600" textLength={giftName.length > 30 ? 440 : undefined} lengthAdjust="spacingAndGlyphs">{giftName}</text>}
       <text x="353" y={captionY} fontSize="25" fontWeight="700">Scan to view</text>
       <text x="353" y={captionY + 36} fontSize="25" fontWeight="700">and reserve this wish</text>
       <text x="353" y={captionY + 96} fontSize="17" letterSpacing="1">{code}</text>

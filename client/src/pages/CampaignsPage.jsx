@@ -1,3 +1,4 @@
+import { holidayCampaignName } from '../utils/holidayCopy';
 import { Link } from 'react-router-dom';
 
 import {
@@ -48,7 +49,7 @@ export default function CampaignsPage() {
 
           <div>
             <strong>
-              {activeCampaign.name}{' '}
+              {holidayCampaignName(activeCampaign.name)}{' '}
               is currently active.
             </strong>
 
@@ -97,7 +98,7 @@ export default function CampaignsPage() {
               </div>
 
               <h2>
-                {campaign.name}
+                {holidayCampaignName(campaign.name)}
               </h2>
 
               <p>

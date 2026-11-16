@@ -1,0 +1,32 @@
+.campaign-countdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px 44px;
+  margin: 16px auto 24px;
+  padding: 20px 24px;
+  width: min(1120px, calc(100% - 32px));
+  box-sizing: border-box;
+  border: 1px solid #dce0cc;
+  border-top: 3px solid #ae2d25;
+  border-radius: 12px;
+  background: #fff9eccc;
+  color: #086747;
+}
+.campaign-countdown-copy p { margin: 0 0 5px; font-family: Georgia, serif; font-size: clamp(17px, 2vw, 22px); line-height: 1.35; }
+.campaign-countdown-copy > span { color: #687062; font-size: 11px; line-height: 1.6; }
+.campaign-countdown-clock { display: grid; grid-template-columns: repeat(4, minmax(44px, 1fr)); gap: 12px; }
+.campaign-countdown-unit { text-align: center; }
+.campaign-countdown-number { display: block; min-width: 44px; padding: 8px 7px; border: 1px solid #dde3d1; border-radius: 6px; background: #fffdf6; font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.campaign-countdown-label { display: block; margin-top: 5px; font-size: 9px; letter-spacing: .7px; text-transform: uppercase; color: #687062; }
+.brand-hero-copy .campaign-countdown { width: 100%; margin: 26px 0 20px; padding: 18px; justify-content: flex-start; gap: 16px; }
+.brand-hero-copy .campaign-countdown-copy p { margin: 0 0 5px; font-size: 19px; line-height: 1.35; }
+@media (max-width: 600px) {
+  .campaign-countdown { padding: 17px 12px; gap: 14px; text-align: center; }
+  .campaign-countdown-copy { width: 100%; }
+  .campaign-countdown-clock { gap: 10px; }
+  .campaign-countdown-number { font-size: 24px; }
+  .brand-hero-copy .campaign-countdown { justify-content: center; }
+}
