@@ -41,3 +41,15 @@
 .brand-landing .brand-ribbon { color: #f5fafb; }
 .brand-landing .brand-ribbon > span:nth-child(even) { color: #b8d6da; }
 .brand-landing .brand-button { color: #fff; }
+
+.brand-landing .brand-campaign-card > div {
+  aspect-ratio: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.brand-landing .brand-campaign-card > div > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}

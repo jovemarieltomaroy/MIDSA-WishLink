@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowDown, ArrowUpRight, Asterisk, Gift, Image, Heart, Sparkles } from 'lucide-react';
 import logo from '../assets/branding/campaign-logo-transparent.png';
 import letterLogo from '../assets/branding/logobranded.png';
-import initiativeLogo from '../assets/branding/new-initiative.png';
+import campaignCard from '../assets/branding/campaign-card-2026.png';
 import GalleryGiftTag from '../components/GalleryGiftTag';
 import CampaignIntro from '../components/CampaignIntro';
 import CampaignHeader from '../components/CampaignHeader';
@@ -190,13 +190,10 @@ export default function LandingPage() {
 
         <section className="brand-section brand-initiative-story" aria-labelledby="initiative-title">
           <div className="brand-story-row">
-            <figure className="brand-story-photo brand-initiative-photo brand-hanging-logo">
+            <figure className="brand-story-photo brand-initiative-photo brand-campaign-card">
               <div>
-                <div className="brand-hanging-art">
-                  <img src={initiativeLogo} alt="MIDSAkatuparan logo hanging from a red string" loading="lazy" />
-                </div>
+                <img src={campaignCard} alt="MIDSAkatuparan 2026 Happy Holidays campaign card with a red ribbon and gift tags" loading="lazy" />
               </div>
-              <figcaption className="brand-handwritten">A little care, a brighter holiday season</figcaption>
             </figure>
             <div className="brand-story-copy">
               <span className="brand-kicker">MIDSAKATUPARAN: HANDOG NG PASKO</span>
