@@ -65,7 +65,7 @@ export default function LandingPage() {
           <div className="brand-tag-scene">
             <span className="brand-doodle doodle-star" aria-hidden="true"><Asterisk size={62} strokeWidth={1.5} /></span>
             <GalleryGiftTag />
-            <span className="brand-doodle doodle-heart" aria-hidden="true">â™¡</span>
+            <span className="brand-doodle doodle-heart" aria-hidden="true">&#9825;</span>
           </div>
         </section>
 
@@ -75,9 +75,9 @@ export default function LandingPage() {
             <span className="brand-tape" aria-hidden="true" />
             <div className="brand-letter-decoration"><img src={letterLogo} alt="MIDSA" /></div>
             <h3>What is <em> MIDSAKatuparan: Handog ng Saya?</em></h3>
-            <p>MIDSAKatuparan: Handog ng Saya is a holiday giving initiative of the MSU-IIT DOST-SEI Scholarsâ€™ Association created to connect children and other beneficiaries from partner care centers with people who are willing to support their wishes and essential needs.</p>
-            <p>The initiative works closely with partner care centers to gather and organize the beneficiariesâ€™ wish lists. These wishes are then prepared and displayed through holiday giving tree stations set up in partnership with different student organizations across the campus.</p>
-            <p>Each displayed wish can be accessed by scanning its QR code, allowing potential donors to view the beneficiaryâ€™s request and choose one they would like to fulfill. After selecting a wish, the donor may purchase the requested gift and coordinate its drop-off for collection and eventual delivery to the intended beneficiary.</p>
+            <p>MIDSAKatuparan: Handog ng Saya is a holiday giving initiative of the MSU-IIT DOST-SEI Scholars' Association created to connect children and other beneficiaries from partner care centers with people who are willing to support their wishes and essential needs.</p>
+            <p>The initiative works closely with partner care centers to gather and organize the beneficiaries' wish lists. These wishes are then prepared and displayed through holiday giving tree stations set up in partnership with different student organizations across the campus.</p>
+            <p>Each displayed wish can be accessed by scanning its QR code, allowing potential donors to view the beneficiary's request and choose one they would like to fulfill. After selecting a wish, the donor may purchase the requested gift and coordinate its drop-off for collection and eventual delivery to the intended beneficiary.</p>
             <p>At its core, MIDSAKatuparan brings together partner care centers, student organizations, and donors in a more personal and organized way of giving, helping make the holidays a little brighter for the beneficiaries it serves.</p>
             <footer className="brand-letter-signoff">
               <p><em>Lagi't lagi para sa bayan.</em></p>
@@ -142,7 +142,7 @@ export default function LandingPage() {
             {Array.from({ length: 8 }, (_, index) => (
               <figure className="brand-photo-card" key={index}>
                 <div><Image size={30} strokeWidth={1} /><span>Station photo coming soon</span></div>
-                <figcaption className="brand-handwritten">Location {index + 1} â€” to be announced</figcaption>
+                <figcaption className="brand-handwritten">Location {index + 1} &#8212; to be announced</figcaption>
               </figure>
             ))}
           </div>
@@ -167,7 +167,7 @@ export default function LandingPage() {
             <div className="brand-story-copy">
               <span className="brand-kicker">THE PEOPLE BEHIND THE CAMPAIGN</span>
               <h2 id="midsa-title">about us, <em>MIDSA</em></h2>
-              <p>The <strong>MSU-IIT DOST-SEI Scholarsâ€™ Association (MIDSA)</strong> is an independent, non-profit student organization of DOST-SEI scholars at MSU-IIT. Guided by the <strong>#PatriotScholar</strong> spirit, MIDSA brings scholars together through academic support, community service, and initiatives that encourage unity, patriotism, and personal growth.</p>
+              <p>The <strong>MSU-IIT DOST-SEI Scholars' Association (MIDSA)</strong> is an independent, non-profit student organization of DOST-SEI scholars at MSU-IIT. Guided by the <strong>#PatriotScholar</strong> spirit, MIDSA brings scholars together through academic support, community service, and initiatives that encourage unity, patriotism, and personal growth.</p>
               <p>The association supports its members through tutorials, activities that promote science and technology, and programs for student well-being. It also keeps scholars informed about announcements, stipend updates, and academic concerns.</p>
               <p>Through its activities and outreach programs, MIDSA encourages scholars to share their knowledge, serve their communities, and put science and technology in the service of the Filipino people.</p>
             </div>
@@ -209,7 +209,7 @@ export default function LandingPage() {
           <div className="brand-section-heading">
             <span className="brand-kicker">SERVICE BEYOND THE CAMPUS</span>
             <h2 id="outreach-title">moments with <em>the community</em></h2>
-            <p>Behind every outreach visit are preparations, time spent together, and people who make the day possible. These photos look back on MIDSAâ€™s earlier community outreach, from getting ready for the visit to sharing moments with the community.</p>
+            <p>Behind every outreach visit are preparations, time spent together, and people who make the day possible. These photos look back on MIDSA's earlier community outreach, from getting ready for the visit to sharing moments with the community.</p>
           </div>
           <div className="brand-outreach-gallery">
             <figure className="brand-story-photo">
@@ -229,11 +229,11 @@ export default function LandingPage() {
       </main>
 
       <footer className="brand-footer">
-        <div className="brand-footer-identity"><Link to="/" aria-label="MIDSAkatuparan home"><img src={logo} alt="MIDSAkatuparan" /></Link><p><strong>MSU-IIT DOST-SEI Scholars' Association</strong><span>#DasigMIDSA Â· Lagi't lagi para sa bayan.</span></p></div>
+        <div className="brand-footer-identity"><Link to="/" aria-label="MIDSAkatuparan home"><img src={logo} alt="MIDSAkatuparan" /></Link><p><strong>MSU-IIT DOST-SEI Scholars' Association</strong><span>#DasigMIDSA &#183; Lagi't lagi para sa bayan.</span></p></div>
         <div className="brand-socials" id="midsa-socials">
           <span className="brand-social-handle">midsaonline</span>
           <nav aria-label="MIDSA social media and email">
-            {socialLinks.map((social) => <a key={social.name} className={`brand-social-icon brand-social-${social.className}`} href={social.href || undefined} aria-disabled={!social.href || undefined} aria-label={`${social.name === 'Email' ? 'Email MIDSA' : `MIDSA on ${social.name}`}${social.href ? '' : ' (link coming soon)'}`} title={`${social.name}${social.href ? '' : ' â€” link coming soon'}`}>{social.icon ? <social.icon size={21} strokeWidth={1.8} aria-hidden="true" /> : <img src={social.image} alt="" />}</a>)}
+            {socialLinks.map((social) => <a key={social.name} className={`brand-social-icon brand-social-${social.className}`} href={social.href || undefined} aria-disabled={!social.href || undefined} aria-label={`${social.name === 'Email' ? 'Email MIDSA' : `MIDSA on ${social.name}`}${social.href ? '' : ' (link coming soon)'}`} title={`${social.name}${social.href ? '' : ' &#8212; link coming soon'}`}>{social.icon ? <social.icon size={21} strokeWidth={1.8} aria-hidden="true" /> : <img src={social.image} alt="" />}</a>)}
           </nav>
         </div>
         <Link to="/officer/login">Officer sign in <ArrowUpRight size={15} /></Link>
