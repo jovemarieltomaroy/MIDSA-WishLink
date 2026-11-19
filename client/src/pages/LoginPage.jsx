@@ -145,7 +145,7 @@ export default function LoginPage() {
             <div className="wishlink-login-brand-text">
           
               <span>
-                MIDSAKatuparan: Handog ng Pasko
+                MIDSAKatuparan: Handog ng Saya
               </span>
             </div>
           </div>

@@ -54,7 +54,7 @@ export default function DashboardPage() {
       <div className="page">
         <div className="page-head">
           <div>
-            <h1>MIDSA WishLink</h1>
+            <h1>MIDSAKatuparan: Handog ng Saya</h1>
 
             <p>
               No giving campaign is currently active.

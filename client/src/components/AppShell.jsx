@@ -60,11 +60,11 @@ export default function AppShell() {
 
           <div>
             <strong>
-              MIDSA WishLink
+              MIDSAKatuparan: Handog ng Saya
             </strong>
 
             <span>
-              MIDSAkatuparan Tracker
+              Campaign Tracker
             </span>
           </div>
         </div>

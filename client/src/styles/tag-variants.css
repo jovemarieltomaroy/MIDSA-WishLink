@@ -148,3 +148,5 @@
 @media (max-width: 600px) and (max-height: 740px) {
   .public-compact .campaign-public-footer { padding-block: 2px 3px; }
 }
+
+.brand-partner-logo img.brand-partner-logo-zoom { transform: scale(1.25); }
