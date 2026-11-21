@@ -30,7 +30,7 @@
 .brand-landing .brand-partners { padding-block: 32px 44px; border-top: 1px solid #365d3625; }
 .brand-partners .brand-section-heading { margin-bottom: 24px; }
 .brand-partners .brand-section-heading h2 { font-size: clamp(24px, 3vw, 32px); }
-.brand-partner-logos { list-style: none; padding: 6px 0 16px; margin: 0; display: grid; grid-template-columns: repeat(6, minmax(124px, 1fr)); gap: 20px; overflow-x: auto; }
+.brand-partner-logos { list-style: none; padding: 6px 0 16px; margin: 0 auto; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px; justify-content: center; }
 .brand-partner-logo { width: 124px; height: 124px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; border: 1px solid #cbd6c4; border-radius: 50%; background: #fffdf7; overflow: hidden; }
 .brand-partner-logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .brand-partner-logo.is-pending { border-style: dashed; color: #77806c; }
@@ -38,10 +38,10 @@
 .brand-partner-logos li { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; font-size: 10px; line-height: 1.6; color: var(--muted); }
 .brand-partner-placeholder { width: 100%; max-width: 132px; aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; border: 1px dashed #a3aa96; border-radius: 12px; background: #fffaf0cc; color: #77806c; }
 @media (max-width: 900px) {
-  .brand-partner-logos { grid-template-columns: repeat(6, minmax(124px, 1fr)); }
+  .brand-partner-logos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 480px) {
-  .brand-partner-logos { grid-template-columns: repeat(6, 124px); gap: 16px; }
+  .brand-partner-logos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; }
 }
 .brand-landing .brand-scrapbook-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
 .brand-landing .brand-photo-card figcaption { font-size: 21px; }
@@ -150,3 +150,13 @@
 }
 
 .brand-partner-logo img.brand-partner-logo-zoom { transform: scale(1.25); }
+.brand-partner-logo img.brand-partner-logo-coe { transform: scale(1.2); }
+.brand-partner-logo { transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
+.brand-partner-logo:hover, .brand-partner-logo:focus-visible { transform: translateY(-4px); border-color: var(--partner-color); box-shadow: 0 6px 18px color-mix(in srgb, var(--partner-color) 30%, transparent); }
+.brand-partner-logo:focus-visible { outline: 2px solid var(--partner-color); outline-offset: 3px; }
+.partner-kasama { --partner-color: #1b217b; }
+.partner-ccs-sc { --partner-color: #148779; }
+.partner-ced-sc { --partner-color: #0752d2; }
+.partner-coe-sc { --partner-color: #aa321b; }
+.partner-chs-sc { --partner-color: #1e588d; }
+.partner-csm-sc { --partner-color: #e12832; }

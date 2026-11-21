@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowDown, ArrowUpRight, Asterisk, Gift, Image, Heart, Sparkles } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, Asterisk, Calendar, Gift, Image, Heart } from 'lucide-react';
 import logo from '../assets/branding/campaign-logo-transparent.png';
 import letterLogo from '../assets/branding/logobranded.png';
 import campaignCard from '../assets/branding/campaign-card-2026.png';
@@ -27,12 +27,12 @@ const socialLinks = [
 ];
 
 const organizationPartners = [
-  { name: 'KASAMA', file: 'KASAMA LOGO.png' },
-  { name: 'CED-SC', file: '2026 CED-SC Logo.png' },
-  { name: 'CSM-SC', file: "CSM-SC Logo '26-'27.png" },
-  { name: 'CCS-SC', file: 'CCS LOGO.png' },
-  { name: 'Partner organization 5', file: null },
-  { name: 'Partner organization 6', file: null },
+  { name: 'KASAMA', fullName: 'Kataas-taasang Sanggunian ng mga Mag-aaral', file: 'KASAMA LOGO.png', href: 'https://www.facebook.com/KASAMAIIT' },
+  { name: 'CCS-SC', fullName: 'College of Computer Studies - Student Council', file: 'CCS LOGO.png', href: 'https://www.facebook.com/CCSCouncilOfficial' },
+  { name: 'CED-SC', fullName: 'College of Education - Student Council', file: '2026 CED-SC Logo.png', href: 'https://www.facebook.com/cedphoenix' },
+  { name: 'COE-SC', fullName: 'College of Engineering - Student Council', file: 'COE-SC.png', href: 'https://www.facebook.com/thecoesc' },
+  { name: 'CHS-SC', fullName: 'College of Health Sciences - Student Council', file: 'CHS-SC.png', href: 'https://www.facebook.com/MSUIITCHSEC' },
+  { name: 'CSM-SC', fullName: 'College of Science and Mathematics - Student Council', file: "CSM-SC Logo '26-'27.png", href: 'https://www.facebook.com/CSMLynxes' },
 ];
 
 function PhotoPlaceholder({ label, caption, className = '' }) {
@@ -111,7 +111,7 @@ export default function LandingPage() {
             <p>The wishes featured in MIDSAKatuparan come from children and other beneficiaries under the care of our partner communities. Their wish lists are gathered and coordinated privately to help protect their identities while still allowing donors to take part in fulfilling their holiday wishes.</p>
           </article>
           <article className="brand-detail-card">
-            <Sparkles size={26} strokeWidth={1.5} />
+            <Calendar size={26} strokeWidth={1.5} />
             <h3>Dates to remember</h3>
             <ul className="brand-campaign-dates">
               {[
@@ -156,8 +156,8 @@ export default function LandingPage() {
           <ul className="brand-partner-logos">
             {organizationPartners.map((partner) => (
               <li key={partner.name}>
-                <div className={`brand-partner-logo${partner.file ? '' : ' is-pending'}`}>{partner.file ? <img className={partner.name === 'KASAMA' ? 'brand-partner-logo-zoom' : undefined} src={`/Logos/${encodeURIComponent(partner.file)}`} alt={`${partner.name} logo`} loading="lazy" /> : <><Image size={24} strokeWidth={1} aria-hidden="true" /><span>Logo coming soon</span></>}</div>
-                <span>{partner.name}</span>
+                <a className={`brand-partner-logo partner-${partner.name.toLowerCase()}${partner.file ? '' : ' is-pending'}`} href={partner.href} target="_blank" rel="noopener noreferrer" aria-label={`${partner.name} on Facebook (opens in a new tab)`}>{partner.file ? <img className={partner.name === 'KASAMA' ? 'brand-partner-logo-zoom' : partner.name === 'COE-SC' ? 'brand-partner-logo-coe' : undefined} src={`/Logos/${encodeURIComponent(partner.file)}`} alt={`${partner.name} logo`} loading="lazy" /> : <><Image size={24} strokeWidth={1} aria-hidden="true" /><span>Logo coming soon</span></>}</a>
+                <span><strong>{partner.name}</strong><br />{partner.fullName}</span>
               </li>
             ))}
           </ul>
