@@ -84,19 +84,13 @@ export default function CampaignsPage() {
               key={campaign._id}
             >
               <div className="campaign-card-top">
-                <div className="campaign-icon">
-                </div>
-
+                <h2>{holidayCampaignName(campaign.name)}</h2>
                 <div
                   className={`campaign-status campaign-${campaign.status}`}
                 >
                   {campaign.status}
                 </div>
               </div>
-
-              <h2>
-                {holidayCampaignName(campaign.name)}
-              </h2>
 
               <p>
                 {campaign.academicPeriod ||

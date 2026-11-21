@@ -2032,7 +2032,11 @@ td a:hover {
   justify-content:
     space-between;
   gap: 12px;
+  margin-bottom: 4px;
 }
+
+.campaign-card .campaign-card-top h2 { margin: 0; }
+.campaign-card-top .campaign-status { flex-shrink: 0; }
 
 .campaign-icon {
   width: 38px;
