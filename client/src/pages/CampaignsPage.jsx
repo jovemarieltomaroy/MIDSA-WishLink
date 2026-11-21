@@ -85,9 +85,6 @@ export default function CampaignsPage() {
             >
               <div className="campaign-card-top">
                 <div className="campaign-icon">
-                  <CalendarDays
-                    size={20}
-                  />
                 </div>
 
                 <div

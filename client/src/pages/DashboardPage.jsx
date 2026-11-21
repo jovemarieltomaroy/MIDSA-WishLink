@@ -1,12 +1,6 @@
 import { holidayCampaignName } from '../utils/holidayCopy';
 import { useEffect, useState } from 'react';
-import {
-  Gift,
-  HeartHandshake,
-  Sparkles,
-  TimerReset,
-  TreePine
-} from 'lucide-react';
+import { Gift } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { api } from '../utils/api';
@@ -111,25 +105,21 @@ export default function DashboardPage() {
 
       <div className="stats-grid">
         <Stat
-          icon={<TreePine />}
           label="All wishes"
           value={stats.total || 0}
         />
 
         <Stat
-          icon={<Sparkles />}
           label="Waiting for a donor"
           value={stats.available || 0}
         />
 
         <Stat
-          icon={<TimerReset />}
           label="Gift on the way"
           value={stats.reserved || 0}
         />
 
         <Stat
-          icon={<HeartHandshake />}
           label="Wish Granted"
           value={stats.granted || 0}
         />
@@ -259,16 +249,11 @@ export default function DashboardPage() {
 }
 
 function Stat({
-  icon,
   label,
   value
 }) {
   return (
     <div className="stat-card">
-      <div className="stat-icon">
-        {icon}
-      </div>
-
       <div>
         <span>{label}</span>
         <strong>{value}</strong>
