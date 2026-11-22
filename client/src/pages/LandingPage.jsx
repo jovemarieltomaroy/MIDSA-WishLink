@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowDown, ArrowUpRight, Asterisk, Calendar, Gift, Image, Heart } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, Asterisk, Image } from 'lucide-react';
 import logo from '../assets/branding/campaign-logo-transparent.png';
 import letterLogo from '../assets/branding/logobranded.png';
 import campaignCard from '../assets/branding/campaign-card-2026.png';
@@ -88,7 +88,6 @@ export default function LandingPage() {
 
         <section className="brand-section brand-details" aria-labelledby="details-title"><div className="brand-section-heading"><span className="brand-kicker">CAMPAIGN GUIDE</span><h2 id="details-title">participation details</h2></div><div className="brand-detail-grid">
           <article className="brand-detail-card">
-            <Gift size={26} strokeWidth={1.5} />
             <h3>How to take part</h3>
             <ol className="brand-participation-steps" role="list">
               {[
@@ -106,12 +105,10 @@ export default function LandingPage() {
             </ol>
           </article>
           <article className="brand-detail-card">
-            <Heart size={26} strokeWidth={1.5} />
             <h3>The wishes we share</h3>
             <p>The wishes featured in MIDSAKatuparan come from children and other beneficiaries under the care of our partner communities. Their wish lists are gathered and coordinated privately to help protect their identities while still allowing donors to take part in fulfilling their holiday wishes.</p>
           </article>
           <article className="brand-detail-card">
-            <Calendar size={26} strokeWidth={1.5} />
             <h3>Dates to remember</h3>
             <ul className="brand-campaign-dates">
               {[
@@ -139,10 +136,10 @@ export default function LandingPage() {
         <section className="brand-section brand-updates" id="updates" aria-labelledby="stations-title">
           <div className="brand-section-heading"><span className="brand-kicker">FIND A WISH</span><h2 id="stations-title">holiday giving tree stations</h2></div>
           <div className="brand-scrapbook-grid">
-            {Array.from({ length: 8 }, (_, index) => (
+            {Array.from({ length: 7 }, (_, index) => (
               <figure className="brand-photo-card" key={index}>
                 <div><Image size={30} strokeWidth={1} /><span>Station photo coming soon</span></div>
-                <figcaption className="brand-handwritten">Location {index + 1} &#8212; to be announced</figcaption>
+                <figcaption className="brand-handwritten">To be announced</figcaption>
               </figure>
             ))}
           </div>

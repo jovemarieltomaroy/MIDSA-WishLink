@@ -73,7 +73,7 @@ test('donor lifecycle sends reminders, release notices, and a single intake rece
   assert.equal(wish.donor, undefined);
   assert.equal(emails.length, 5);
   assert.equal(emails[4].to[0].email, 'donor@example.com');
-  assert.match(emails[4].htmlContent, /has been released by the MIDSA/);
+  assert.match(emails[4].htmlContent, /has been released\./);
   assert.match(emails[4].htmlContent, /Hello, Holiday Giver!/);
   assert.match(emails[4].htmlContent, /Have Questions\?/);
   assert.doesNotMatch(emails[4].htmlContent, /deadline passed/);

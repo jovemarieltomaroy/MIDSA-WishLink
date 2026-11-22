@@ -38,6 +38,10 @@ const donorSchema = new mongoose.Schema(
 
     promisedDropOffAt: Date,
 
+    scheduledDropOffAt: Date,
+
+    reservationAccessHash: { type: String, select: false },
+
     lastConfirmationSentAt: Date
   },
   {

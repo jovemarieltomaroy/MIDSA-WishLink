@@ -19,25 +19,25 @@ export async function sendDonorLifecycleEmail(wish, event) {
     const email = organization.contactEmail || 'midsapartnerships@gmail.com';
     const wishDescription = escapeHtml(wish.wishItems?.filter(Boolean).join(', ') || 'Your choice of gift from the wishlist image');
     const explanation = event === 'manuallyReleased'
-      ? `has been released by the ${teamName}.`
+      ? `has been released.`
       : 'has been automatically released because the drop-off deadline passed without a confirmed drop-off or recorded extension.';
     return sendEmail({
       to: wish.donor.email,
-      subject: 'An Update on Your Holiday Wish Reservation \uD83C\uDF81',
+      subject: 'An Update on Your Holiday Wish Reservation',
       html: `<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;line-height:1.75;color:#23332b">
-        <h1 style="font-size:26px;line-height:1.3;color:#086747">An Update on Your Holiday Wish Reservation &#127873;</h1>
-        <p>Hello, Holiday Giver! &#10024;</p>
+        <h1 style="font-size:26px;line-height:1.3;color:#086747">An Update on Your Holiday Wish Reservation</h1>
+        <p>Hello, Holiday Giver! </p>
         <p>We wanted to let you know that your reservation for <strong>${nickname}'s holiday wish</strong> ${explanation}</p>
         <div style="margin:24px 0;padding:20px;background:#edf2e7;border-radius:12px">
-          <h2 style="font-size:20px;color:#086747;margin-top:0">&#127873; Reservation Details</h2>
+          <h2 style="font-size:20px;color:#086747;margin-top:0">Reservation Details</h2>
           <p style="margin:0"><strong>Recipient:</strong> ${nickname}<br />
           <strong>Wish:</strong> ${wishDescription}<br />
           <strong>Reservation Status:</strong> Released</p>
         </div>
         <p>The wish is now available for another donor to reserve.</p>
-        <p>While this reservation has come to an end, we truly appreciate your willingness to share kindness this holiday season. Your interest in giving means a lot to us, and we hope you'll still be part of making someone's holidays a little brighter. &#10084;&#65039;</p>
-        <h2 style="font-size:20px;color:#086747">&#128140; Have Questions?</h2>
-        <p>If you believe this was a mistake or would like to know more about your reservation, please don't hesitate to contact the <strong>${teamName}</strong> at <a href="mailto:${escapeHtml(encodeURIComponent(email))}" style="color:#086747">${escapeHtml(email)}</a>.</p>
+        <p>While this reservation has come to an end, we truly appreciate your willingness to share kindness this holiday season. Your interest in giving means a lot to us, and we hope you'll still be part of making someone's holidays a little brighter.</p>
+        <h2 style="font-size:20px;color:#086747"> Have Questions?</h2>
+        <p>If you believe this was a mistake or would like to know more about your reservation, please don't hesitate to contact <strong>${teamName}</strong> at <a href="mailto:${escapeHtml(encodeURIComponent(email))}" style="color:#086747">${escapeHtml(email)}</a>.</p>
         ${messenger ? `<p>${messenger}</p>` : ''}
         <p>We're happy to help!</p>
         <p>Thank you for being part of the spirit of giving.</p>
@@ -326,7 +326,7 @@ export async function sendEmailVerificationCode({
  * RESERVATION CONFIRMATION
  */
 export async function sendReservationConfirmation(
-  wish
+  wish, reservationToken
 ) {
   const organization =
     await getPublicOrganizationSettings();
@@ -339,24 +339,28 @@ export async function sendReservationConfirmation(
   }).format(new Date(wish.reservationExpiresAt || Date.now()));
   const teamName = escapeHtml(organization.contactName || 'MIDSA Holiday Program Team');
   const teamEmail = organization.contactEmail || 'midsapartnerships@gmail.com';
+  const publicUrl = process.env.PUBLIC_APP_URL || process.env.CLIENT_URL;
+  const reservationUrl = reservationToken && publicUrl ? `${publicUrl.replace(/\/$/, '')}/#reservation=${reservationToken}` : '';
 
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;line-height:1.75;color:#23332b">
-      <h1 style="font-size:26px;line-height:1.3;color:#086747">You've Made Someone's Holiday Brighter! &#10024;&#127873;</h1>
+      <h1 style="font-size:26px;line-height:1.3;color:#086747">You've Made Someone's Holiday Brighter!</h1>
       <p>The season of giving just got a little more special!</p>
       <p>Thank you for choosing to share a little kindness this <strong>Holiday Season ${seasonYear}</strong>. Your generosity brings us one step closer to making ${nickname}'s holiday wish come true.</p>
       <div style="margin:24px 0;padding:20px;background:#edf2e7;border-radius:12px">
-        <h2 style="font-size:20px;color:#086747;margin-top:0">&#127873; Your Reserved Holiday Wish</h2>
+        <h2 style="font-size:20px;color:#086747;margin-top:0">Your Reserved Holiday Wish</h2>
         <p style="margin:0"><strong>Recipient:</strong> ${nickname}<br />
         <strong>Wish:</strong> ${escapeHtml(items)}<br />
+        ${wish.donor.scheduledDropOffAt ? `<strong>Scheduled Drop-off:</strong> ${escapeHtml(new Intl.DateTimeFormat('en-PH', { timeZone: 'Asia/Manila', dateStyle: 'medium', timeStyle: 'short' }).format(new Date(wish.donor.scheduledDropOffAt)))} (Philippine time)<br />` : ''}
         <strong>Drop-off Deadline:</strong> ${escapeHtml(deadline)}<br />
         <strong>Drop-off Location:</strong> ${escapeHtml(organization.dropOffLocation)}</p>
       </div>
-      <h2 style="font-size:20px;color:#086747">&#10024; A Friendly Reminder</h2>
-      <p>Please have your gift wrapped and ready before dropping it off. A little effort goes a long way in making someone's holiday feel extra special!</p>
-      <p>Need more time or have a change of plans? No worries! Reach out to the <strong>${teamName}</strong> at <a href="mailto:${escapeHtml(encodeURIComponent(teamEmail))}" style="color:#086747">${escapeHtml(teamEmail)}</a>, and we'll be happy to assist you.</p>
+      ${reservationUrl ? `<p><a href="${escapeHtml(reservationUrl)}" style="display:inline-block;padding:12px 20px;border-radius:10px;background:#086747;color:#fff;text-decoration:none;font-weight:bold">View your reservation and wishlist</a></p><p>This private link gives access to your reservation. Please do not share it.</p>` : ''}
+      <h2 style="font-size:20px;color:#086747">A Friendly Reminder</h2>
+      <p>Please have your <strong>gift wrapped and ready before dropping it off.</strong> If you'd like, <strong>include a little handwritten note for the beneficiary; a few warm words can make your gift feel even more personal and special.</strong></p>
+      <p>Need more time or have a change of plans? No worries! Reach out to <strong>${teamName}</strong> at <a href="mailto:${escapeHtml(encodeURIComponent(teamEmail))}" style="color:#086747">${escapeHtml(teamEmail)}</a>, and we'll be happy to assist you.</p>
       ${organization.messengerUrl ? `<p>You can also <a href="${escapeHtml(organization.messengerUrl)}" style="color:#086747">message us on Messenger</a>.</p>` : ''}
-      <p>Thank you for being part of something meaningful. Your thoughtful gesture is a reminder that the best part of the holidays is the joy we share with others. &#10084;&#65039;</p>
+      <p>Thank you for being part of something meaningful. Your thoughtful gesture is a reminder that the best part of the holidays is the joy we share with others.</p>
       <p>Warmest holiday wishes!</p>
     </div>
   `;
@@ -379,7 +383,7 @@ export async function sendReservationConfirmation(
         wish.donor.email,
 
       subject:
-        `You've Made Someone's Holiday Brighter! \u2728\uD83C\uDF81`,
+        `You've Made Someone's Holiday Brighter! Reservation for ${wish.nickname.replace(/[\r\n]/g, ' ')}`,
 
       html
     }),

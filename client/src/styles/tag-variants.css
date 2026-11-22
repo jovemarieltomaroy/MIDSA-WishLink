@@ -43,13 +43,14 @@
 @media (max-width: 480px) {
   .brand-partner-logos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; }
 }
-.brand-landing .brand-scrapbook-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+.brand-landing .brand-scrapbook-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
+.brand-landing .brand-scrapbook-grid > .brand-photo-card { flex: 0 1 calc((100% - 72px) / 4); min-width: 0; }
 .brand-landing .brand-photo-card figcaption { font-size: 21px; }
 @media (max-width: 900px) {
-  .brand-landing .brand-scrapbook-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .brand-landing .brand-scrapbook-grid > .brand-photo-card { flex-basis: calc((100% - 24px) / 2); }
 }
 @media (max-width: 480px) {
-  .brand-landing .brand-scrapbook-grid { grid-template-columns: minmax(0, 1fr); }
+  .brand-landing .brand-scrapbook-grid > .brand-photo-card { flex-basis: 100%; }
 }
 .brand-landing .brand-hero-copy, .brand-landing .brand-about > div, .brand-landing .brand-section-heading { background: #fffaf0d9; }
 .brand-landing .brand-about { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 28px; }

@@ -419,6 +419,13 @@ export default function WishDetailPage() {
             </div>
 
             <div>
+              <small>Scheduled drop-off</small>
+              <strong>{wish.donor.scheduledDropOffAt
+                ? new Date(wish.donor.scheduledDropOffAt).toLocaleString('en-PH', { timeZone: 'Asia/Manila', dateStyle: 'medium', timeStyle: 'short' })
+                : 'Not scheduled'}</strong>
+            </div>
+
+            <div>
               <small>
                 Current deadline
               </small>

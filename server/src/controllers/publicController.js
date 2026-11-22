@@ -25,6 +25,28 @@ import {
 const OTP_EXPIRY_MINUTES = 10;
 const MAX_VERIFICATION_ATTEMPTS = 5;
 
+export async function getPrivateReservation(req, res) {
+  res.set('Cache-Control', 'no-store');
+  const token = req.body?.token;
+  if (typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token)) {
+    return res.status(404).json({ message: 'This reservation link is invalid or no longer available.' });
+  }
+  await releaseExpiredReservations();
+  const hash = crypto.createHash('sha256').update(token).digest('hex');
+  const wish = await Wish.findOne({ 'donor.reservationAccessHash': hash, status: { $in: ['reserved', 'granted'] } });
+  if (!wish) return res.status(404).json({ message: 'This reservation link is invalid or no longer available.' });
+  const organization = await getPublicOrganizationSettings();
+  return res.json({ reservation: {
+    nickname: wish.nickname,
+    wishItems: wish.wishItems,
+    worksheetImage: wish.childProfile?.worksheetImage || '',
+    scheduledDropOffAt: wish.donor.scheduledDropOffAt,
+    reservationExpiresAt: wish.reservationExpiresAt,
+    status: wish.status,
+    organization
+  } });
+}
+
 export async function getPublicWishes(req, res) {
   await releaseExpiredReservations();
   const page = Math.max(1, Math.min(10000, Number.parseInt(req.query.page, 10) || 1));
@@ -342,6 +364,7 @@ function cleanDonorData(
   body
 ) {
   return {
+    scheduledDropOffAt: body.scheduledDropOffAt,
     fullName:
       String(
         body.fullName || ''
@@ -399,7 +422,8 @@ function validateDonorData(
     !donor.email ||
     !donor.phoneNumber ||
     !donor.program ||
-    !donor.yearLevel
+    !donor.yearLevel ||
+    !donor.scheduledDropOffAt
   ) {
     return (
       'Please complete all required donor fields.'
@@ -560,6 +584,12 @@ export async function requestEmailVerification(
         message:
           'This campaign is not currently accepting wish reservations.'
       });
+  }
+
+  const appointment = new Date(donor.scheduledDropOffAt);
+  const reservationDeadline = getDefaultExpiry(wish.campaign.deadline);
+  if (Number.isNaN(appointment.getTime()) || appointment <= new Date() || appointment > reservationDeadline || appointment.getTime() % (30 * 60 * 1000) !== 0) {
+    return res.status(400).json({ message: 'Please choose a future drop-off time in 30-minute intervals before the reservation deadline.' });
   }
 
   const code =
@@ -840,10 +870,16 @@ export async function verifyReservation(
   const donor =
     verification.donorData;
 
+  if (!donor.scheduledDropOffAt || donor.scheduledDropOffAt <= new Date() || donor.scheduledDropOffAt > expiry) {
+    return res.status(400).json({ message: 'Your selected drop-off time is no longer available. Please request a new verification code and choose another time.' });
+  }
+
   /*
    * Atomic status check prevents two
    * donors from reserving the same wish.
    */
+  const reservationToken = crypto.randomBytes(32).toString('hex');
+  const reservationAccessHash = crypto.createHash('sha256').update(reservationToken).digest('hex');
   const wish =
     await Wish.findOneAndUpdate(
       {
@@ -889,6 +925,10 @@ export async function verifyReservation(
 
             promisedDropOffAt:
               expiry,
+
+            scheduledDropOffAt: donor.scheduledDropOffAt,
+
+            reservationAccessHash,
 
             lastConfirmationSentAt:
               new Date()
@@ -971,7 +1011,7 @@ export async function verifyReservation(
    * while waiting for notification delivery.
    */
   sendReservationConfirmation(
-    wish
+    wish, reservationToken
   ).catch(
     (error) =>
       console.error(

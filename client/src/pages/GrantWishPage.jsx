@@ -34,7 +34,8 @@ const empty = {
   phoneNumber: '',
   program: '',
   yearLevel: '',
-  giftNamePreference: 'anonymous'
+  giftNamePreference: 'anonymous',
+  scheduledDropOffAt: ''
 };
 
 export default function GrantWishPage() {
@@ -200,6 +201,12 @@ export default function GrantWishPage() {
 
     setError('');
 
+    if (!form.scheduledDropOffAt || !form.scheduledDropOffAt.includes('T')) {
+      setError('Please choose a drop-off date and time.');
+      setSaving(false);
+      return;
+    }
+
     if (
       !isValidPhoneNumber(
         form.phoneNumber
@@ -220,7 +227,7 @@ export default function GrantWishPage() {
       const response =
         await api.post(
           `/public/wishes/${code}/request-verification`,
-          form
+          { ...form, scheduledDropOffAt: `${form.scheduledDropOffAt}:00+08:00` }
         );
 
       setVerificationId(
@@ -469,6 +476,11 @@ export default function GrantWishPage() {
               />
 
               <SummaryRow
+                label="Scheduled drop-off (Philippine time)"
+                value={new Date(`${form.scheduledDropOffAt}:00+08:00`).toLocaleString('en-PH', { timeZone: 'Asia/Manila', dateStyle: 'medium', timeStyle: 'short' })}
+              />
+
+              <SummaryRow
                 label="Latest drop-off"
                 value={
                   new Date(
@@ -708,6 +720,8 @@ export default function GrantWishPage() {
                   }}
                   className="grant-form-grid"
                 >
+                  <DropOffPicker value={form.scheduledDropOffAt} onChange={value => setForm(current => ({ ...current, scheduledDropOffAt: value }))} />
+
                   <ModernField
                     label="Full name"
                     name="fullName"
@@ -1310,6 +1324,35 @@ export default function GrantWishPage() {
       </style>
     </PublicLayout>
   );
+}
+
+function DropOffPicker({ value, onChange }) {
+  const [date = '', time = ''] = value.split('T');
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+  const times = Array.from({ length: 48 }, (_, index) => {
+    const hour = Math.floor(index / 2);
+    const minute = index % 2 ? '30' : '00';
+    return { value: `${String(hour).padStart(2, '0')}:${minute}`, label: `${hour % 12 || 12}:${minute} ${hour < 12 ? 'AM' : 'PM'}` };
+  });
+
+  return <fieldset className="dropoff-picker">
+    <legend>Plan your drop-off</legend>
+    <p>Choose the day and a 30-minute time. All times are Philippine time.</p>
+    <div className="dropoff-picker-fields">
+      <label><span>Drop-off date</span><input type="date" required min={today} value={date} onChange={event => onChange(`${event.target.value}${time ? `T${time}` : ''}`)} /></label>
+      <label><span>Drop-off time</span><select required value={time} onChange={event => onChange(`${date}T${event.target.value}`)}><option value="">Choose a time</option>{times.map(slot => <option key={slot.value} value={slot.value}>{slot.label}</option>)}</select></label>
+    </div>
+    <style>{`
+      .dropoff-picker { grid-column: 1 / -1; min-width: 0; margin: 0; padding: 20px; border: 1px solid #d5e5d9; border-radius: 16px; background: #f3f8f3; }
+      .dropoff-picker legend { padding: 0 6px; color: #07553d; font-size: 16px; font-weight: 700; }
+      .dropoff-picker p { margin: 0 0 15px; color: #586e60; font-size: 13px; }
+      .dropoff-picker-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      .dropoff-picker-fields label { display: grid; gap: 7px; color: #243e32; font-size: 13px; font-weight: 650; }
+      .dropoff-picker-fields input, .dropoff-picker-fields select { width: 100%; min-width: 0; min-height: 48px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c9d9cd; border-radius: 10px; background: white; color: #243e32; font: inherit; }
+      .dropoff-picker-fields input:focus-visible, .dropoff-picker-fields select:focus-visible { outline: 2px solid #086747; outline-offset: 2px; }
+      @media (max-width: 480px) { .dropoff-picker-fields { grid-template-columns: 1fr; } }
+    `}</style>
+  </fieldset>;
 }
 
 function ModernField({

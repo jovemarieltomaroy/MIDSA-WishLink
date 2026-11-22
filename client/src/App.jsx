@@ -2,7 +2,8 @@ import {
   BrowserRouter,
   Navigate,
   Route,
-  Routes
+  Routes,
+  useLocation
 } from 'react-router-dom';
 
 import {
@@ -21,6 +22,7 @@ import PublicWishPage from './pages/PublicWishPage';
 import LandingPage from './pages/LandingPage';
 import WishGalleryPage from './pages/WishGalleryPage';
 import GrantWishPage from './pages/GrantWishPage';
+import ReservationPage from './pages/ReservationPage';
 import LoginPage from './pages/LoginPage';
 
 import DashboardPage from './pages/DashboardPage';
@@ -51,11 +53,12 @@ export default function App() {
       <AuthProvider>
         <Routes>
           <Route path="/gallery" element={<WishGalleryPage />} />
+          <Route path="/reservation" element={<ReservationPage />} />
 
           <Route
             path="/"
             element={
-              <LandingPage />
+              <LandingOrReservation />
             }
           />
 
@@ -163,4 +166,9 @@ export default function App() {
       </AuthProvider>
     </BrowserRouter>
   );
+}
+
+function LandingOrReservation() {
+  const { hash } = useLocation();
+  return hash.startsWith('#reservation=') ? <ReservationPage /> : <LandingPage />;
 }

@@ -39,6 +39,7 @@ const emailVerificationSchema =
       },
 
       donorData: {
+        scheduledDropOffAt: { type: Date, required: true },
         fullName: {
           type: String,
           required: true,

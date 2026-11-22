@@ -28,7 +28,7 @@ function WishGroup({ status, title, description }) {
         : getErrorMessage(err)); });
     return () => { active = false; };
   }, [page, status, attempt]);
-  return <section className={`gallery-group gallery-group-${status}`} aria-labelledby={`gallery-${status}-title`}>
+  return <section id={`gallery-${status}`} className={`gallery-group gallery-group-${status}`} aria-labelledby={`gallery-${status}-title`}>
     <div className="gallery-group-heading"><h2 id={`gallery-${status}-title`}>{title}</h2><p>{description}</p></div>
     {error ? <div className="gallery-message" role="alert"><p>{error}</p><button className="brand-button" onClick={() => setAttempt(value => value + 1)}>Try again</button></div>
       : !result ? <p role="status">Loading wishes…</p>
