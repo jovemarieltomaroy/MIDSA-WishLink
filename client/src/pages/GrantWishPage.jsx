@@ -1329,15 +1329,15 @@ export default function GrantWishPage() {
 function DropOffPicker({ value, onChange }) {
   const [date = '', time = ''] = value.split('T');
   const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
-  const times = Array.from({ length: 48 }, (_, index) => {
-    const hour = Math.floor(index / 2);
+  const times = Array.from({ length: 19 }, (_, index) => {
+    const hour = 8 + Math.floor(index / 2);
     const minute = index % 2 ? '30' : '00';
     return { value: `${String(hour).padStart(2, '0')}:${minute}`, label: `${hour % 12 || 12}:${minute} ${hour < 12 ? 'AM' : 'PM'}` };
   });
 
   return <fieldset className="dropoff-picker">
     <legend>Plan your drop-off</legend>
-    <p>Choose the day and a 30-minute time. All times are Philippine time.</p>
+    <p>Choose a day and a 30-minute time between 8:00 AM and 5:00 PM, Philippine time.</p>
     <div className="dropoff-picker-fields">
       <label><span>Drop-off date</span><input type="date" required min={today} value={date} onChange={event => onChange(`${event.target.value}${time ? `T${time}` : ''}`)} /></label>
       <label><span>Drop-off time</span><select required value={time} onChange={event => onChange(`${date}T${event.target.value}`)}><option value="">Choose a time</option>{times.map(slot => <option key={slot.value} value={slot.value}>{slot.label}</option>)}</select></label>

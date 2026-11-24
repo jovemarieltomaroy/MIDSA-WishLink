@@ -588,8 +588,10 @@ export async function requestEmailVerification(
 
   const appointment = new Date(donor.scheduledDropOffAt);
   const reservationDeadline = getDefaultExpiry(wish.campaign.deadline);
-  if (Number.isNaN(appointment.getTime()) || appointment <= new Date() || appointment > reservationDeadline || appointment.getTime() % (30 * 60 * 1000) !== 0) {
-    return res.status(400).json({ message: 'Please choose a future drop-off time in 30-minute intervals before the reservation deadline.' });
+  const phAppointment = new Date(appointment.getTime() + 8 * 60 * 60 * 1000);
+  const phMinutes = phAppointment.getUTCHours() * 60 + phAppointment.getUTCMinutes();
+  if (Number.isNaN(appointment.getTime()) || appointment <= new Date() || appointment > reservationDeadline || appointment.getTime() % (30 * 60 * 1000) !== 0 || phMinutes < 8 * 60 || phMinutes > 17 * 60) {
+    return res.status(400).json({ message: 'Please choose a future drop-off time between 8:00 AM and 5:00 PM Philippine time, in 30-minute intervals before the reservation deadline.' });
   }
 
   const code =

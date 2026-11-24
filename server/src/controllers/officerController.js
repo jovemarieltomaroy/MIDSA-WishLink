@@ -145,6 +145,11 @@ export async function updateWish(req, res) {
   }
   const wish = await Wish.findById(req.params.id);
   if (!wish) return res.status(404).json({ message: 'Wish not found.' });
+  for (const key of ['nickname', 'partnerFoundation']) {
+    if (req.body[key] !== undefined && (typeof req.body[key] !== 'string' || !req.body[key].trim())) {
+      return res.status(400).json({ message: 'Nickname and partner foundation are required.' });
+    }
+  }
   const allowed = ['nickname', 'partnerFoundation', 'wishItems', 'notes', 'ageGroup'];
   if (childProfile) wish.childProfile = childProfile;
   for (const key of allowed) if (req.body[key] !== undefined) wish[key] = req.body[key];

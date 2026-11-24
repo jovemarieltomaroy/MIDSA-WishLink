@@ -377,7 +377,7 @@ export async function sendReservationConfirmation(
     `${organization.dropOffLocation}. ` +
     `Contact: ${contact}. Thank you!`;
 
-  return Promise.allSettled([
+  const deliveries = [
     sendEmail({
       to:
         wish.donor.email,
@@ -395,7 +395,36 @@ export async function sendReservationConfirmation(
       body:
         sms
     })
-  ]);
+  ];
+
+  const notificationEmail = process.env.RESERVATION_NOTIFICATION_EMAIL?.trim();
+  if (notificationEmail) {
+    const scheduled = wish.donor.scheduledDropOffAt && new Date(wish.donor.scheduledDropOffAt);
+    let calendarLink = '';
+    if (scheduled && !Number.isNaN(scheduled.getTime())) {
+      const calendarDate = date => date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+      const params = new URLSearchParams({
+        action: 'TEMPLATE',
+        text: `Gift drop-off for ${wish.nickname}`,
+        dates: `${calendarDate(scheduled)}/${calendarDate(new Date(scheduled.getTime() + 30 * 60 * 1000))}`,
+        location: organization.dropOffLocation || '',
+        details: `Wish code: ${wish.ornamentCode || 'Not provided'}. Please check the officer dashboard for reservation details.`
+      });
+      calendarLink = `https://calendar.google.com/calendar/render?${params}`;
+    }
+    const formattedTime = scheduled && !Number.isNaN(scheduled.getTime())
+      ? new Intl.DateTimeFormat('en-PH', { timeZone: 'Asia/Manila', dateStyle: 'medium', timeStyle: 'short' }).format(scheduled) + ' (Philippine time)'
+      : 'Not scheduled';
+    const officerHtml = `<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;line-height:1.7;color:#23332b"><h1 style="color:#086747">New wish reservation</h1><p>A donor has confirmed a reservation.</p><p><strong>Recipient:</strong> ${nickname}<br /><strong>Wish code:</strong> ${escapeHtml(wish.ornamentCode || 'Not provided')}<br /><strong>Donor:</strong> ${escapeHtml(wish.donor.fullName || 'Not provided')}<br /><strong>Scheduled drop-off:</strong> ${escapeHtml(formattedTime)}<br /><strong>Drop-off deadline:</strong> ${escapeHtml(deadline)}<br /><strong>Location:</strong> ${escapeHtml(organization.dropOffLocation)}</p>${calendarLink ? `<p><a href="${escapeHtml(calendarLink)}" style="display:inline-block;padding:12px 20px;border-radius:10px;background:#086747;color:#fff;text-decoration:none;font-weight:bold">Add to Google Calendar</a></p><p>Review and save the event in the shared calendar. Update it manually if plans change.</p>` : ''}<p>For contact details, open the officer dashboard.</p></div>`;
+    deliveries.push(sendEmail({ to: notificationEmail, subject: `New wish reservation: ${wish.nickname.replace(/[\r\n]/g, ' ')}`, html: officerHtml }));
+  } else {
+    console.warn('Reservation notification email is not configured (RESERVATION_NOTIFICATION_EMAIL).');
+  }
+  const results = await Promise.allSettled(deliveries);
+  results.forEach((result, index) => {
+    if (result.status === 'rejected') console.error(`Reservation notification delivery ${index + 1} failed:`, result.reason);
+  });
+  return results;
 }
 
 

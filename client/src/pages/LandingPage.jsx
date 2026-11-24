@@ -136,7 +136,16 @@ export default function LandingPage() {
         <section className="brand-section brand-updates" id="updates" aria-labelledby="stations-title">
           <div className="brand-section-heading"><span className="brand-kicker">FIND A WISH</span><h2 id="stations-title">holiday giving tree stations</h2></div>
           <div className="brand-scrapbook-grid">
-            {Array.from({ length: 7 }, (_, index) => (
+            {[
+              { name: 'MIDSA Wish Tree', location: 'MIDSA Office, ETC Building', image: '/images/midsa-wish-tree.jpg' },
+              { name: 'COE-SC Wish Tree', location: '2nd Floor Lobby, College of Engineering', image: '/images/coe-wish-tree.jpg' },
+            ].map((station) => (
+              <figure className="brand-photo-card" key={station.name}>
+                <div className="brand-station-image"><img src={station.image} alt={`${station.name} at the ${station.location}`} loading="lazy" /></div>
+                <figcaption className="brand-handwritten">{station.name}<span className="brand-station-location">{station.location}</span></figcaption>
+              </figure>
+            ))}
+            {Array.from({ length: 5 }, (_, index) => (
               <figure className="brand-photo-card" key={index}>
                 <div><Image size={30} strokeWidth={1} /><span>Station photo coming soon</span></div>
                 <figcaption className="brand-handwritten">To be announced</figcaption>

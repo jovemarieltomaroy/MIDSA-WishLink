@@ -25,6 +25,9 @@ export default function WishDetailPage() {
   const [deadline, setDeadline] = useState('');
   const [childProfile, setChildProfile] = useState({});
   const [savingProfile, setSavingProfile] = useState(false);
+  const [editingDetails, setEditingDetails] = useState(false);
+  const [savingDetails, setSavingDetails] = useState(false);
+  const [details, setDetails] = useState({ nickname: '', ageGroup: '', partnerFoundation: '', notes: '' });
 
   async function load() {
     try {
@@ -38,6 +41,7 @@ export default function WishDetailPage() {
         response.data.wish;
 
       setWish(loadedWish);
+      setDetails({ nickname: loadedWish.nickname || '', ageGroup: loadedWish.ageGroup || '', partnerFoundation: loadedWish.partnerFoundation || '', notes: loadedWish.notes || '' });
       setChildProfile(loadedWish.childProfile || {});
 
       if (
@@ -72,6 +76,20 @@ export default function WishDetailPage() {
         window.location.origin
       }/wish/${wish.ornamentCode}`;
     }, [wish]);
+
+  async function saveDetails(event) {
+    event.preventDefault();
+    setSavingDetails(true);
+    setError('');
+    setNotice('');
+    try {
+      const response = await api.patch(`/officer/wishes/${id}`, details);
+      setWish(response.data.wish);
+      setEditingDetails(false);
+      setNotice('Wish details saved.');
+    } catch (err) { setError(getErrorMessage(err)); }
+    finally { setSavingDetails(false); }
+  }
 
   async function saveProfile(event) {
     event.preventDefault();
@@ -259,6 +277,12 @@ export default function WishDetailPage() {
         </div>
       )}
 
+      <style>{`
+        .wish-details-editor { display: grid; gap: 14px; }
+        .wish-details-editor label { display: grid; gap: 6px; font-weight: 600; }
+        .wish-details-editor input, .wish-details-editor textarea { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid #c9d9cd; border-radius: 8px; font: inherit; }
+        .wish-details-actions { display: flex; align-items: center; gap: 14px; }
+      `}</style>
       <div className="detail-grid">
 
         <section className="panel">
@@ -268,9 +292,18 @@ export default function WishDetailPage() {
                 Wish details
               </h2>
             </div>
+            {!editingDetails && <button type="button" className="text-button" onClick={() => { setError(''); setNotice(''); setDetails({ nickname: wish.nickname || '', ageGroup: wish.ageGroup || '', partnerFoundation: wish.partnerFoundation || '', notes: wish.notes || '' }); setEditingDetails(true); }}>Edit details</button>}
           </div>
 
-          <dl className="details">
+          {editingDetails ? (
+            <form className="wish-details-editor" onSubmit={saveDetails}>
+              <label>Nickname<input required value={details.nickname} onChange={event => setDetails({ ...details, nickname: event.target.value })} /></label>
+              <label>Age group<input value={details.ageGroup} onChange={event => setDetails({ ...details, ageGroup: event.target.value })} /></label>
+              <label>Partner foundation<input required value={details.partnerFoundation} onChange={event => setDetails({ ...details, partnerFoundation: event.target.value })} /></label>
+              <label>Officer notes<textarea rows="4" value={details.notes} onChange={event => setDetails({ ...details, notes: event.target.value })} /></label>
+              <div className="wish-details-actions"><button type="submit" className="primary-button" disabled={savingDetails}>{savingDetails ? 'Saving?' : 'Save details'}</button><button type="button" className="text-button" disabled={savingDetails} onClick={() => setEditingDetails(false)}>Cancel</button></div>
+            </form>
+          ) : <dl className="details">
 
             <div>
               <dt>
@@ -335,7 +368,7 @@ export default function WishDetailPage() {
               </dd>
             </div>
 
-          </dl>
+          </dl>}
         </section>
 
         <aside className="panel ornament-preview qr-tag-preview" aria-label="Printable QR gift tag">
