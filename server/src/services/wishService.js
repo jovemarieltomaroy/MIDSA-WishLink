@@ -1,7 +1,7 @@
 import Wish from '../models/Wish.js';
 import { sendDonorLifecycleEmail } from './notificationService.js';
 
-export async function releaseExpiredReservations() {
+export async function releaseExpiredReservations({ deferNotifications = false } = {}) {
   const now = new Date();
   const expired = await Wish.find({ status: 'reserved', reservationExpiresAt: { $lte: now } });
   let count = 0;
@@ -21,11 +21,10 @@ export async function releaseExpiredReservations() {
     if (!released) continue;
     count += 1;
     // Keep the pre-update donor snapshot for the release email.
-    try {
-      await sendDonorLifecycleEmail(released, 'released');
-    } catch (error) {
+    const notification = sendDonorLifecycleEmail(released, 'released').catch(error => {
       console.error('Reservation release email failed:', error);
-    }
+    });
+    if (!deferNotifications) await notification;
   }
   return count;
 }

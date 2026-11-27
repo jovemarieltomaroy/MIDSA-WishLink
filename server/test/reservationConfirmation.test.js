@@ -16,9 +16,9 @@ test('reservation email uses the holiday message with dynamic, escaped wish deta
     contactName: 'MIDSA Holiday Program Team', contactEmail: 'midsapartnerships@gmail.com',
     dropOffLocation: 'MIDSA Designated Drop-off Point'
   }));
-  let email;
+  const emails = [];
   t.mock.method(globalThis, 'fetch', async (_url, options) => {
-    email = JSON.parse(options.body);
+    emails.push(JSON.parse(options.body));
     return { ok: true, json: async () => ({ messageId: 'test' }) };
   });
   const result = await sendReservationConfirmation({
@@ -27,6 +27,8 @@ test('reservation email uses the holiday message with dynamic, escaped wish deta
     donor: { email: 'donor@example.com', phoneNumber: '09123456789' }
   });
   assert.equal(result[0].status, 'fulfilled');
+  const email = emails.find(message => message.to[0].email === 'donor@example.com');
+  assert.ok(emails.find(message => message.to[0].email === 'midsasystems@gmail.com'));
   assert.match(email.subject, /You've Made Someone's Holiday Brighter!/);
   assert.match(email.htmlContent, /Holiday Season 2026/);
   assert.match(email.htmlContent, /&lt;Joy&gt;/);

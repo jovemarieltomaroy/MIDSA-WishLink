@@ -87,118 +87,40 @@ export default function WishesPage() {
     setFoundationOptions
   ] = useState([]);
 
-  async function load() {
-    if (
-      !effectiveCampaignId
-    ) {
+  const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState('');
+
+  useEffect(() => {
+    setFoundation('all');
+    setFoundationOptions([]);
+  }, [effectiveCampaignId]);
+
+  useEffect(() => {
+    if (!effectiveCampaignId) {
       setWishes([]);
+      setLoading(false);
       return;
     }
-
-    const response =
-      await api.get(
-        '/officer/wishes',
-        {
-          params: {
-            campaignId:
-              effectiveCampaignId,
-
-            status,
-            foundation,
-            q
-          }
+    let cancelled = false;
+    setLoading(true);
+    setLoadError('');
+    const timer = setTimeout(async () => {
+      try {
+        const response = await api.get('/officer/wishes', {
+          params: { campaignId: effectiveCampaignId, status, foundation, q }
+        });
+        if (!cancelled) {
+          setWishes(response.data.wishes || []);
+          setFoundationOptions(response.data.foundations || []);
         }
-      );
-
-    setWishes(
-      response.data.wishes ||
-      []
-    );
-  }
-
-  useEffect(() => {
-    const timer =
-      setTimeout(
-        load,
-        180
-      );
-
-    return () =>
-      clearTimeout(
-        timer
-      );
-  }, [
-    status,
-    foundation,
-    q,
-    effectiveCampaignId
-  ]);
-
-  /*
-   * Build foundation filter
-   * from all wishes in the
-   * currently selected campaign.
-   */
-  useEffect(() => {
-    setFoundation(
-      'all'
-    );
-
-    if (
-      !effectiveCampaignId
-    ) {
-      setFoundationOptions(
-        []
-      );
-
-      return;
-    }
-
-    api
-      .get(
-        '/officer/wishes',
-        {
-          params: {
-            campaignId:
-              effectiveCampaignId,
-
-            status:
-              'all'
-          }
-        }
-      )
-      .then(
-        (response) => {
-          const values =
-            response.data.wishes
-              .map(
-                (wish) =>
-                  wish.partnerFoundation
-              )
-              .filter(
-                Boolean
-              );
-
-          const unique =
-            [
-              ...new Set(
-                values
-              )
-            ].sort(
-              (a, b) =>
-                a.localeCompare(
-                  b
-                )
-            );
-
-          setFoundationOptions(
-            unique
-          );
-        }
-      );
-  }, [
-    effectiveCampaignId
-  ]);
+      } catch {
+        if (!cancelled) setLoadError('Could not load wishes. Please try again.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }, q ? 180 : 0);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [status, foundation, q, effectiveCampaignId]);
 
   function changeCampaign(
     nextId
@@ -584,7 +506,9 @@ export default function WishesPage() {
 
           </table>
 
-          {!wishes.length && (
+          {loading && <div className="empty" role="status">Loading wishes?</div>}
+          {loadError && <div className="alert" role="alert">{loadError}</div>}
+          {!loading && !loadError && !wishes.length && (
             <div className="empty">
               No wishes match this
               campaign view.

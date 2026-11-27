@@ -13,7 +13,7 @@ function campaignFilter(campaignId) {
 }
 
 export async function dashboard(req, res) {
-  await releaseExpiredReservations();
+  await releaseExpiredReservations({ deferNotifications: true });
   const { campaignId } = req.query;
   const base = campaignFilter(campaignId);
   const aggregateBase = campaignId && mongoose.isValidObjectId(campaignId)
@@ -68,7 +68,7 @@ export async function dashboard(req, res) {
 }
 
 export async function listWishes(req, res) {
-  await releaseExpiredReservations();
+  await releaseExpiredReservations({ deferNotifications: true });
   const { status, q, campaignId, foundation } = req.query;
   const filter = {};
   if (campaignId) filter.campaign = campaignId;
@@ -83,10 +83,14 @@ export async function listWishes(req, res) {
       { 'donor.universityEmail': { $regex: q, $options: 'i' } }
     ];
   }
-  const wishes = await Wish.find(filter)
-    .populate('campaign', 'name academicPeriod status deadline')
-    .sort({ createdAt: -1 });
-  res.json({ wishes });
+  const [wishes, foundations] = await Promise.all([
+    Wish.find(filter)
+      .select('nickname wishItems status reservationExpiresAt ornamentCode partnerFoundation donor.fullName')
+      .sort({ createdAt: -1 })
+      .lean(),
+    Wish.distinct('partnerFoundation', campaignFilter(campaignId))
+  ]);
+  res.json({ wishes, foundations: foundations.filter(Boolean).sort((a, b) => a.localeCompare(b)) });
 }
 
 export async function getWish(req, res) {

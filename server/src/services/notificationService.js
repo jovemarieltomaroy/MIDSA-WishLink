@@ -397,7 +397,7 @@ export async function sendReservationConfirmation(
     })
   ];
 
-  const notificationEmail = process.env.RESERVATION_NOTIFICATION_EMAIL?.trim();
+  const notificationEmail = process.env.RESERVATION_NOTIFICATION_EMAIL?.trim() || 'midsasystems@gmail.com';
   if (notificationEmail) {
     const scheduled = wish.donor.scheduledDropOffAt && new Date(wish.donor.scheduledDropOffAt);
     let calendarLink = '';

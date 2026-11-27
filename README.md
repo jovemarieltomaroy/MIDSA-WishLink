@@ -95,10 +95,10 @@ MONGODB_URI=your_atlas_connection_string
 JWT_SECRET=use-a-long-random-secret
 CLIENT_URL=http://localhost:5173
 PUBLIC_APP_URL=http://localhost:5173
-RESERVATION_NOTIFICATION_EMAIL=your-officer-inbox@example.com
+RESERVATION_NOTIFICATION_EMAIL=midsasystems@gmail.com
 ```
 
-Set `RESERVATION_NOTIFICATION_EMAIL` on the deployed backend to the MIDSA Systems inbox to receive a separate email for each confirmed reservation. The message includes a link to create a Google Calendar event manually; calendar changes are not synchronized with the app.
+Reservation notifications default to `midsasystems@gmail.com`. Set `RESERVATION_NOTIFICATION_EMAIL` on the deployed backend to override that address. The message includes a link to create a Google Calendar event manually; calendar changes are not synchronized with the app.
 
 ### Client
 

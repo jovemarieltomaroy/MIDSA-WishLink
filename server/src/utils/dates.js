@@ -1,15 +1,19 @@
 export function getDefaultExpiry(campaignDeadline = null) {
-  const days = Number(process.env.DEFAULT_RESERVATION_DAYS || 5);
-  // Read the reservation's calendar date in the Philippines, independent of
-  // the server timezone. Manila is UTC+8; 5 PM there is 09:00 UTC.
+  const configuredDays = Number(process.env.DEFAULT_RESERVATION_DAYS || 5);
+  const days = Number.isInteger(configuredDays) && configuredDays > 0 ? configuredDays : 5;
   const phDate = new Date(Date.now() + 8 * 60 * 60 * 1000);
-  const expiry = new Date(Date.UTC(
-    phDate.getUTCFullYear(),
-    phDate.getUTCMonth(),
-    phDate.getUTCDate() + days,
-    9
-  ));
-  return clampToDeadline(expiry, campaignDeadline);
+  const expiry = new Date(Date.UTC(phDate.getUTCFullYear(), phDate.getUTCMonth(), phDate.getUTCDate(), 9));
+  for (let counted = 0; counted < days;) {
+    expiry.setUTCDate(expiry.getUTCDate() + 1);
+    if (expiry.getUTCDay() !== 0 && expiry.getUTCDay() !== 6) counted++;
+  }
+  const capped = clampToDeadline(expiry, campaignDeadline);
+  const phCapped = new Date(capped.getTime() + 8 * 60 * 60 * 1000);
+  if (phCapped.getUTCDay() === 0 || phCapped.getUTCDay() === 6) {
+    const daysBack = phCapped.getUTCDay() === 0 ? 2 : 1;
+    return new Date(Date.UTC(phCapped.getUTCFullYear(), phCapped.getUTCMonth(), phCapped.getUTCDate() - daysBack, 9));
+  }
+  return capped;
 }
 
 export function clampToDeadline(date, deadline = null) {

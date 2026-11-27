@@ -720,7 +720,7 @@ export default function GrantWishPage() {
                   }}
                   className="grant-form-grid"
                 >
-                  <DropOffPicker value={form.scheduledDropOffAt} onChange={value => setForm(current => ({ ...current, scheduledDropOffAt: value }))} />
+                  <DropOffPicker deadline={wish.proposedReservationExpiresAt} value={form.scheduledDropOffAt} onChange={value => setForm(current => ({ ...current, scheduledDropOffAt: value }))} />
 
                   <ModernField
                     label="Full name"
@@ -1326,9 +1326,15 @@ export default function GrantWishPage() {
   );
 }
 
-function DropOffPicker({ value, onChange }) {
+function DropOffPicker({ value, onChange, deadline }) {
   const [date = '', time = ''] = value.split('T');
   const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+  const start = new Date(`${today}T00:00:00Z`);
+  const endDate = deadline ? new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(deadline)) : today;
+  const dates = [];
+  for (const day = new Date(start); day.toISOString().slice(0, 10) <= endDate; day.setUTCDate(day.getUTCDate() + 1)) {
+    if (day.getUTCDay() !== 0 && day.getUTCDay() !== 6) dates.push(day.toISOString().slice(0, 10));
+  }
   const times = Array.from({ length: 19 }, (_, index) => {
     const hour = 8 + Math.floor(index / 2);
     const minute = index % 2 ? '30' : '00';
@@ -1337,9 +1343,9 @@ function DropOffPicker({ value, onChange }) {
 
   return <fieldset className="dropoff-picker">
     <legend>Plan your drop-off</legend>
-    <p>Choose a day and a 30-minute time between 8:00 AM and 5:00 PM, Philippine time.</p>
+    <p>Choose a weekday and a 30-minute time between 8:00 AM and 5:00 PM, Philippine time.</p>
     <div className="dropoff-picker-fields">
-      <label><span>Drop-off date</span><input type="date" required min={today} value={date} onChange={event => onChange(`${event.target.value}${time ? `T${time}` : ''}`)} /></label>
+      <label><span>Drop-off date</span><select required value={date} onChange={event => onChange(`${event.target.value}${time ? `T${time}` : ''}`)}><option value="">Choose a weekday</option>{dates.map(day => <option key={day} value={day}>{new Intl.DateTimeFormat('en-PH', { timeZone: 'UTC', dateStyle: 'full' }).format(new Date(`${day}T00:00:00Z`))}</option>)}</select></label>
       <label><span>Drop-off time</span><select required value={time} onChange={event => onChange(`${date}T${event.target.value}`)}><option value="">Choose a time</option>{times.map(slot => <option key={slot.value} value={slot.value}>{slot.label}</option>)}</select></label>
     </div>
     <style>{`
