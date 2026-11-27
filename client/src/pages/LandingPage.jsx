@@ -138,14 +138,17 @@ export default function LandingPage() {
           <div className="brand-scrapbook-grid">
             {[
               { name: 'MIDSA Wish Tree', location: 'MIDSA Office, ETC Building', image: '/images/midsa-wish-tree.jpg' },
+              { name: 'KASAMA Wish Tree', location: 'KASAMA Office', image: '/images/ced-wish-tree.jpg' },
+              { name: 'CED-SC Wish Tree', location: 'Lobby, College of Education', image: '/images/kasama-wish-tree.jpg' },
               { name: 'COE-SC Wish Tree', location: '2nd Floor Lobby, College of Engineering', image: '/images/coe-wish-tree.jpg' },
+              { name: 'CSM-SC Wish Tree', location: 'Lobby, College of Science and Mathematics', image: '/images/csm-wish-tree.jpg' },
             ].map((station) => (
               <figure className="brand-photo-card" key={station.name}>
                 <div className="brand-station-image"><img src={station.image} alt={`${station.name} at the ${station.location}`} loading="lazy" /></div>
                 <figcaption className="brand-handwritten">{station.name}<span className="brand-station-location">{station.location}</span></figcaption>
               </figure>
             ))}
-            {Array.from({ length: 5 }, (_, index) => (
+            {Array.from({ length: 2 }, (_, index) => (
               <figure className="brand-photo-card" key={index}>
                 <div><Image size={30} strokeWidth={1} /><span>Station photo coming soon</span></div>
                 <figcaption className="brand-handwritten">To be announced</figcaption>
